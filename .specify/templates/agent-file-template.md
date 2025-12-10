@@ -1,75 +1,143 @@
-# [PROJECT NAME] Development Guidelines
+# [PROJECT NAME] Agent Guide
 
-Auto-generated from all feature plans. Last updated: [DATE]
+Auto-generated from all specs and plans.  
+Last updated: [DATE]
 
-## Active Technologies
+This document summarizes how AI coding assistants (for example Claude Code) should
+behave in this repository, based on the Engineering Constitution and the current
+set of specifications.
 
-[EXTRACTED FROM ALL PLAN.MD FILES]
+---
 
-## Project Structure
+## 1. Project Overview
 
-~~~text
-[ACTUAL STRUCTURE FROM PLANS]
-~~~
+- Domain: [Short description of the system]
+- Main Overview spec(s): [IDs or paths]
+- Main Feature spec groups: [for example Sales, Assignments, Revenue, Dashboard]
 
-## Commands
+---
 
-[ONLY COMMANDS FOR ACTIVE TECHNOLOGIES]
+## 2. Active Technologies
 
-## Code Style
+To be filled automatically from plans and specs:
 
-[LANGUAGE-SPECIFIC, ONLY FOR LANGUAGES IN USE]
+- Languages:
+- Frameworks:
+- Datastores:
+- Messaging / queues:
+- Testing frameworks:
+- Tooling (for example `gh`, MCPs like `serena`, `context7`, `playwright`):
 
-## Recent Changes
+---
 
-[LAST 3 FEATURES AND WHAT THEY ADDED]
+## 3. Project Structure (High Level)
+
+Summarize the main directories and their roles. For example:
+
+    backend/         Backend application code
+    frontend/        Frontend application code
+    shared/          Shared types and utilities
+    .specify/        Specs, plans, tasks, and scripts
+    .claude/         Commands and AI configuration
+
+---
+
+## 4. Specification Structure
+
+- There is exactly one Overview (domain) spec per major system.
+- Feature specs are organized per feature slice (screen, user flow, or change set).
+- Shared masters and APIs are defined only in the Overview spec, with IDs such as:
+
+  - Masters: `M-CLIENTS`, `M-PROJECT_ORDERS`, ...
+  - APIs: `API-PROJECT_ORDERS-LIST`, ...
+
+- Feature specs reference these IDs and must not redefine the underlying models.
+
+AI agents MUST:
+
+- Read the Overview spec when shared domain behavior is involved.
+- Read the relevant Feature spec(s) for the specific change being implemented.
+- Respect the spec-driven workflow: `/speckit.specify → /speckit.plan → /speckit.tasks → implementation`.
+
+---
+
+## 5. Git and Issue Workflow (for Agents)
+
+- All non-trivial changes MUST be linked to a GitHub Issue.
+- AI agents SHOULD:
+
+  - Create an Issue when none exists and the user has requested a change.
+  - Create or switch to an Issue-linked branch (for example `feature/123-short-title`).
+  - Keep changes small and focused on a single Issue and feature.
+
+- PRs created by agents MUST:
+
+  - Reference Issue(s) (for example `Fixes #123`).
+  - Reference Spec ID(s) (for example `Implements S-001, UC-003`).
+  - Include a summary of tests run and results.
+
+---
+
+## 6. Testing Expectations
+
+- Before implementing, agents SHOULD:
+
+  - Identify which tests need to be added or updated according to the spec.
+  - Ensure that tests fail when behavior is missing or incorrect.
+
+- Agents MUST NOT:
+
+  - Modify tests solely to make CI green.
+  - Relax assertions or skip tests without explicit human approval.
+
+- When tests fail, agents SHOULD:
+
+  - Attempt to classify the failure (spec vs test vs implementation).
+  - Propose an Issue or update an existing one with diagnosis details.
+
+---
+
+## 7. Code Style and Patterns
+
+Provide high-level guidance based on actual usage in the project:
+
+- Preferred architectural patterns (for example layered architecture, hexagonal).
+- Naming conventions for:
+
+  - Files
+  - Components
+  - APIs
+  - Tests
+
+- Guidelines for:
+
+  - Error handling
+  - Logging
+  - Feature flags
+
+---
+
+## 8. Recent Changes (Context for Agents)
+
+Summaries of the last few merged features:
+
+- [FEATURE-1]: [Short description and impact]
+- [FEATURE-2]: [Short description and impact]
+- [FEATURE-3]: [Short description and impact]
+
+This helps agents understand current direction and context.
+
+---
+
+## 9. Manual Notes (Human Maintained)
+
+Use this section to record human insights that AI agents should know, for example:
+
+- Domain nuances that are hard to infer from code or specs.
+- Known technical debts and temporary workarounds.
+- Preferred trade-offs for this particular organization.
+
+Manual additions start below:
 
 <!-- MANUAL ADDITIONS START -->
-
-## Constitution Summary
-
-This project follows the organization-wide **Engineering Constitution**
-(`.specify/memory/constitution.md`), which defines non-negotiable rules for:
-
-- **Spec- & Test-First Development**: All changes follow `/speckit.specify` →
-  `/speckit.plan` → `/speckit.tasks` → implementation, with tests written first.
-- **Contracts & Type Safety**: API contracts and strong typing wherever
-  practical (strict TypeScript for JS/TS projects).
-- **Architecture, Code Quality & Simplicity**: Component-based design,
-  single-responsibility services, enforced linters/formatters, and YAGNI.
-- **Testing Strategy & Integrity**: Unit + integration + E2E tests aligned
-  with specs; failing tests trigger root-cause analysis and Issues.
-- **Observability, Versioning, Security**: Logs, metrics, semver, migrations,
-  dependency audits, and secure secret handling.
-- **Spec-Driven Git Workflow**: Issue-linked branches only, squash merges, and
-  PRs that reference Spec IDs and Issue numbers.
-- **AI Agent Conduct**: AI tools (e.g. Claude Code) MUST obey this constitution
-  and MUST escalate ambiguity instead of guessing.
-
-Refer to the constitution file for full details.
-
-## Spec Kit & GitHub Workflow
-
-- All work starts from a GitHub Issue (`bug`, `feature`, `refactor`, `spec`).
-- For new behavior:
-  1. Generate or update the spec with `/speckit.specify`.
-  2. Generate the plan with `/speckit.plan`.
-  3. Generate tasks with `/speckit.tasks`.
-  4. Implement in an Issue-linked branch (e.g. `feature/<issue>-short-desc`).
-- Pull requests MUST:
-  - Reference Issue(s) (e.g. `Fixes #123`).
-  - Reference Spec ID(s) (e.g. `Implements S-001`).
-  - Pass lint, tests, and type checks.
-
-## AI Assistant Usage
-
-- Use AI (Claude Code, etc.) for:
-  - Refactoring, test generation, and spec/plan/tasks maintenance.
-  - Proposing alternatives within the boundaries of the constitution.
-- AI MUST NOT:
-  - Push directly to `main`.
-  - Bypass tests or quality gates.
-  - “Fix” failing tests without first classifying the root cause and, if needed,
-    creating or updating an Issue.
-
 <!-- MANUAL ADDITIONS END -->

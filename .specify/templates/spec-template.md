@@ -1,132 +1,218 @@
-# Feature Specification: [FEATURE NAME]
+# Specification: [TITLE]
 
-**Spec ID**: `S-###`  
-**Issue**: `#<issue-number>`  
-**Feature Branch**: `[###-feature-name]`  
-**Created**: [DATE]  
-**Status**: Draft | In Review | Approved  
-**Input**: User description: "$ARGUMENTS"
-
-> **Traceability**: This Spec ID MUST be referenced in:
-> - plan.md (Implementation Plan),
-> - tasks.md (Tasks),
-> - related tests (where practical),
-> - pull requests and Issues that implement or change this behavior.
-
-## User Scenarios & Testing *(mandatory)*
-
-<!--
-  IMPORTANT:
-  - User stories should be PRIORITIZED as user journeys ordered by importance.
-  - Each user story/journey MUST be INDEPENDENTLY TESTABLE.
-  - If you implement just ONE P1 story, you should have a viable MVP that delivers value.
-  
-  Assign priorities (P1, P2, P3, etc.), where P1 is the most critical.
-  Think of each story as a standalone slice of functionality that can be:
-  - Developed independently
-  - Tested independently
-  - Deployed independently
-  - Demonstrated to users independently
--->
-
-### User Story 1 - [Brief Title] (Priority: P1)
-
-[Describe this user journey in plain language]
-
-**Why this priority**: [Explain the value and why it has this priority level]
-
-**Independent Test**: [Describe how this can be tested independently – e.g., "User can complete X end-to-end and obtain Y outcome"]
-
-**Acceptance Scenarios**:
-
-1. **Given** [initial state], **When** [action], **Then** [expected outcome]
-2. **Given** [initial state], **When** [action], **Then** [expected outcome]
+Spec Type: [Overview | Feature]  
+Spec ID(s): [S-001, UC-003, etc.]  
+Created: [DATE]  
+Status: [Draft | In Review | Approved]  
+Author: [OWNER]  
+Related Issue(s): [#123, #124]  
+Related Plan(s): [plan-id or link]  
 
 ---
 
-### User Story 2 - [Brief Title] (Priority: P2)
+## 1. Purpose and Scope
 
-[Describe this user journey in plain language]
+- Business goal:
+- What problem does this spec solve?
+- In-scope:
+- Out-of-scope:
 
-**Why this priority**: [Explain the value and why it has this priority level]
+For Overview specs:
 
-**Independent Test**: [Describe how this can be tested independently]
+- Describe the overall domain (for example “Sales Management System”).
+- Clarify which subsystems and feature specs this Overview covers.
 
-**Acceptance Scenarios**:
+For Feature specs:
 
-1. **Given** [initial state], **When** [action], **Then** [expected outcome]
-
----
-
-### User Story 3 - [Brief Title] (Priority: P3)
-
-[Describe this user journey in plain language]
-
-**Why this priority**: [Explain the value and why it has this priority level]
-
-**Independent Test**: [Describe how this can be tested independently]
-
-**Acceptance Scenarios**:
-
-1. **Given** [initial state], **When** [action], **Then** [expected outcome]
+- Describe the specific feature slice (for example “Basic sales recording”).
+- Clarify which part of the overall system this implements.
 
 ---
 
-[Add more user stories as needed, each with an assigned priority]
+## 2. Context and Actors
 
-### Edge Cases
+### 2.1 Business Context
 
-<!--
-  ACTION REQUIRED: Capture important edge cases and error scenarios.
--->
+- Where in the business process does this spec sit?
+- Upstream systems / processes:
+- Downstream systems / processes:
 
-- What happens when [boundary condition]?
-- How does the system handle [error scenario]?
-- What should happen when [concurrency / race / offline scenario]?
+### 2.2 Actors and Roles
 
-## Requirements *(mandatory)*
+- Primary actors (for example Sales, Manager, Admin):
+- External systems (for example CRM, Billing):
 
-<!--
-  ACTION REQUIRED: Define functional requirements that directly support
-  the user stories and acceptance scenarios above.
--->
+---
 
-### Functional Requirements
+## 3. Domain Model and Dependencies
 
-- **FR-001**: System MUST [specific capability, e.g., "allow users to create accounts"].
-- **FR-002**: System MUST [specific capability, e.g., "validate email addresses"].  
-- **FR-003**: Users MUST be able to [key interaction, e.g., "reset their password"].
-- **FR-004**: System MUST [data requirement, e.g., "persist user preferences"].
-- **FR-005**: System MUST [behavior, e.g., "log all security-relevant events"].
+### 3.1 Shared Domain Dependencies
 
-*Example of marking unclear requirements:*
+For Overview specs:
 
-- **FR-006**: System MUST authenticate users via
-  [NEEDS CLARIFICATION: auth method not specified – email/password, SSO, OAuth?].
-- **FR-007**: System MUST retain user data for
-  [NEEDS CLARIFICATION: retention period not specified].
+- Introduce domain concepts and vocabulary.
+- Define main entities at a high level (without duplicating DB schemas yet).
 
-> When a requirement is marked `NEEDS CLARIFICATION`, an Issue SHOULD be created
-> or updated to resolve it. AI agents MUST NOT guess; they MUST escalate.
+For Feature specs:
 
-### Key Entities *(include if feature involves data)*
+- List all shared domain elements this feature depends on, by ID:
 
-- **[Entity 1]**: [What it represents, key attributes without implementation].
-- **[Entity 2]**: [What it represents, relationships to other entities].
+  - Masters: `M-CLIENTS`, `M-PROJECT_ORDERS`, ...
+  - APIs: `API-PROJECT_ORDERS-LIST`, ...
 
-## Success Criteria *(mandatory)*
+- Do NOT redefine these models here. Refer back to the Overview spec.
 
-<!--
-  ACTION REQUIRED: Define measurable success criteria.
-  These must be technology-agnostic, observable, and testable.
--->
+### 3.2 New or Feature-Specific Domain Concepts
 
-### Measurable Outcomes
+- New entities or concepts introduced only by this feature:
+- How they relate to existing masters or domain concepts:
 
-- **SC-001**: [Measurable metric, e.g., "Users can complete account creation in under 2 minutes"].
-- **SC-002**: [Measurable metric, e.g., "System handles 1000 concurrent users without degradation"].
-- **SC-003**: [User satisfaction metric, e.g., "90% of users successfully complete primary task on first attempt"].
-- **SC-004**: [Business metric, e.g., "Reduce support tickets related to [X] by 50%"].
+---
 
-> Each measurable outcome SHOULD have one or more tests or monitoring checks
-> that can be used to verify it in CI, staging, or production.
+## 4. Data Model (Overview vs Feature)
+
+For Overview specs:
+
+- Define shared master data models and important entities.
+
+Example structure (adapt as needed):
+
+- `M-CLIENTS`  
+  - Purpose:
+  - Main fields:
+  - Relationships:
+
+- `M-PROJECT_ORDERS`  
+  - Purpose:
+  - Main fields:
+  - Relationships:
+
+- Other important entities and reference data.
+
+For Feature specs:
+
+- Describe how this feature reads or writes the shared data:
+
+  - Which masters are read?
+  - Which entities are created/updated/deleted?
+  - Which constraints or invariants must hold?
+
+- If the feature introduces additional fields or relationships, reference:
+
+  - Which shared entity is being extended.
+  - Which migration(s) or schema changes are required.
+
+---
+
+## 5. API Contracts
+
+For Overview specs:
+
+- Define core API contracts that are shared across features.
+
+For each API, define:
+
+- ID: `API-...`
+- Purpose:
+- Method and path:
+- Request shape:
+- Response shape:
+- Error conditions:
+
+For Feature specs:
+
+- List all APIs this feature calls or exposes:
+
+  - Existing APIs (by ID from Overview).
+  - New APIs created by this feature.
+
+- For new APIs:
+
+  - Follow the same structure as above.
+  - Mark clearly which spec and feature own each API.
+
+---
+
+## 6. User Stories / Use Cases
+
+Each user story should be independently testable.
+
+Format example:
+
+- `UC-001` Title  
+  - Priority: [P1 | P2 | P3]  
+  - Actors:  
+  - Pre-conditions:  
+  - Main flow:  
+  - Alternate flows / edge cases:  
+  - Acceptance criteria:
+
+List all relevant user stories for this spec.
+
+---
+
+## 7. UI / UX Behavior (if applicable)
+
+- Screens or views involved:
+- Navigation and entry points:
+- States, empty states, error states:
+- Wireframes or references (link):
+
+---
+
+## 8. Business Rules and Constraints
+
+- Validation rules:
+- Calculation rules (for example revenue, discounts):
+- Cross-entity constraints:
+- Domain invariants that MUST always hold:
+
+If a rule is shared across multiple features, consider moving it to the Overview
+spec and refer to it here by ID.
+
+---
+
+## 9. Non-Functional Requirements
+
+- Performance constraints (latency, throughput, batch size):
+- Security and access control:
+- Observability (logging, metrics, traces):
+- Reliability and availability requirements:
+- Compliance or audit requirements:
+
+---
+
+## 10. Testing Strategy (Spec Level)
+
+- For each `UC-XXX`:
+
+  - What tests are needed (unit, integration, E2E)?
+  - Which critical edge cases MUST be covered?
+
+- How will we verify that behavior matches this spec (not just that tests pass)?
+
+---
+
+## 11. Impact and Migration
+
+- Impact on existing data:
+- Migration strategy (if schema or master data changes are involved):
+- Backward compatibility strategy for APIs:
+
+---
+
+## 12. Open Questions and Assumptions
+
+- Open questions:
+- Assumptions that require confirmation:
+- Risks or uncertainties:
+
+---
+
+## 13. Traceability
+
+- Related Overview spec ID(s) (if this is a Feature spec):
+- Related Feature spec ID(s) (if this is an Overview spec):
+- Related Issues:
+- Related Plans:
+- Related Tasks:

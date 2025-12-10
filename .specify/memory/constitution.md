@@ -1,6 +1,29 @@
+<!--
+================================================================================
+SYNC IMPACT REPORT
+================================================================================
+Version change: 1.1.0 → 1.2.0 (MINOR - clarified multi-spec structure and domain model rules)
+
+Modified principles:
+  - Article IV: Spec-Driven Workflow（Overview + Feature spec 構造を明示）
+  - Article VII: Test Integrity and Problem Diagnosis（テスト改変の禁止を明確化）
+  - Added: Article VIII: Specification Structure & Domain Model
+
+Templates requiring updates:
+  - .specify/templates/spec-template.md
+  - .specify/templates/plan-template.md
+  - .specify/templates/tasks-template.md
+  - .specify/templates/checklist-template.md
+  - .specify/templates/agent-file-template.md
+
+Follow-up TODOs:
+  - Ensure new projects use an Overview spec for shared master data and API contracts
+================================================================================
+-->
+
 # Engineering Constitution
 
-This constitution defines the foundational principles for projects adopting
+This constitution defines the foundational principles for projects that adopt
 spec-driven development using Spec Kit, GitHub, and AI coding assistants.
 
 All development decisions, code reviews, and architectural choices MUST align
@@ -10,230 +33,348 @@ with these principles.
 
 ## Core Principles
 
-### I. Spec- & Test-First Development (NON-NEGOTIABLE)
+### I. Type Safety
 
-All feature work MUST be both specification-first and test-first.
+All code MUST be fully typed with strict TypeScript (and/or equivalent) configuration.
+This principle ensures runtime reliability and enables confident refactoring.
 
-**Non-negotiable rules:**
-- Features MUST start from an explicit specification created or updated via
-  `/speckit.specify` *after human approval* (see “Spec Change Governance”).
-- User journeys in the specification MUST be prioritized and independently
-  testable; each P1 journey MUST be capable of shipping as an MVP slice.
-- Tests for each user story MUST be designed and written before implementation
-  (TDD red–green–refactor cycle):
-  - Tests MUST fail before implementation begins (Red).
-  - Implementation MUST be the minimum code required to make tests pass (Green).
-  - Refactoring MUST preserve all passing tests (Refactor).
-- User acceptance scenarios in the spec MUST have corresponding automated tests
-  (integration or E2E) wherever technically feasible.
-- No pull request shall be merged without appropriate test coverage for the
-  behavior being introduced or changed.
+Non-negotiable rules:
 
-**Rationale:** Spec-first + test-first development forces clarity of behavior
-before coding, reduces rework, and ensures that changes remain aligned with
-business intent.
+- `strict: true` MUST be enabled in `tsconfig.json` for TypeScript projects.
+- No `any` types except when interfacing with untyped external libraries
+  (MUST be documented with a comment explaining the reason).
+- All function parameters and return types MUST be explicitly typed.
+- API responses and request payloads MUST have defined interfaces/types.
+- Shared types MUST be centralized in a `types/` or `shared/types/` directory.
+
+Rationale: Type systems catch errors at compile time, reduce debugging time, and
+serve as living documentation for the codebase.
 
 ---
 
-### II. Contracts & Type Safety
+### II. Test Coverage
 
-Systems MUST be built on explicit contracts and strong typing wherever possible.
+Critical paths MUST have test coverage. Testing strategy focuses on high-value
+tests that verify business logic and user-facing functionality.
 
-**Non-negotiable rules:**
-- All external and internal APIs MUST be defined via contracts before implementation.
-- Request/response formats MUST be validated against those contracts.
-- Breaking changes to contracts MUST follow the versioning policy.
-- Frontend–backend communication MUST use typed interfaces derived from contracts.
-- External integrations MUST have contract tests.
-- For TypeScript projects:
-  - `strict: true` MUST be enabled.
-  - `any` MUST NOT be used except when documented.
-  - All parameters and return types MUST be explicit.
+Non-negotiable rules:
 
-**Rationale:** Explicit contracts and strong typing reduce ambiguity and prevent integration failures.
+- All API endpoints MUST have integration tests verifying happy path and error cases.
+- Business logic services MUST have unit tests for core behavior.
+- User-facing features MUST have at least one end-to-end test per user story
+  (or equivalent UI behavior).
+- Tests MUST run in the CI pipeline before merge to `main`.
+- Test files MUST be co-located with source files or in a parallel `__tests__` directory.
 
----
-
-### III. Architecture, Code Quality & Simplicity
-
-Code MUST be simple, modular, and maintainable.
-
-**Non-negotiable rules:**
-- Components MUST follow single responsibility and be independently testable.
-- Shared logic MUST be extracted into dedicated modules.
-- Lint/format rules MUST NOT be disabled without justification.
-- Dead code MUST be removed.
-- Dependencies MUST be justified.
-- YAGNI principle MUST be followed.
-
-**Rationale:** Simplicity reduces cognitive load and accelerates safe iteration.
+Rationale: Tests provide confidence for changes, prevent regressions, and
+document expected behavior.
 
 ---
 
-### IV. Testing Strategy & Integrity
+### III. Code Quality
 
-Tests MUST meaningfully enforce specified behavior and provide reliable signals.
+Code MUST be maintainable, readable, and follow established patterns.
+Consistency across the codebase enables efficient collaboration.
 
-**Principle:**  
-CI green is a *consequence* of correct behavior, not a goal.  
-Nobody may modify code or tests to “make CI green” unless aligning with the specification.
+Non-negotiable rules:
 
-**Non-negotiable rules:**
-- Critical paths MUST have automated test coverage (unit, integration, E2E).
-- Tests MUST run and pass in CI for every PR.
-- Tests MUST live near the code they validate.
-- When a test fails, contributors MUST determine:
-  - Is the spec incorrect?
-  - Is the test incorrect?
-  - Is the implementation incorrect?
-  - Is the environment faulty?
+- ESLint and Prettier (or equivalent) MUST be configured and enforced
+  via pre-commit hooks and/or CI.
+- Linting rules MUST NOT be disabled without documented justification.
+- Functions SHOULD generally be under 50 lines; files SHOULD generally be
+  under 300 lines (excluding tests). Larger scopes MUST be justified and well structured.
+- Dead code MUST be removed, not commented out.
+- Dependencies MUST be kept up to date; security vulnerabilities MUST be
+  addressed within 7 days of disclosure.
 
-- It is prohibited to:
-  - Change implementation primarily to “make a test pass.”
-  - Change, delete, or weaken tests (including skip/xfail) simply to achieve green CI.
-  - Modify specs automatically or implicitly to resolve a test failure.
-
-- For non-trivial failures, contributors MUST:
-  - Create/update an Issue describing:
-    - failing tests,
-    - expected behavior,
-    - root cause category (spec / test / implementation / environment).
-  - Link the Issue to relevant spec IDs.
-
-- When the specification *appears* wrong:
-  - AI agents MUST NOT modify the spec.
-  - AI agents MUST file an Issue and await human confirmation.
-  - Only after human approval may the spec be updated via `/speckit.specify`.
-
-**Rationale:**  
-Integrity between spec, tests, and implementation prevents false confidence.
+Rationale: Clean code reduces cognitive load, speeds up onboarding, and
+minimizes technical debt accumulation.
 
 ---
 
-### V. Observability
+### IV. Spec-Driven Workflow
 
-Production systems MUST be diagnosable.
+All changes MUST be driven by explicit specifications and tracked issues, not
+ad-hoc code edits.
 
-**Non-negotiable rules:**
-- Structured logging MUST be used.
-- Errors MUST capture stack traces.
-- API calls MUST log sanitized metadata.
-- Critical paths MUST be instrumented.
+Non-negotiable rules:
 
----
+- Every non-trivial change MUST originate from a GitHub Issue
+  (bug, feature, refactor, or spec change).
+- For new or changed behavior, the following sequence MUST be followed:
 
-### VI. Versioning & Breaking Changes
+  1. `/speckit.specify` to define or update the specification.
+  2. `/speckit.plan` to derive a technical implementation plan aligned with the spec.
+  3. `/speckit.tasks` to break work into concrete, reviewable tasks.
+  4. Implementation work based on these tasks.
 
-Semantic versioning MUST be followed.
+- Each specification MUST have stable identifiers (for example):
 
-**Non-negotiable rules:**
-- MAJOR: breaking changes  
-- MINOR: backward-compatible features  
-- PATCH: fixes  
-- Breaking changes MUST include migration guides.
-- DB changes MUST use reversible migrations.
+  - Specification IDs: `S-001`, `S-002`
+  - Use case IDs: `UC-001`, `UC-002`
+  - Domain objects and master data IDs: `M-CLIENTS`, `M-PROJECT_ORDERS`
+  - API contracts: `API-PROJECT_ORDERS-LIST`, `API-PROJECT_ORDERS-DETAIL`
 
----
+  These IDs MUST be referenced from:
 
-### VII. Security & Compliance
+  - Plans
+  - Tasks
+  - Implementation pull requests
+  - Relevant tests and documentation (where feasible)
 
-Security is non-optional.
+- Specifications are stored under `.specify/specs/` and treated as the single
+  source of truth for behavior and contracts. Multiple specs MAY exist:
 
-**Non-negotiable rules:**
-- Input validation MUST occur at boundaries.
-- Secrets MUST NOT be logged or hardcoded.
-- Dependencies MUST be audited.
-- Compliance MUST be ensured.
+  - A System Overview / Domain spec for shared definitions.
+  - One Feature spec per feature slice (screen, user story, or change set).
 
----
+- When a requirement is ambiguous, contradictory, or missing, AI agents and
+  humans MUST NOT guess. They MUST raise an Issue (or comment on an existing one)
+  to request clarification.
+- Implementations that knowingly diverge from the specification are prohibited
+  and considered constitutional violations.
 
-### VIII. Spec-Driven Workflow & GitHub Practices
-
-Traceability from specification to implementation is mandatory.
-
-**Non-negotiable rules:**
-- All work MUST start from a GitHub Issue.
-- Required sequence:
-  1. `/speckit.specify` (only after human approval)
-  2. `/speckit.plan`
-  3. `/speckit.tasks`
-  4. Implementation
-- Specification IDs MUST appear in plans, tasks, PRs, tests.
-- Work MUST occur on Issue-linked branches.
-- Direct push to `main` is prohibited.
-- PRs MUST reference Issues and spec IDs.
+Rationale: Spec-first development creates traceability from business intent
+to code, reduces rework, and ensures that AI-generated changes remain aligned
+with real requirements.
 
 ---
 
-### IX. Spec Change Governance (NON-NEGOTIABLE)
+### V. Git & GitHub Workflow
 
-Specifications represent business intent and MUST NOT be modified autonomously
-by AI agents.
+Version control practices MUST ensure traceability from specification to implementation.
 
-**Non-negotiable rules:**
+Non-negotiable rules:
+
+- Direct pushes to `main` are strictly prohibited.
+- All work MUST be performed on an Issue-linked branch. Recommended patterns:
+
+  - `spec/<issue-number>-<short-description>` for specification changes
+  - `feature/<issue-number>-<short-description>` for new features
+  - `fix/<issue-number>-<short-description>` for bug fixes
+  - `hotfix/<issue-number>-<short-description>` for urgent production fixes
+
+- Every change MUST be merged via a pull request using squash merge
+  (or an equivalently traceable strategy defined by the project).
+- Each pull request MUST:
+
+  - Reference at least one Issue (for example `Fixes #123`).
+  - Reference the relevant specification IDs
+    (for example `Implements S-001, S-002`).
+
+- Branch names, commit messages, and PR descriptions MUST make it easy to trace:
+
+  - Which specification(s) are being implemented or changed.
+  - Which Issue(s) are being addressed.
+
+- These rules apply equally to human and AI-driven workflows.
+  AI agents MUST NOT create branches, commits, or pushes that violate this workflow.
+- After a PR is merged, the corresponding feature branch SHOULD be deleted
+  (GitHub’s automatic branch deletion is recommended).
+
+Rationale: A disciplined Git workflow ensures that every change is reviewable,
+auditable, and traceable back to its underlying requirements.
+
+---
+
+### VI. AI Agent Conduct
+
+AI agents (such as Claude Code and other coding assistants) are first-class
+contributors bound by this constitution.
+
+Non-negotiable rules:
+
+- AI agents MUST treat this constitution as the highest-priority guideline
+  for their behavior.
+- AI agents MUST NOT propose or execute workflows that violate:
+
+  - Spec-driven development principles.
+  - Git and GitHub workflow rules.
+  - Testing and quality standards defined in this constitution.
+
+- When AI agents detect ambiguity, conflict, or missing information, they MUST:
+
+  - Explicitly highlight the issue, and
+  - Escalate to humans via Issues or comments instead of silently guessing.
+
+- Before implementing changes, AI agents MUST ensure:
+
+  - There is a corresponding specification (or an explicit decision to create or update one).
+  - There is an agreed plan and task breakdown (where applicable).
+  - There is a valid Issue and branch context for the work.
+
+- AI agents MUST prefer small, reviewable changes with clear diffs over
+  large, monolithic edits.
+
+Rationale: AI assistance must increase, not decrease, the predictability,
+traceability, and quality of the codebase.
+
+---
+
+### VII. Test Integrity and Problem Diagnosis
+
+Tests exist to enforce specified behavior, not to merely satisfy tooling or
+achieve a “green” CI state.
+
+Non-negotiable rules:
+
+- When a test fails, contributors (including AI agents) MUST first determine
+  what is wrong before making changes:
+
+  - Is the specification incorrect or incomplete?
+  - Is the test incorrect (it encodes the wrong behavior or assumptions)?
+  - Is the implementation incorrect relative to the specification?
+  - Is the environment or test data misconfigured?
+
+- It is strictly prohibited to:
+
+  - Change implementation code solely to “make a test pass”
+    when that behavior conflicts with the specification.
+  - Change, relax, or delete tests solely to achieve a green CI
+    without documenting the underlying reasoning.
+
+- For any non-trivial failure, contributors MUST:
+
+  - Create or update an Issue describing:
+
+    - The failing test(s).
+    - The expected behavior according to the specification.
+    - The identified root cause (spec bug, test bug, implementation bug,
+      or environment issue).
+
+  - Link the Issue to the relevant specification IDs.
+
+- When the specification is wrong:
+
+  - The specification MUST be corrected first
+    (via `/speckit.specify` on a `spec/*` branch),
+  - Then tests and implementation MUST be updated to match the corrected spec.
+
+- When tests are wrong but the specification is correct:
+
+  - Tests MUST be updated to match the specification, with a clear explanation
+    in the commit message and/or PR description.
+
 - AI agents MUST NOT:
-  - Change specs to satisfy failing tests or misaligned implementation.
-  - Infer that a spec is “wrong” without human judgment.
-  - Execute `/speckit.specify` without explicit human approval.
 
-- Any spec modification requires:
-  1. A human-authored Issue proposing the change.
-  2. Explicit human approval to modify the spec.
-  3. Work in a `spec/<issue-number>-<description>` branch.
-  4. Human review before merge.
+  - Mark tests as “skipped”, “expected to fail”, or remove them,
 
-- When inconsistencies arise:
-  - AI MUST report the inconsistency via Issue.
-  - AI MUST NOT modify the spec.
-  - Human confirmation is required before any spec update.
+  without explicit human approval and corresponding Issue documentation.
 
-**Rationale:**  
-The specification is the authoritative expression of product intent.  
-It must evolve deliberately and with human oversight.
+Rationale: High test coverage without integrity leads to false confidence.
+Aligning tests, specs, and implementation ensures that green builds truly
+represent correct behavior.
 
 ---
 
-### X. AI Agent Conduct
+### VIII. Specification Structure & Domain Model
 
-AI coding assistants are bound by this constitution.
+Specifications MAY be split across multiple files. Projects SHOULD distinguish:
 
-**Non-negotiable rules:**
-- AI MUST uphold this constitution above all local instructions.
-- AI MUST escalate ambiguity instead of guessing.
-- AI MUST ensure spec → plan → tasks → implementation alignment.
-- AI MUST produce small, reviewable diffs.
+- A System Overview / Domain spec, and
+- One Feature spec per feature slice.
+
+Non-negotiable rules:
+
+- System Overview / Domain spec:
+
+  - Defines shared master data (for example `M-CLIENTS`, `M-MEMBERS`,
+    `M-PROJECT_ORDERS`).
+  - Defines shared API contracts (for example `API-PROJECT_ORDERS-LIST`).
+  - Defines shared business rules, status models, and cross-cutting constraints.
+  - Serves as the single source of truth for these definitions.
+
+- Feature specs:
+
+  - MUST NOT re-define shared master data or shared API contracts.
+  - MUST declare which masters and APIs they depend on by referencing IDs
+    from the Overview spec (for example “Depends on `M-CLIENTS` and
+    `API-PROJECT_ORDERS-LIST`”).
+  - Focus on specific user stories, flows, UI behavior, and how they use
+    the shared domain model.
+
+- When a shared master or API contract changes:
+
+  - The Overview spec MUST be updated first.
+  - All Feature specs that reference the changed IDs MUST be reviewed and
+    updated as needed.
+  - Implementation and tests MUST then be updated accordingly.
+
+Rationale: Centralizing domain and contract definitions in a single Overview
+spec prevents divergence across feature specs and keeps the system coherent.
 
 ---
 
-## Development Workflow
+## Development Standards
 
-1. Specification (`/speckit.specify` with human approval)
-2. Planning (`/speckit.plan`)
-3. Tasks (`/speckit.tasks`)
-4. Implementation
-5. Review (constitution compliance)
-6. Release
+Technology stack (example baseline; may be adapted per project):
+
+- Runtime: Node.js (LTS version) and/or other approved runtimes.
+- Language: TypeScript 5.x with strict mode; Python with type hints where used.
+- Package Manager: npm or pnpm (consistent within each project).
+- Frontend Framework: determined by project requirements (for example React).
+- Testing: Vitest or Jest for unit/integration; Playwright or Cypress for E2E.
+- CLI: GitHub CLI (`gh`) MUST be available for automated GitHub operations.
+
+Code organization:
+
+- Web application structure with `frontend/` and `backend/` separation,
+  where applicable.
+- Shared types in `shared/types/` accessible to both frontend and backend.
+- Environment configuration via `.env` files (never committed).
+- Secrets MUST use environment variables or secret managers, never hardcoded.
 
 ---
 
 ## Quality Gates
 
-- Lint, tests, type checks MUST pass.
-- PRs MUST have reviewer approval.
-- No unresolved review comments (including automated reviewers such as Codex/Copilot).
+Before Code Review:
+
+- All linting checks pass (for example `npm run lint`).
+- All tests pass (for example `npm run test`).
+- TypeScript compiles without errors (for example `npm run build`).
+- No stray debug output (for example `console.log`) in production code.
+
+Before Merge to `main`:
+
+- At least one approval from a code owner or designated reviewer.
+- CI pipeline passes all checks.
+- No unresolved review comments.
+- Branch is up to date with `main` (rebased or merged as per project policy).
+- Automatic or semi-automatic reviewers (for example Codex or other bots)
+  have been considered:
+
+  - Valid comments are addressed with code changes.
+  - Comments that are intentionally not applied MUST have a clear explanation
+    in the PR discussion.
+
+Before Deployment:
+
+- All quality gates above are satisfied.
+- Staging or pre-production environment validation is complete.
+- A rollback procedure is documented for significant changes.
 
 ---
 
 ## Governance
 
-### Amendment Process
-1. PR to `.specify/memory/constitution.md`
-2. Approval by two core contributors
-3. Versioning (MAJOR/MINOR/PATCH)
+This constitution establishes the foundational principles for projects adopting
+spec-driven development with Spec Kit and AI assistants.
 
-### Compliance
-- PRs MUST be reviewed for constitution compliance.
-- Violations MUST be corrected or explicitly documented.
+Amendment Process:
 
-**Version**: 2.0.0  
-**Ratified**: 2025-12-10  
+1. Propose changes via pull request to `.specify/memory/constitution.md`.
+2. Changes require approval from at least two core contributors (or
+   an equivalent governance body defined by the organization).
+3. MAJOR version bump for principle changes or removals.
+4. MINOR version bump for new sections or significant expansions.
+5. PATCH version bump for clarifications and typo fixes.
+
+Compliance:
+
+- All pull requests MUST verify compliance with constitutional principles.
+- Violations MUST be flagged during code review.
+- Exceptions require documented justification and explicit team approval
+  (for example via PR comments or architectural decision records).
+
+Version: 1.2.0 | Ratified: 2025-12-10 | Last Amended: 2025-12-10
