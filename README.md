@@ -107,6 +107,7 @@ Claude Code などの AI エージェントは、以下の原則に従います�
 - [Claude Code](https://claude.com/claude-code) または互換 AI コーディングアシスタント
 - Git
 - GitHub アカウント
+- GitHub CLI
 
 ## 推奨 MCP サーバー
 
