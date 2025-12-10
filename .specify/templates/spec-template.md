@@ -1,18 +1,27 @@
 # Feature Specification: [FEATURE NAME]
 
+**Spec ID**: `S-###`  
+**Issue**: `#<issue-number>`  
 **Feature Branch**: `[###-feature-name]`  
 **Created**: [DATE]  
-**Status**: Draft  
+**Status**: Draft | In Review | Approved  
 **Input**: User description: "$ARGUMENTS"
+
+> **Traceability**: This Spec ID MUST be referenced in:
+> - plan.md (Implementation Plan),
+> - tasks.md (Tasks),
+> - related tests (where practical),
+> - pull requests and Issues that implement or change this behavior.
 
 ## User Scenarios & Testing *(mandatory)*
 
 <!--
-  IMPORTANT: User stories should be PRIORITIZED as user journeys ordered by importance.
-  Each user story/journey must be INDEPENDENTLY TESTABLE - meaning if you implement just ONE of them,
-  you should still have a viable MVP (Minimum Viable Product) that delivers value.
+  IMPORTANT:
+  - User stories should be PRIORITIZED as user journeys ordered by importance.
+  - Each user story/journey MUST be INDEPENDENTLY TESTABLE.
+  - If you implement just ONE P1 story, you should have a viable MVP that delivers value.
   
-  Assign priorities (P1, P2, P3, etc.) to each story, where P1 is the most critical.
+  Assign priorities (P1, P2, P3, etc.), where P1 is the most critical.
   Think of each story as a standalone slice of functionality that can be:
   - Developed independently
   - Tested independently
@@ -26,7 +35,7 @@
 
 **Why this priority**: [Explain the value and why it has this priority level]
 
-**Independent Test**: [Describe how this can be tested independently - e.g., "Can be fully tested by [specific action] and delivers [specific value]"]
+**Independent Test**: [Describe how this can be tested independently – e.g., "User can complete X end-to-end and obtain Y outcome"]
 
 **Acceptance Scenarios**:
 
@@ -68,48 +77,56 @@
 ### Edge Cases
 
 <!--
-  ACTION REQUIRED: The content in this section represents placeholders.
-  Fill them out with the right edge cases.
+  ACTION REQUIRED: Capture important edge cases and error scenarios.
 -->
 
 - What happens when [boundary condition]?
-- How does system handle [error scenario]?
+- How does the system handle [error scenario]?
+- What should happen when [concurrency / race / offline scenario]?
 
 ## Requirements *(mandatory)*
 
 <!--
-  ACTION REQUIRED: The content in this section represents placeholders.
-  Fill them out with the right functional requirements.
+  ACTION REQUIRED: Define functional requirements that directly support
+  the user stories and acceptance scenarios above.
 -->
 
 ### Functional Requirements
 
-- **FR-001**: System MUST [specific capability, e.g., "allow users to create accounts"]
-- **FR-002**: System MUST [specific capability, e.g., "validate email addresses"]  
-- **FR-003**: Users MUST be able to [key interaction, e.g., "reset their password"]
-- **FR-004**: System MUST [data requirement, e.g., "persist user preferences"]
-- **FR-005**: System MUST [behavior, e.g., "log all security events"]
+- **FR-001**: System MUST [specific capability, e.g., "allow users to create accounts"].
+- **FR-002**: System MUST [specific capability, e.g., "validate email addresses"].  
+- **FR-003**: Users MUST be able to [key interaction, e.g., "reset their password"].
+- **FR-004**: System MUST [data requirement, e.g., "persist user preferences"].
+- **FR-005**: System MUST [behavior, e.g., "log all security-relevant events"].
 
 *Example of marking unclear requirements:*
 
-- **FR-006**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
-- **FR-007**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
+- **FR-006**: System MUST authenticate users via
+  [NEEDS CLARIFICATION: auth method not specified – email/password, SSO, OAuth?].
+- **FR-007**: System MUST retain user data for
+  [NEEDS CLARIFICATION: retention period not specified].
+
+> When a requirement is marked `NEEDS CLARIFICATION`, an Issue SHOULD be created
+> or updated to resolve it. AI agents MUST NOT guess; they MUST escalate.
 
 ### Key Entities *(include if feature involves data)*
 
-- **[Entity 1]**: [What it represents, key attributes without implementation]
-- **[Entity 2]**: [What it represents, relationships to other entities]
+- **[Entity 1]**: [What it represents, key attributes without implementation].
+- **[Entity 2]**: [What it represents, relationships to other entities].
 
 ## Success Criteria *(mandatory)*
 
 <!--
   ACTION REQUIRED: Define measurable success criteria.
-  These must be technology-agnostic and measurable.
+  These must be technology-agnostic, observable, and testable.
 -->
 
 ### Measurable Outcomes
 
-- **SC-001**: [Measurable metric, e.g., "Users can complete account creation in under 2 minutes"]
-- **SC-002**: [Measurable metric, e.g., "System handles 1000 concurrent users without degradation"]
-- **SC-003**: [User satisfaction metric, e.g., "90% of users successfully complete primary task on first attempt"]
-- **SC-004**: [Business metric, e.g., "Reduce support tickets related to [X] by 50%"]
+- **SC-001**: [Measurable metric, e.g., "Users can complete account creation in under 2 minutes"].
+- **SC-002**: [Measurable metric, e.g., "System handles 1000 concurrent users without degradation"].
+- **SC-003**: [User satisfaction metric, e.g., "90% of users successfully complete primary task on first attempt"].
+- **SC-004**: [Business metric, e.g., "Reduce support tickets related to [X] by 50%"].
+
+> Each measurable outcome SHOULD have one or more tests or monitoring checks
+> that can be used to verify it in CI, staging, or production.
