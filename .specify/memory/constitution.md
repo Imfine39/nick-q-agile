@@ -220,7 +220,7 @@ AI coding assistants are bound by this constitution.
 
 - Lint, tests, type checks MUST pass.
 - PRs MUST have reviewer approval.
-- No unresolved comments before merge.
+- No unresolved review comments (including automated reviewers such as Codex/Copilot).
 
 ---
 
