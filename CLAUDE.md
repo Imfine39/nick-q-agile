@@ -174,6 +174,7 @@ Claude は以下を行ってはならない：
 # 4. MCP（Model Context Protocol）活用ガイド
 
 Claude は MCP サーバを積極活用すること。
+serenaが利用できない場合はオンボーディング、もしくはアクティベートを試すこと。
 
 ## 4.1 MCP 一覧
 
