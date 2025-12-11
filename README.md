@@ -9,8 +9,8 @@ AI コーディングアシスタント（Claude Code 等）と組み合わせ�
 
 ## 特徴
 
-- Spec-First  
-  すべての機能開発は Spec Kit による仕様書（spec.md）から始まります。
+- Spec-First
+  すべての機能開発は仕様書（spec.md）から始まります。
 - Overview + Feature Spec 方式  
   共通マスタ/API は Overview に一元管理し、Feature Spec はそれを参照するだけにします。
 - Test-First / Test-Integrity  
