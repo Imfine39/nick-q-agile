@@ -527,4 +527,4 @@ Compliance:
 - Exceptions require documented justification and explicit team approval
   (for example via PR comments or architectural decision records).
 
-Version: 1.2.0 | Ratified: 2025-12-10 | Last Amended: 2025-12-10
+Version: 1.3.0 | Ratified: 2025-12-10 | Last Amended: 2025-12-11

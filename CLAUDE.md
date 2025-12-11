@@ -19,11 +19,11 @@
 
 - 必須: Git / GitHub アカウント / GitHub CLI (`gh`)
 - ランタイム: Node.js / パッケージマネージャ（npm/pnpm/yarn。プロジェクト方針に合わせる）
-- MCP (Claude Code 例):  
-  - `serene`: プロジェクト構造・ファイル操作  
-  - `context7`: ライブラリ/フレームワークのドキュメント検索  
+- MCP (Claude Code 例):
+  - `serena`: プロジェクト構造・ファイル操作
+  - `context7`: ライブラリ/フレームワークのドキュメント検索
   - `playwright` (任意): ブラウザ自動化・E2E 補助
-- serenaが使えない場合はonboardかactivateを実施してください。
+- serena が使えない場合は onboard か activate を実施してください。
 - Python を使う作業では仮想環境を必ず有効化してから変更提案する（例: `.\venv\Scripts\activate`）。
 
 
@@ -46,6 +46,7 @@
 5. 実装。タスク外の変更は行わない。仕様・plan とずれたら先に更新を提案。
 6. テストを実行し、結果を記録。CI で落ちた場合は原因（spec / test / implementation / environment）を分類して Issue に残す。
 7. PR 作成は `node .specify/scripts/pr.js --title ... --body ...`（/speckit.pr）。デフォルトで `spec-lint` を実行。
+8. 実装中に発見した制約や新要件は `/speckit.feedback` で Spec に反映。
 
 ---
 
@@ -85,7 +86,16 @@
 
 ---
 
-## 8. このガイドの更新
+## 8. 補助ツールとガイド
+
+- **プロジェクト健全性チェック**: `node .specify/scripts/spec-metrics.js` でスコアと問題点を確認。
+- **エラーリカバリー**: `.specify/guides/error-recovery.md` に Spec/Plan/実装/PR のエラー対処手順。
+- **並行開発**: `.specify/guides/parallel-development.md` に Feature 間依存や Overview 変更調整のベストプラクティス。
+- **変更サイズ分類**: Trivial/Small/Medium/Large/Emergency に応じてフローが異なる（constitution.md 参照）。
+
+---
+
+## 9. このガイドの更新
 
 - AI 側の行動原則を変える場合は、必ず人間と合意し、PR を通して `CLAUDE.md` を更新する。
 - 大きな変更は Constitution と同様にレビューと承認を経て反映する。

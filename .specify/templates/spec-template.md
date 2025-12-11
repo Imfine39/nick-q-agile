@@ -3,7 +3,7 @@
 Spec Type: [Overview | Feature]  
 Spec ID(s): [S-OVERVIEW-001, S-LEADS-001, etc.]  
 Created: [DATE]  
-Status: [Draft | In Review | Approved]  
+Status: [Draft | In Review | Approved | Implementing | Completed | Deprecated | Superseded]  
 Author: [OWNER]  
 Related Issue(s): [#123, #124]  
 Related Plan(s): [plan-id or link]  
