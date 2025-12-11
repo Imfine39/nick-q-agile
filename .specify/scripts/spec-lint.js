@@ -8,6 +8,10 @@
  *  - Unique Spec IDs and UC IDs
  *  - Feature specs only reference masters/APIs defined in Overview specs
  *  - Warns on unused masters/APIs defined in Overview
+ *  - Feature spec quality (UC presence, required sections)
+ *  - Deprecated/Superseded specs have required metadata
+ *  - Plan/Tasks alignment with spec IDs
+ *  - Overview freshness vs Feature specs
  */
 
 const fs = require('fs');
@@ -15,7 +19,15 @@ const path = require('path');
 
 const root = process.cwd();
 const specsRoot = path.join(root, '.specify', 'specs');
-const allowedStatus = new Set(['DRAFT', 'IN REVIEW', 'APPROVED']);
+const allowedStatus = new Set([
+  'DRAFT',
+  'IN REVIEW',
+  'APPROVED',
+  'IMPLEMENTING',
+  'COMPLETED',
+  'DEPRECATED',
+  'SUPERSEDED',
+]);
 
 const errors = [];
 const warnings = [];
@@ -231,6 +243,112 @@ for (const [id, meta] of overviewFeatureRows.entries()) {
     }
   }
 }
+
+// ============================================================================
+// Extended Quality Checks
+// ============================================================================
+
+// Check Feature spec quality (UC presence)
+for (const spec of featureSpecs) {
+  const content = fileContentCache.get(spec.file);
+
+  // Skip deprecated/superseded specs
+  if (spec.status === 'DEPRECATED' || spec.status === 'SUPERSEDED') continue;
+
+  // Check for User Stories section
+  if (!content.includes('## 6. User Stories') && !content.includes('## 6. User Stories / Use Cases')) {
+    warnings.push(`Feature ${spec.relFile} is missing "User Stories" section (## 6.)`);
+  }
+
+  // Check for at least one UC ID in non-draft specs
+  if (spec.ucIds.length === 0 && spec.status !== 'DRAFT') {
+    warnings.push(`Feature ${spec.relFile} has no UC IDs defined (status: ${spec.status})`);
+  }
+
+  // Check for Functional Requirements section in approved+ specs
+  if (['APPROVED', 'IMPLEMENTING', 'COMPLETED'].includes(spec.status)) {
+    if (!content.includes('## 7. Functional Requirements')) {
+      warnings.push(`Feature ${spec.relFile} is missing "Functional Requirements" section (## 7.) for status ${spec.status}`);
+    }
+  }
+}
+
+// Check Deprecated/Superseded specs have required metadata
+for (const spec of specs) {
+  const content = fileContentCache.get(spec.file);
+
+  if (spec.status === 'SUPERSEDED') {
+    // Must have "Superseded by:" reference
+    if (!content.match(/superseded\s+by[:\s]+S-[A-Z0-9_-]+/i)) {
+      errors.push(`Superseded spec ${spec.relFile} must reference successor spec ID (e.g., "Superseded by: S-XXX-001")`);
+    }
+  }
+
+  if (spec.status === 'DEPRECATED') {
+    // Should have deprecation reason in changelog or notes
+    if (!content.match(/deprecat/i) || content.match(/deprecat/gi).length < 2) {
+      warnings.push(`Deprecated spec ${spec.relFile} should document deprecation reason`);
+    }
+  }
+}
+
+// Check Plan/Tasks alignment with spec
+for (const spec of specs) {
+  const specDir = path.dirname(spec.file);
+  const planPath = path.join(specDir, 'plan.md');
+  const tasksPath = path.join(specDir, 'tasks.md');
+
+  // Check plan.md references spec IDs
+  if (fs.existsSync(planPath)) {
+    const planContent = fs.readFileSync(planPath, 'utf8');
+    const planSpecRefs = matchTokens(planContent, /\bS-[A-Z0-9_-]+\b/gi);
+
+    // Warn if plan exists but doesn't reference any of the spec's IDs
+    const hasMatchingRef = spec.specIds.some((id) => planSpecRefs.includes(id));
+    if (!hasMatchingRef && spec.specIds.length > 0) {
+      warnings.push(`Plan at ${rel(planPath)} does not reference any IDs from ${spec.relFile}`);
+    }
+  }
+
+  // Check tasks.md references spec IDs or UC IDs
+  if (fs.existsSync(tasksPath)) {
+    const tasksContent = fs.readFileSync(tasksPath, 'utf8');
+    const tasksSpecRefs = matchTokens(tasksContent, /\bS-[A-Z0-9_-]+\b/gi);
+    const tasksUcRefs = matchTokens(tasksContent, /\bUC-[A-Z0-9_-]+\b/gi);
+
+    // Warn if tasks exist but don't reference spec IDs or UCs
+    const hasSpecRef = spec.specIds.some((id) => tasksSpecRefs.includes(id));
+    const hasUcRef = spec.ucIds.some((uc) => tasksUcRefs.includes(uc));
+    if (!hasSpecRef && !hasUcRef && (spec.specIds.length > 0 || spec.ucIds.length > 0)) {
+      warnings.push(`Tasks at ${rel(tasksPath)} do not reference IDs from ${spec.relFile}`);
+    }
+  }
+}
+
+// Check Overview freshness vs Feature specs
+if (overviewSpecs.length > 0) {
+  const overviewMtimes = overviewSpecs.map((s) => fs.statSync(s.file).mtime.getTime());
+  const latestOverviewMtime = Math.max(...overviewMtimes);
+
+  for (const spec of featureSpecs) {
+    // Skip deprecated/superseded/completed specs
+    if (['DEPRECATED', 'SUPERSEDED', 'COMPLETED'].includes(spec.status)) continue;
+
+    const featureMtime = fs.statSync(spec.file).mtime.getTime();
+    if (featureMtime < latestOverviewMtime) {
+      const daysDiff = Math.floor((latestOverviewMtime - featureMtime) / (1000 * 60 * 60 * 24));
+      if (daysDiff > 7) {
+        warnings.push(
+          `Feature ${spec.relFile} was last modified ${daysDiff} days before the latest Overview update; consider reviewing for consistency`
+        );
+      }
+    }
+  }
+}
+
+// ============================================================================
+// Output Results
+// ============================================================================
 
 if (errors.length) {
   console.error('Spec lint FAILED with errors:');

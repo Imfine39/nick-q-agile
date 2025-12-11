@@ -40,7 +40,8 @@ AI コーディングアシスタント（Claude Code 等）と組み合わせ�
     │       ├── speckit.constitution.md   # 憲法確認
     │       ├── speckit.pr.md             # PR 作成ラッパー
     │       ├── speckit.scaffold.md       # spec scaffold ガイド
-    │       └── speckit.taskstoissues.md  # タスク→Issue変換
+    │       ├── speckit.taskstoissues.md  # タスク→Issue変換
+    │       └── speckit.feedback.md       # 実装→Specフィードバック
     ├── .specify/
     │   ├── memory/
     │   │   └── constitution.md       # Engineering Constitution（憲法）
@@ -50,10 +51,14 @@ AI コーディングアシスタント（Claude Code 等）と組み合わせ�
     │   │   ├── tasks-template.md
     │   │   ├── checklist-template.md
     │   │   └── agent-file-template.md
+    │   ├── guides/                   # ガイドドキュメント
+    │   │   ├── error-recovery.md         # エラーリカバリー手順
+    │   │   └── parallel-development.md   # 並行開発ガイド
     │   └── scripts/                  # ユーティリティスクリプト
     │       ├── branch.js                 # ブランチ作成/採番
     │       ├── scaffold-spec.js          # Overview/Feature spec scaffold + Feature index自動追記
-    │       ├── spec-lint.js              # Overview/Feature 整合性lint
+    │       ├── spec-lint.js              # Overview/Feature 整合性lint（品質チェック含む）
+    │       ├── spec-metrics.js           # プロジェクト健全性メトリクス
     │       └── pr.js                     # PR作成ラッパー（spec-lint実行込み）
     └── CLAUDE.md                     # AI 向け開発ガイド
 
@@ -70,11 +75,11 @@ AI コーディングアシスタント（Claude Code 等）と組み合わせ�
 
 推奨 MCP サーバー（Claude Code 用）:
 
-| MCP       | 用途                                   | 必須度   |
-|----------|----------------------------------------|----------|
-| serene   | プロジェクト探索・ファイル編集         | 必須     |
-| context7 | ライブラリドキュメント検索             | 必須     |
-| playwright | E2E テスト自動化                     | 推奨     |
+| MCP       | 用途                                   | 必須度   |コマンド|
+|----------|----------------------------------------|----------|---------
+| serena   | プロジェクト探索・ファイル編集         | 必須     |claude mcp add serena -- uvx --from git+https://github.com/oraios/serena serena start-mcp-server --context claude-code --project "$(pwd)"|
+| context7 | ライブラリドキュメント検索             | 必須     |claude mcp add context7 -s project -- npx -y @upstash/context7-mcp|
+| playwright | E2E テスト自動化                     | 推奨     |claude mcp add playwright -s project -- npx -y @playwright/mcp@latest|
 
 ---
 
@@ -119,9 +124,99 @@ AI コーディングアシスタント（Claude Code 等）と組み合わせ�
 5. `/speckit.tasks` で tasks.md 生成（UC単位で小さく、テスト先行タスクを含める）
 6. 実装: `/speckit.implement` または通常コーディング。タスク外の変更を混ぜない。
 7. テスト: 単体・結合・E2E。失敗時は spec/test/impl/env のどこが原因かを分類。
-8. PR 作成: `node .specify/scripts/pr.js --title "feat: ..." --body "Fixes #..\\nImplements S-...\\nTests: ..." --test "npm test"`  
+8. PR 作成: `node .specify/scripts/pr.js --title "feat: ..." --body "Fixes #..\\nImplements S-..." --test "npm test"`
    - spec-lint はデフォルト実行。`--test` で任意コマンドを実行し、失敗時はPR中断。
    - PR本文に Issue/Spec ID/テスト結果を必ず記載。
+   - 複数行の本文は `--body-file pr-body.md` でファイルから読み込み可能。
+
+---
+
+## チェックリストの活用
+
+`/speckit.checklist` を使うと、Feature 実装前・PR前・デプロイ前に確認すべき項目を自動生成できます。
+
+```bash
+# Feature ディレクトリで実行
+/speckit.checklist
+```
+
+生成されるチェックリストには以下が含まれます：
+- **Spec 整合性**: Overview/Feature の参照関係、UC/FR/SC の定義漏れ
+- **Plan 品質**: 技術設計・マイグレーション・ロールバック戦略
+- **Tasks カバレッジ**: UC ごとのタスク、テストタスクの有無
+- **Git/PR ワークフロー**: Issue 紐付け、ブランチ命名、PR 記載事項
+- **テスト整合性**: 仕様由来のテスト、CI を通すためだけの変更禁止
+- **AI 行動規範**: Serena/context7 の活用、曖昧点のエスカレーション
+
+主要マイルストーン（実装開始前、PR 作成前、デプロイ前）でチェックリストを確認することを推奨します。
+
+---
+
+## 実装フィードバック
+
+実装中に発見した技術的制約や新しい要件を Spec に反映するには `/speckit.feedback` を使用します。
+
+```bash
+# 技術的制約を記録
+/speckit.feedback constraint: APIレート制限により100件以上のバッチ更新は不可
+
+# 発見した要件を記録
+/speckit.feedback discovery: 削除前に確認ダイアログが必要（Specに未記載）
+
+# 設計判断を記録
+/speckit.feedback decision: 並行編集には楽観的ロックを採用
+```
+
+記録された内容は Spec の「Implementation Notes」セクションと Changelog に反映されます。
+重大な変更が必要な場合は Issue が作成されます。
+
+---
+
+## プロジェクト健全性メトリクス
+
+`spec-metrics.js` でプロジェクトの健全性を確認できます。
+
+```bash
+# 通常出力
+node .specify/scripts/spec-metrics.js
+
+# 詳細出力
+node .specify/scripts/spec-metrics.js --verbose
+
+# JSON出力（ツール連携用）
+node .specify/scripts/spec-metrics.js --json
+```
+
+出力内容：
+- **Overview**: マスタ/API数、最終更新日
+- **Features**: ステータス別の数、Plan/Tasks の有無
+- **Coverage**: UC/FR/SC の総数
+- **Health Score**: 0-100 のスコアと問題点
+
+---
+
+## 変更サイズ分類
+
+変更の規模に応じてワークフローが異なります（constitution.md 参照）：
+
+| サイズ | 例 | 必要なフロー |
+|--------|-----|-------------|
+| Trivial | タイポ修正、1行バグ修正 | PR のみ（Issue 推奨） |
+| Small | 単一UC内のバグ修正 | Issue + Spec Changelog 更新 |
+| Medium | 新規UC追加、複数ファイル変更 | Issue → Spec → Plan → Tasks |
+| Large | Overview 変更、アーキテクチャ変更 | 影響分析 + 完全フロー |
+| Emergency | セキュリティパッチ、本番障害対応 | 即時修正 → 48時間以内にSpec作成 |
+
+---
+
+## ガイドドキュメント
+
+`.specify/guides/` に運用ガイドがあります：
+
+- **error-recovery.md**: エラー発生時のリカバリー手順
+  - Spec の誤り、Plan の技術的制約、テスト失敗、PR リジェクト時の対応
+- **parallel-development.md**: 並行開発のベストプラクティス
+  - Feature 間依存関係の管理、Overview 変更の調整、マージ戦略
 
 ---
 

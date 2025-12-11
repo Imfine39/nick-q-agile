@@ -23,7 +23,9 @@
   - `serene`: プロジェクト構造・ファイル操作  
   - `context7`: ライブラリ/フレームワークのドキュメント検索  
   - `playwright` (任意): ブラウザ自動化・E2E 補助
+- serenaが使えない場合はonboardかactivateを実施してください。
 - Python を使う作業では仮想環境を必ず有効化してから変更提案する（例: `.\venv\Scripts\activate`）。
+
 
 ---
 

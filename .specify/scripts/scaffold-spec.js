@@ -75,7 +75,7 @@ function ensureFeatureTable(text) {
   const idx = text.indexOf(trace);
   if (idx === -1) return text;
   const insertAt = text.indexOf('\n', idx);
-  const table = `${marker}\n| ---------- | ----- | ---- | ------ |\n`;
+  const table = `\n${marker}\n| ---------- | ----- | ---- | ------ |\n`;
   return text.slice(0, insertAt + 1) + table + text.slice(insertAt + 1);
 }
 
@@ -83,7 +83,8 @@ function appendFeatureIndexRow(overviewPath, featureEntry) {
   let text = fs.readFileSync(overviewPath, 'utf8');
   text = ensureFeatureTable(text);
   if (!text.includes(featureEntry)) {
-    text = text.replace('| Feature ID | Title | Path | Status |', `| Feature ID | Title | Path | Status |\n${featureEntry}`);
+    const separator = '| ---------- | ----- | ---- | ------ |';
+    text = text.replace(separator, `${separator}\n${featureEntry}`);
   }
   fs.writeFileSync(overviewPath, text, 'utf8');
 }

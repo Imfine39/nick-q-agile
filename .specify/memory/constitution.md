@@ -1,26 +1,3 @@
-<!--
-================================================================================
-SYNC IMPACT REPORT
-================================================================================
-Version change: 1.0.0 -> 1.2.0 (MINOR - added explicit Overview/Feature structure and shared domain rules)
-
-Modified principles:
-  - Clarified spec-driven workflow (Overview + Feature spec structure)
-  - Clarified test integrity and test-change restrictions
-  - Added explicit rules for shared masters/API contracts
-
-Templates requiring updates:
-  - .specify/templates/spec-template.md
-  - .specify/templates/plan-template.md
-  - .specify/templates/tasks-template.md
-  - .specify/templates/checklist-template.md
-  - .specify/templates/agent-file-template.md
-
-Follow-up TODOs:
-  - Ensure new projects always start from an Overview spec
-================================================================================
--->
-
 # Engineering Constitution
 
 This constitution defines the foundational principles for projects that adopt
@@ -78,6 +55,57 @@ Non-negotiable rules:
 
 Rationale: Tests provide confidence for changes, prevent regressions, and
 document expected behavior.
+
+#### Test-Specification Linkage
+
+To ensure traceability between specifications and tests, the following
+conventions SHOULD be followed:
+
+**JSDoc/TSDoc annotations** (for TypeScript/JavaScript):
+
+```typescript
+/**
+ * @spec S-ORDERS-001
+ * @uc UC-001, UC-002
+ */
+describe('Order creation', () => {
+  /**
+   * @uc UC-001
+   * @fr FR-001
+   */
+  it('should create order with valid data', () => {
+    // test implementation
+  });
+});
+```
+
+**Python docstrings** (for pytest):
+
+```python
+class TestOrderCreation:
+    """
+    Spec: S-ORDERS-001
+    UC: UC-001, UC-002
+    """
+
+    def test_create_order_with_valid_data(self):
+        """
+        UC: UC-001
+        FR: FR-001
+        """
+        # test implementation
+```
+
+**Test file naming convention**:
+
+- `<feature>.spec.ts` or `<feature>.test.ts` for unit/integration tests
+- `<uc-id>.<feature>.e2e.ts` for E2E tests (e.g., `uc-001.order-creation.e2e.ts`)
+
+**Benefits**:
+
+- Enables automated coverage reports by UC/FR
+- Makes it easy to find tests when a spec changes
+- Documents the relationship between business requirements and test code
 
 ---
 
@@ -147,6 +175,60 @@ Non-negotiable rules:
 Rationale: Spec-first development creates traceability from business intent
 to code, reduces rework, and ensures that AI-generated changes remain aligned
 with real requirements.
+
+### Change Size Classification
+
+To balance rigor with agility, changes are classified by size. The required
+workflow varies accordingly:
+
+**Trivial** (Spec not required):
+
+- Typo fixes in comments, documentation, or UI text
+- Single-line bug fixes with obvious correctness
+- Dependency patch version updates (no breaking changes)
+- Code formatting or linting fixes
+
+For trivial changes: Issue recommended but not required; direct PR with clear
+description is acceptable.
+
+**Small** (Lightweight Spec):
+
+- Bug fixes affecting a single UC or FR
+- Minor enhancements within one existing feature
+- Adding validation or error handling to existing flows
+- Performance optimizations with no behavior change
+
+For small changes: Issue required; update the existing Spec's changelog section
+or add a brief note. Full Plan/Tasks optional but recommended for clarity.
+
+**Medium** (Standard Workflow):
+
+- New user stories (UC) or functional requirements (FR)
+- Changes spanning multiple files or components
+- New API endpoints or modifications to existing contracts
+- UI changes affecting user workflows
+
+For medium changes: Full Spec → Plan → Tasks workflow required.
+
+**Large** (Extended Workflow):
+
+- Changes to Overview spec (shared masters, APIs, domain rules)
+- Architectural changes affecting multiple features
+- Breaking changes to existing APIs or data models
+- Changes requiring coordination across teams
+
+For large changes: Impact analysis required; review meeting recommended;
+full Spec → Plan → Tasks workflow with explicit approval gates.
+
+**Emergency** (Post-hoc Spec):
+
+- Critical security patches
+- Production incident hotfixes
+- Time-sensitive regulatory compliance fixes
+
+For emergency changes: Immediate fix allowed on `hotfix/*` branch;
+Spec and documentation MUST be created within 48 hours of deployment;
+Issue MUST be created before or immediately after the fix.
 
 ---
 
@@ -323,6 +405,50 @@ Non-negotiable rules:
 
 Rationale: Centralizing domain and contract definitions in a single Overview
 spec prevents divergence across feature specs and keeps the system coherent.
+
+### Specification Lifecycle
+
+Each specification progresses through defined states. The `Status` field in
+the spec header MUST reflect the current state:
+
+| Status | Description | Allowed Actions |
+|--------|-------------|-----------------|
+| Draft | Initial creation, incomplete | Edit freely, request review |
+| In Review | Under review by stakeholders | Minor edits, address feedback |
+| Approved | Reviewed and approved for implementation | Implementation may begin |
+| Implementing | Active implementation in progress | Update with implementation notes |
+| Completed | Implementation finished and deployed | Reference only, no functional changes |
+| Deprecated | Superseded or no longer applicable | Reference only, document reason |
+| Superseded | Replaced by a newer spec | Must reference successor spec ID |
+
+State transitions:
+
+```
+Draft → In Review → Approved → Implementing → Completed
+                                    ↓
+                              Deprecated / Superseded
+```
+
+Rules for state transitions:
+
+- `Draft → In Review`: Author requests review; all required sections filled.
+- `In Review → Approved`: At least one reviewer approves; no blocking issues.
+- `Approved → Implementing`: Implementation branch created; tasks assigned.
+- `Implementing → Completed`: All tasks done; tests pass; PR merged to main.
+- `Any → Deprecated`: Document reason in spec; update Feature index.
+- `Any → Superseded`: Reference successor spec ID; update Feature index.
+
+Reopening a completed spec:
+
+- If changes are needed to a Completed spec, create a new Issue.
+- For minor updates: change status back to `In Review`, make changes, re-approve.
+- For significant changes: consider creating a new Feature spec instead.
+
+Archiving specs:
+
+- Deprecated and Superseded specs MAY be moved to `.specify/specs/_archive/`
+  after 6 months of inactivity.
+- Archived specs remain searchable for historical reference.
 
 ---
 

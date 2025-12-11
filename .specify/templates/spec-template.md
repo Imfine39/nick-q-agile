@@ -249,3 +249,27 @@ For Overview specs, maintain a Feature index table so Feature specs are discover
 
 | Feature ID | Title | Path | Status |
 | ---------- | ----- | ---- | ------ |
+
+---
+
+## 17. Changelog
+
+Record significant changes to this specification. For small changes (bug fixes,
+minor enhancements), add entries here instead of creating a new spec.
+
+| Date | Change Type | Description | Issue |
+|------|-------------|-------------|-------|
+| [DATE] | Created | Initial specification | #XXX |
+
+Change types: Created, Updated, Clarified, Extended, Deprecated, Superseded
+
+---
+
+## 18. Implementation Notes
+
+Notes discovered during implementation that may inform future changes or
+clarify the spec. This section is updated during the Implementing phase.
+
+- Technical constraints discovered:
+- Design decisions made during implementation:
+- Deviations from original spec (with justification):
