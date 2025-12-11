@@ -1,5 +1,5 @@
 ---
-description: Select an existing GitHub Issue and start the appropriate workflow (add or fix).
+description: Select an existing GitHub Issue (from backlog) and start the appropriate workflow.
 handoffs:
   - label: Start Feature (add)
     agent: speckit.add
@@ -13,66 +13,105 @@ handoffs:
 
 ## Purpose
 
-When issues already exist in GitHub (created by humans), use this command to:
-1. List all open issues
-2. Let human select which issue to work on
-3. AI determines if it's add (feature) or fix (bug) based on labels/content
-4. Automatically transitions to the appropriate workflow
+Select an existing Issue from the backlog and start development.
+Issues are typically created by:
+- `/speckit.bootstrap` (initial Feature batch)
+- `/speckit.propose-features` (additional Features)
+- Humans directly creating Issues in GitHub
 
 ## Steps
 
 1) **Fetch open issues**:
-   - Run: `gh issue list --state open --limit 20 --json number,title,labels,body`
+   - Run: `gh issue list --state open --limit 30 --json number,title,labels,body`
    - Parse the JSON response
 
-2) **Present issues to human**:
-   - Display numbered list with:
-     - Issue number
-     - Title
-     - Labels
-     - Brief summary (first 100 chars of body)
-   - Ask human to select by number or Issue ID
+2) **Categorize and display**:
 
-3) **Analyze selected issue**:
+   **Backlog Features** (label: `feature` + `backlog`):
+   ```
+   Backlog Features:
+     #2 [backlog] S-INVENTORY-001: 在庫一覧・検索
+     #3 [backlog] S-RECEIVING-001: 入荷処理
+     #4 [backlog] S-SHIPPING-001: 出荷処理
+   ```
+
+   **Backlog Bugs** (label: `bug` + `backlog`):
+   ```
+   Backlog Bugs:
+     #10 [backlog] ログイン時に特殊文字でエラー
+   ```
+
+   **In Progress** (label: `in-progress`):
+   ```
+   In Progress:
+     #5 [in-progress] S-STOCKTAKE-001: 棚卸し
+   ```
+
+   **Other Open Issues**:
+   ```
+   Other:
+     #15 タイポ修正
+   ```
+
+3) **Ask human to select**:
+   ```
+   どのIssueを選択しますか？ (番号を入力)
+   ```
+
+4) **Analyze selected issue**:
    - Check labels:
-     - `bug`, `fix`, `defect` → Bug fix workflow
-     - `feature`, `enhancement`, `story` → Feature workflow
-   - If no label, analyze title and body:
-     - Contains "bug", "error", "fix", "broken", "not working" → Bug fix
+     - `bug`, `fix`, `defect` → Bug fix workflow (`/speckit.fix`)
+     - `feature`, `enhancement` → Feature workflow (`/speckit.add`)
+   - If no clear label, analyze title and body:
+     - Contains "bug", "error", "fix", "broken" → Bug fix
      - Contains "add", "new", "feature", "implement" → Feature
    - If still unclear, ask human to confirm
 
-4) **Determine workflow**:
-   - Bug fix → Transition to `/speckit.fix #<issue>`
-   - Feature → Transition to `/speckit.add #<issue>`
-
-5) **Pre-check**:
-   - Verify no existing branch for this issue
-   - Check if spec already exists for this issue
-   - If branch/spec exists, ask human how to proceed:
-     - Continue existing work → Skip to `/speckit.plan` or `/speckit.implement`
-     - Start fresh → Warn about overwriting
+5) **Determine and start workflow**:
+   - Bug → `/speckit.fix #<num>`
+   - Feature → `/speckit.add #<num>`
 
 ## Output
 
-- List of open issues
-- Selected issue details
-- Determined workflow type (add/fix)
+- Categorized list of open Issues
+- Selected Issue details
+- Workflow type (add/fix)
 - Transition to appropriate command
 
-## Example Output
+## Example
 
 ```
-Open Issues:
+人間: /speckit.issue
 
-1. #45 [bug] Login fails with special characters
-2. #44 [feature] Add export to PDF functionality
-3. #43 [] Dashboard performance slow
+AI: === Open Issues ===
 
-Select issue number to work on: _
+    Backlog Features:
+      #2 [backlog] S-INVENTORY-001: 在庫一覧・検索
+      #3 [backlog] S-RECEIVING-001: 入荷処理
+      #4 [backlog] S-SHIPPING-001: 出荷処理
 
-You selected #44 "Add export to PDF functionality"
-Labels indicate this is a feature.
+    Backlog Bugs:
+      (なし)
 
-Starting feature workflow with /speckit.add #44...
+    In Progress:
+      #5 [in-progress] S-STOCKTAKE-001: 棚卸し
+
+    Other:
+      #15 READMEのタイポ修正
+
+    どのIssueを選択しますか？
+
+人間: 2
+
+AI: Issue #2 "S-INVENTORY-001: 在庫一覧・検索" を選択しました
+    ラベル: feature, backlog
+    → Feature workflow を開始します
+
+    /speckit.add #2 を実行します...
 ```
+
+## Notes
+
+- Issues with `in-progress` label are shown but will warn if selected
+- Closed issues are not shown by default
+- Use `gh issue list --state all` to see closed issues if needed

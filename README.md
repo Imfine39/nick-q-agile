@@ -152,40 +152,40 @@ AI コーディングアシスタント（Claude Code 等）と組み合わせ�
 
 AI: Overview Issue #1 を作成しました
     Branch spec/1-overview を作成しました
+    Overview Spec を作成しました
 
-    システム目的を分析中...
-
-    Overview Spec を作成しました:
-    - ドメイン: 在庫管理
-    - 共通マスタ: M-PRODUCTS, M-WAREHOUSES, M-SUPPLIERS
-    - 共通API: API-INVENTORY-LIST, API-INVENTORY-UPDATE
-
-    Feature 候補を提案します:
+    Feature候補:
     1. S-INVENTORY-001: 在庫一覧・検索
     2. S-RECEIVING-001: 入荷処理
     3. S-SHIPPING-001: 出荷処理
     4. S-STOCKTAKE-001: 棚卸し
 
-    Overview をレビューしてください。
-    Feature 候補を採用する場合は「OK」と伝えてください。
+    どのFeatureを採用しますか？ [全部/番号指定/なし]
 
-人間: OK、まず在庫一覧から始めよう
+人間: 全部
 
-AI: S-INVENTORY-001 の Feature Spec を作成します...
-    /speckit.add を実行して Feature 開発を開始します。
+AI: 4つのFeature Issueを作成しました:
+    #2 [feature][backlog] S-INVENTORY-001: 在庫一覧・検索
+    #3 [feature][backlog] S-RECEIVING-001: 入荷処理
+    #4 [feature][backlog] S-SHIPPING-001: 出荷処理
+    #5 [feature][backlog] S-STOCKTAKE-001: 棚卸し
+
+    Spec をscaffoldしました（Feature index も更新済み）
+
+    どのFeatureから始めますか？
+
+人間: #2
+
+AI: /speckit.add #2 を実行します...
+    ラベルを backlog → in-progress に更新
+    Branch feature/2-inventory を作成
+    Spec を詳細化中...
 ```
 
-**AIが自動でやること:**
-- Overview Issue 作成
-- ブランチ作成
-- Overview Spec 生成（マスタ/API定義含む）
-- Feature 候補の提案と scaffold
-- spec-lint 実行
-
-**人間がやること:**
-- システム目的を伝える
-- Overview と Feature 候補をレビュー
-- どの Feature から始めるか決定
+**ポイント:**
+- 採用したFeatureは **一括でGitHub Issue化** される（`backlog`ラベル付き）
+- プロジェクト全体のバックログがGitHub上で可視化
+- `/speckit.issue` で後からbacklogのFeatureを選んで開発開始可能
 
 ※ Overview が「唯一の真実」。すべての Feature はここに定義されたマスタ/APIを参照し、Feature index表 `| Feature ID | Title | Path | Status |` に必ず登録される。
 
@@ -193,63 +193,62 @@ AI: S-INVENTORY-001 の Feature Spec を作成します...
 
 ## Feature 追加の具体例
 
-### 方法1: 新規機能を追加（推奨）
+### 方法1: 複数Feature を一括提案・Issue化
 
 ```
-人間: /speckit.add ユーザーがPDFエクスポートできる機能を追加したい
+人間: /speckit.propose-features レポート機能とエクスポート機能を追加したい
+
+AI: Overview S-OVERVIEW-001 を読み込みました
+
+    Feature候補:
+    1. S-REPORTS-001: レポート出力
+    2. S-EXPORT-001: データエクスポート
+
+    どのFeatureを採用しますか？ [全部/番号指定/なし]
+
+人間: 全部
+
+AI: 2つのFeature Issueを作成しました:
+    #10 [feature][backlog] S-REPORTS-001: レポート出力
+    #11 [feature][backlog] S-EXPORT-001: データエクスポート
+
+    どのFeatureから始めますか？ (後で /speckit.issue でも選択可能)
+
+人間: #10
+
+AI: /speckit.add #10 を実行します...
+```
+
+### 方法2: 単一Feature を直接追加
+
+```
+人間: /speckit.add PDFエクスポート機能
 
 AI: Issue #45 を作成しました
     Branch feature/45-pdf-export を作成しました
-    Spec を作成しました: .specify/specs/s-pdf-export-001/spec.md
-
-    [Spec概要を表示]
-    - UC-001: PDFエクスポート実行
-    - UC-002: エクスポート形式選択
-    - FR-001〜FR-005: [要件一覧]
-
-    Specをレビューしてください。問題なければ「OK」と伝えてください。
-
-人間: OK
-
-AI: /speckit.plan を実行します...
-    [Plan/Tasks作成完了]
-
-    Plan/Tasksを確認してください。
-
-人間: 進めて
-
-AI: /speckit.implement を実行します...
-    [実装中...]
-
-    発見: APIレート制限により100件以上のバッチは不可
-    これをSpecに記録しますか？ [Yes/No]
-
-人間: Yes
-
-AI: feedbackを記録しました。実装を継続します...
-    [実装完了]
-
-    /speckit.pr を実行します...
-    PR #46 を作成しました: https://github.com/...
-
-人間: [PRをレビュー・マージ]
+    Spec を作成しました
+    ...（5ステップフローへ）
 ```
 
-### 方法2: 既存Issueから開始
+### 方法3: backlogから選択して開始
 
 ```
 人間: /speckit.issue
 
-AI: Open Issues:
-    1. #45 [feature] PDF Export functionality
-    2. #44 [bug] Login fails with special characters
+AI: === Open Issues ===
+
+    Backlog Features:
+      #2 [backlog] S-INVENTORY-001: 在庫一覧・検索
+      #3 [backlog] S-RECEIVING-001: 入荷処理
+
+    In Progress:
+      #5 [in-progress] S-STOCKTAKE-001: 棚卸し
 
     どのIssueを選択しますか？
 
-人間: 1
+人間: 2
 
-AI: #45 は feature ラベルがついています。
-    /speckit.add #45 を実行します...
+AI: /speckit.add #2 を実行します...
 ```
 
 ---
