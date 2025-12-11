@@ -27,9 +27,12 @@ Creates Issue → Branch → Spec, then loops clarify until all ambiguities are 
    - Extract from `$ARGUMENTS`
    - If empty, ask user to describe the feature
 
-2) **Check Overview exists**:
-   - Look for Overview spec in `.specify/specs/`
+2) **Check Overview exists and is clarified**:
+   - Look for Overview spec in `.specify/specs/overview/`
    - If not found: "Overview specが見つかりません。先に `/speckit.bootstrap` を実行してください"
+   - Check Overview has M-* and API-* definitions (not just placeholders)
+   - If Overview is scaffold or missing M-*/API-*:
+     "Overview Spec がまだ精密化されていません。先に `/speckit.clarify` を実行してください"
 
 3) **Create GitHub Issue**:
    ```bash
@@ -57,11 +60,11 @@ Creates Issue → Branch → Spec, then loops clarify until all ambiguities are 
    node .specify/scripts/spec-lint.js
    ```
 
-8) **Clarify loop**:
+8) **Clarify loop** (uses `/speckit.clarify` logic):
    - While `[NEEDS CLARIFICATION]` items exist:
-     - Show items to human
-     - Ask for clarification
-     - Update spec
+     - Show **1 question at a time** with recommended option
+     - Wait for answer
+     - Update spec **immediately**
      - Re-run lint
    - Continue until all resolved
 

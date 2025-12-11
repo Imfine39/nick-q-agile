@@ -27,35 +27,57 @@
 
 ---
 
-## 3. 6 ステップワークフロー
+## 3. ワークフロー
+
+### 新規プロジェクト立ち上げフロー
 
 ```
-Step 1: エントリーポイント
-  /speckit.add      - 新機能（Issueなし）
-  /speckit.fix      - バグ修正（Issueなし）
-  /speckit.issue    - 既存Issueから開始
-  /speckit.bootstrap - 新規プロジェクト or 追加Feature提案
+Step 0: プロジェクト初期化
+  /speckit.bootstrap
+  → Overview Issue/Branch/Spec(scaffold) 作成
+  → Feature候補提案 → Issues作成（specなし）
+  → 人間: Feature採用を選択
 
-  → Issue作成 → Branch作成 → Spec作成 → Clarifyループ
-  → 人間: Specをレビュー・承認
+Step 1: Overview 精密化（必須）
+  /speckit.clarify
+  → Overview の M-*/API-*/ルール を1問ずつ質問
+  → 回答ごとに即時Spec更新
+  → 曖昧点がなくなるまでループ
+  → 人間: Overview をレビュー・承認
 
-Step 2: /speckit.plan
+Step 2: Feature 開発開始
+  /speckit.issue
+  → Issue選択 → Branch作成 → Feature Spec作成
+  → Clarifyループ（1問ずつ）
+  → 人間: Feature Specをレビュー・承認
+
+Step 3: /speckit.plan
   → Plan作成 → 整合性チェック
   → 人間: Planをレビュー・承認
 
-Step 3: /speckit.tasks
+Step 4: /speckit.tasks
   → Tasks作成
   → 人間: Tasksを確認
 
-Step 4: /speckit.implement
+Step 5: /speckit.implement
   → タスク実装 → テスト作成・実行
   → 人間: Feedback発見時に許可
 
-Step 5: /speckit.pr
+Step 6: /speckit.pr
   → 整合性確認（/speckit.analyze推奨）→ PR作成
 
-Step 6: PRレビュー
+Step 7: PRレビュー
   → 人間: 最終承認・マージ
+```
+
+### 既存プロジェクトへの機能追加フロー
+
+```
+/speckit.add または /speckit.fix
+  → Issue作成 → Branch作成 → Feature Spec作成
+  → Clarifyループ
+  → 人間: Specをレビュー・承認
+  → /speckit.plan 以降へ
 ```
 
 ### コマンド一覧
@@ -63,10 +85,10 @@ Step 6: PRレビュー
 **エントリーポイント (4個)**
 | コマンド | 用途 |
 |---------|------|
-| `/speckit.bootstrap` | 新規プロジェクト立ち上げ or 追加Feature提案 |
+| `/speckit.bootstrap` | 新規プロジェクト立ち上げ（Overview scaffold + Feature Issues 作成）※Feature spec は作らない |
 | `/speckit.add` | 新機能追加（Issueなし→自動作成） |
 | `/speckit.fix` | バグ修正（Issueなし→自動作成） |
-| `/speckit.issue` | 既存Issue選択→開発開始 |
+| `/speckit.issue` | 既存Issue選択→Branch作成→Feature Spec作成→開発開始 |
 
 **基本コマンド (5個)** - 途中再開にも使用
 | コマンド | 用途 |
@@ -82,7 +104,7 @@ Step 6: PRレビュー
 |---------|------|
 | `/speckit.analyze` | 実装とSpec/Overviewの整合性分析（PR前の安心確認） |
 | `/speckit.feedback` | Specへのフィードバック記録 |
-| `/speckit.clarify` | 要件の曖昧点確認 |
+| `/speckit.clarify` | 要件の曖昧点を1問ずつ質問→即時Spec更新（bootstrap後に必須） |
 | `/speckit.lint` | Spec整合性チェック |
 
 ---
@@ -126,7 +148,9 @@ Step 6: PRレビュー
 
 - 仕様が曖昧・矛盾している場合、勝手に実装しない。
 - `/speckit.clarify` で論点を整理し、必要に応じて新規 Issue を起票する。
-- エントリーポイント（add/fix/issue）では、Spec作成後に Clarify ループで曖昧点を解消してから人間レビューを依頼。
+- **Clarify は 1 問ずつ質問し、推奨オプションを提示、回答ごとに即時 Spec 更新**。
+- **新規プロジェクトでは bootstrap 後に Overview の clarify が必須**（Feature 開発前に M-*/API-* を確定）。
+- エントリーポイント（add/fix/issue）では、Spec 作成後に Clarify ループで曖昧点を解消してから人間レビューを依頼。
 
 ---
 

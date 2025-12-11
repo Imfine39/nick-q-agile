@@ -61,11 +61,11 @@ Creates Issue → Branch → Spec update, then loops clarify until all ambiguiti
    node .specify/scripts/spec-lint.js
    ```
 
-8) **Clarify loop**:
+8) **Clarify loop** (uses `/speckit.clarify` logic):
    - While `[NEEDS CLARIFICATION]` items exist:
-     - Show items to human
-     - Ask for clarification
-     - Update spec
+     - Show **1 question at a time** with recommended option
+     - Wait for answer
+     - Update spec **immediately**
      - Re-run lint
    - Continue until all resolved
 
