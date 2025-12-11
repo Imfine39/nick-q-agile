@@ -145,15 +145,47 @@ AI コーディングアシスタント（Claude Code 等）と組み合わせ�
 
 ---
 
-## 0→1 立ち上げフロー
+## 0→1 立ち上げフロー（オンボーディング）
 
-1. Issue 作成（例: “System Overview Spec を定義する”）
-2. ブランチ作成: `node .specify/scripts/branch.js --type spec --slug overview --issue <num>`
-3. Overview 作成:
-   - 推奨: `/speckit.bootstrap` で目的を渡し、Overview 草案 + Feature 候補を生成（scaffold, Feature index 自動追記, lint まで実施）
-   - もしくは手動 scaffold: `node .specify/scripts/scaffold-spec.js --kind overview --id S-OVERVIEW-001 --title "System Overview" --masters ... --apis ...`
-   - Overview に含める: ドメイン概要 / 共通マスタ `M-*` / 共通 API `API-*` / 共通ルール・ステータス / 非機能要件
-4. Lint: `node .specify/scripts/spec-lint.js`
+```
+人間: /speckit.bootstrap 在庫管理システムを作りたい
+
+AI: Overview Issue #1 を作成しました
+    Branch spec/1-overview を作成しました
+
+    システム目的を分析中...
+
+    Overview Spec を作成しました:
+    - ドメイン: 在庫管理
+    - 共通マスタ: M-PRODUCTS, M-WAREHOUSES, M-SUPPLIERS
+    - 共通API: API-INVENTORY-LIST, API-INVENTORY-UPDATE
+
+    Feature 候補を提案します:
+    1. S-INVENTORY-001: 在庫一覧・検索
+    2. S-RECEIVING-001: 入荷処理
+    3. S-SHIPPING-001: 出荷処理
+    4. S-STOCKTAKE-001: 棚卸し
+
+    Overview をレビューしてください。
+    Feature 候補を採用する場合は「OK」と伝えてください。
+
+人間: OK、まず在庫一覧から始めよう
+
+AI: S-INVENTORY-001 の Feature Spec を作成します...
+    /speckit.add を実行して Feature 開発を開始します。
+```
+
+**AIが自動でやること:**
+- Overview Issue 作成
+- ブランチ作成
+- Overview Spec 生成（マスタ/API定義含む）
+- Feature 候補の提案と scaffold
+- spec-lint 実行
+
+**人間がやること:**
+- システム目的を伝える
+- Overview と Feature 候補をレビュー
+- どの Feature から始めるか決定
 
 ※ Overview が「唯一の真実」。すべての Feature はここに定義されたマスタ/APIを参照し、Feature index表 `| Feature ID | Title | Path | Status |` に必ず登録される。
 
