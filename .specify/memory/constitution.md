@@ -2,12 +2,12 @@
 ================================================================================
 SYNC IMPACT REPORT
 ================================================================================
-Version change: 1.1.0 → 1.2.0 (MINOR - clarified multi-spec structure and domain model rules)
+Version change: 1.0.0 → 1.2.0 (MINOR - added explicit Overview/Feature structure and shared domain rules)
 
 Modified principles:
-  - Article IV: Spec-Driven Workflow（Overview + Feature spec 構造を明示）
-  - Article VII: Test Integrity and Problem Diagnosis（テスト改変の禁止を明確化）
-  - Added: Article VIII: Specification Structure & Domain Model
+  - Clarified spec-driven workflow (Overview + Feature spec structure)
+  - Clarified test integrity and test-change restrictions
+  - Added explicit rules for shared masters/API contracts
 
 Templates requiring updates:
   - .specify/templates/spec-template.md
@@ -17,7 +17,7 @@ Templates requiring updates:
   - .specify/templates/agent-file-template.md
 
 Follow-up TODOs:
-  - Ensure new projects use an Overview spec for shared master data and API contracts
+  - Ensure new projects always start from an Overview spec
 ================================================================================
 -->
 
@@ -42,7 +42,7 @@ Non-negotiable rules:
 
 - `strict: true` MUST be enabled in `tsconfig.json` for TypeScript projects.
 - No `any` types except when interfacing with untyped external libraries
-  (MUST be documented with a comment explaining the reason).
+  (MUST be documented with a short comment explaining the reason).
 - All function parameters and return types MUST be explicitly typed.
 - API responses and request payloads MUST have defined interfaces/types.
 - Shared types MUST be centralized in a `types/` or `shared/types/` directory.
@@ -61,8 +61,7 @@ Non-negotiable rules:
 
 - All API endpoints MUST have integration tests verifying happy path and error cases.
 - Business logic services MUST have unit tests for core behavior.
-- User-facing features MUST have at least one end-to-end test per user story
-  (or equivalent UI behavior).
+- User-facing features MUST have at least one end-to-end test per major user story.
 - Tests MUST run in the CI pipeline before merge to `main`.
 - Test files MUST be co-located with source files or in a parallel `__tests__` directory.
 
@@ -92,7 +91,7 @@ minimizes technical debt accumulation.
 
 ---
 
-### IV. Spec-Driven Workflow
+## IV. Spec-Driven Workflow
 
 All changes MUST be driven by explicit specifications and tracked issues, not
 ad-hoc code edits.
@@ -123,14 +122,12 @@ Non-negotiable rules:
   - Relevant tests and documentation (where feasible)
 
 - Specifications are stored under `.specify/specs/` and treated as the single
-  source of truth for behavior and contracts. Multiple specs MAY exist:
-
-  - A System Overview / Domain spec for shared definitions.
-  - One Feature spec per feature slice (screen, user story, or change set).
+  source of truth for behavior and contracts.
 
 - When a requirement is ambiguous, contradictory, or missing, AI agents and
   humans MUST NOT guess. They MUST raise an Issue (or comment on an existing one)
   to request clarification.
+
 - Implementations that knowingly diverge from the specification are prohibited
   and considered constitutional violations.
 
@@ -140,7 +137,7 @@ with real requirements.
 
 ---
 
-### V. Git & GitHub Workflow
+## V. Git & GitHub Workflow
 
 Version control practices MUST ensure traceability from specification to implementation.
 
@@ -156,6 +153,7 @@ Non-negotiable rules:
 
 - Every change MUST be merged via a pull request using squash merge
   (or an equivalently traceable strategy defined by the project).
+
 - Each pull request MUST:
 
   - Reference at least one Issue (for example `Fixes #123`).
@@ -169,6 +167,7 @@ Non-negotiable rules:
 
 - These rules apply equally to human and AI-driven workflows.
   AI agents MUST NOT create branches, commits, or pushes that violate this workflow.
+
 - After a PR is merged, the corresponding feature branch SHOULD be deleted
   (GitHub’s automatic branch deletion is recommended).
 
@@ -177,7 +176,7 @@ auditable, and traceable back to its underlying requirements.
 
 ---
 
-### VI. AI Agent Conduct
+## VI. AI Agent Conduct
 
 AI agents (such as Claude Code and other coding assistants) are first-class
 contributors bound by this constitution.
@@ -186,6 +185,7 @@ Non-negotiable rules:
 
 - AI agents MUST treat this constitution as the highest-priority guideline
   for their behavior.
+
 - AI agents MUST NOT propose or execute workflows that violate:
 
   - Spec-driven development principles.
@@ -211,7 +211,7 @@ traceability, and quality of the codebase.
 
 ---
 
-### VII. Test Integrity and Problem Diagnosis
+## VII. Test Integrity and Problem Diagnosis
 
 Tests exist to enforce specified behavior, not to merely satisfy tooling or
 achieve a “green” CI state.
@@ -267,12 +267,12 @@ represent correct behavior.
 
 ---
 
-### VIII. Specification Structure & Domain Model
+## VIII. Specification Structure and Domain Model
 
 Specifications MAY be split across multiple files. Projects SHOULD distinguish:
 
 - A System Overview / Domain spec, and
-- One Feature spec per feature slice.
+- One Feature spec per feature slice (screen, user flow, or change set).
 
 Non-negotiable rules:
 
@@ -321,7 +321,7 @@ Code organization:
 - Web application structure with `frontend/` and `backend/` separation,
   where applicable.
 - Shared types in `shared/types/` accessible to both frontend and backend.
-- Environment configuration via `.env` files (never committed).
+- Environment configuration via `.env` files (never committed to version control).
 - Secrets MUST use environment variables or secret managers, never hardcoded.
 
 ---
@@ -332,7 +332,8 @@ Before Code Review:
 
 - All linting checks pass (for example `npm run lint`).
 - All tests pass (for example `npm run test`).
-- TypeScript compiles without errors (for example `npm run build`).
+- TypeScript (and other typed languages) compile without errors
+  (for example `npm run build`).
 - No stray debug output (for example `console.log`) in production code.
 
 Before Merge to `main`:

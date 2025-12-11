@@ -26,7 +26,7 @@ To be filled automatically from plans and specs:
 - Datastores:
 - Messaging / queues:
 - Testing frameworks:
-- Tooling (for example `gh`, MCPs like `serena`, `context7`, `playwright`):
+- Tooling (for example `gh`, MCP servers, etc.):
 
 ---
 
@@ -44,7 +44,7 @@ Summarize the main directories and their roles. For example:
 
 ## 4. Specification Structure
 
-- There is exactly one Overview (domain) spec per major system.
+- There is exactly one Overview (domain) spec per major system (or per bounded context).
 - Feature specs are organized per feature slice (screen, user flow, or change set).
 - Shared masters and APIs are defined only in the Overview spec, with IDs such as:
 
@@ -92,7 +92,7 @@ AI agents MUST:
 
 - When tests fail, agents SHOULD:
 
-  - Attempt to classify the failure (spec vs test vs implementation).
+  - Attempt to classify the failure (spec vs test vs implementation vs environment).
   - Propose an Issue or update an existing one with diagnosis details.
 
 ---

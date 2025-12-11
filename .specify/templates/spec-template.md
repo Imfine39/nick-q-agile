@@ -1,7 +1,7 @@
 # Specification: [TITLE]
 
 Spec Type: [Overview | Feature]  
-Spec ID(s): [S-001, UC-003, etc.]  
+Spec ID(s): [S-OVERVIEW-001, S-LEADS-001, etc.]  
 Created: [DATE]  
 Status: [Draft | In Review | Approved]  
 Author: [OWNER]  
@@ -60,7 +60,8 @@ For Feature specs:
   - Masters: `M-CLIENTS`, `M-PROJECT_ORDERS`, ...
   - APIs: `API-PROJECT_ORDERS-LIST`, ...
 
-- Do NOT redefine these models here. Refer back to the Overview spec.
+- Feature specs MUST NOT redefine these shared models.
+  They MUST refer back to the Overview spec.
 
 ### 3.2 New or Feature-Specific Domain Concepts
 
@@ -69,13 +70,13 @@ For Feature specs:
 
 ---
 
-## 4. Data Model (Overview vs Feature)
+## 4. Data Model
 
 For Overview specs:
 
 - Define shared master data models and important entities.
 
-Example structure (adapt as needed):
+Example structure:
 
 - `M-CLIENTS`  
   - Purpose:
@@ -87,8 +88,6 @@ Example structure (adapt as needed):
   - Main fields:
   - Relationships:
 
-- Other important entities and reference data.
-
 For Feature specs:
 
 - Describe how this feature reads or writes the shared data:
@@ -97,7 +96,7 @@ For Feature specs:
   - Which entities are created/updated/deleted?
   - Which constraints or invariants must hold?
 
-- If the feature introduces additional fields or relationships, reference:
+- If the feature introduces additional fields or relationships, describe:
 
   - Which shared entity is being extended.
   - Which migration(s) or schema changes are required.
@@ -163,7 +162,7 @@ List all relevant user stories for this spec.
 ## 8. Business Rules and Constraints
 
 - Validation rules:
-- Calculation rules (for example revenue, discounts):
+- Calculation rules (for example revenue, discounts, charge rate):
 - Cross-entity constraints:
 - Domain invariants that MUST always hold:
 
@@ -189,7 +188,8 @@ spec and refer to it here by ID.
   - What tests are needed (unit, integration, E2E)?
   - Which critical edge cases MUST be covered?
 
-- How will we verify that behavior matches this spec (not just that tests pass)?
+- How will we verify that behavior matches this spec
+  (not just that tests happen to pass)?
 
 ---
 

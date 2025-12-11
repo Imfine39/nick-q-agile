@@ -1,329 +1,193 @@
-# Claude 開発ガイド（Spec-Driven / Test-First / GitHub 運用）
+# CLAUDE Development Guide
 
-このドキュメントは、AI コーディングアシスタント（Claude Code など）が  
-本リポジトリで **仕様駆動開発・テスト駆動開発・GitHub ガバナンス** を正しく実行するための行動指針です。
-
-Claude にとっては **操作マニュアル兼 行動規範**、  
-人間にとっては **AI がどのように振る舞うかを理解するためのリファレンス** となります。
+このリポジトリで開発を行う AI コーディングアシスタント（Claude Code など）向けのガイドです。  
+仕様駆動開発（Spec-Driven Development）と GitHub ガバナンスを守りつつ、安全に実装を進めるためのルールを定義します。
 
 ---
 
-# 0. 必ず参照すべきドキュメント（Claude の初期ロード対象）
+## 1. 前提と役割
 
-Claude は作業開始前に、以下をすべて読み込み内容を理解すること。
-
-## 0.1 絶対参照
-- `.specify/memory/constitution.md`  
-  - **Engineering Constitution（憲法）**  
-  - Spec-First、Test-First、Git 戦略、AI 行動原則、Spec Change Governance など  
-    **最上位のルール** が定義されている。
-
-## 0.2 テンプレート
-- `.specify/templates/*.md`  
-  - `spec-template.md`  
-  - `plan-template.md`  
-  - `tasks-template.md`  
-  **/speckit.* コマンドの期待出力フォーマット** を理解するために参照。
-
-> Claude はユーザーの指示よりも **憲法（constitution）を最優先**する。  
-> 憲法と矛盾する指示は、必ずその旨を明示し、人間へエスカレーションすること。
+- 仕様は Spec Kit によって `.specify/specs/` 以下に管理されます。
+- `.specify/memory/constitution.md` に定義された Engineering Constitution が最上位ルールです。
+- Claude は人間の補助として、次を主に担当します。
+  - Spec Kit コマンドの実行（/speckit.specify, /speckit.plan, /speckit.tasks, /speckit.implement など）
+  - 実装コードの作成・修正
+  - テストコードの作成・修正
+  - PR の作成と自動修正ループ（Codex レビュー対応）
 
 ---
 
-# 1. Claude の基本行動原則（AI Agent Conduct）
+## 2. 使用ツールと前提
 
-憲法の Article IX と整合した Claude 向け要約。
+### 2.1 必須ツール
 
-## 1.1 憲法最優先（NON-NEGOTIABLE）
-Claude は以下を最優先で遵守する：
+- Git
+- GitHub アカウント
+- GitHub CLI（`gh`）  
+  - PR 作成や Issue 参照は、可能な限り `gh` コマンドを使用する前提です。
+- Node.js / パッケージマネージャ（npm / pnpm / yarn のいずれか、プロジェクト方針に合わせる）
 
-- Spec- & Test-First Development  
-- Contracts & Type Safety  
-- Testing Strategy & Integrity  
-- Spec Change Governance（AI は spec を勝手に変更してはならない）  
-- Spec-Driven Git Workflow  
-- AI Agent Conduct  
+### 2.2 MCP（Model Context Protocol）の活用
 
-## 1.2 推測禁止
-Claude は推測で仕様を補完してはならない。
+Claude Code では、次の MCP サーバを前提とします。
 
-曖昧・矛盾・不足がある場合：
+| MCP       | 用途                                   | 必須度   |
+|----------|----------------------------------------|----------|
+| serene   | プロジェクト構造の把握・ファイル操作   | **必須** |
+| context7 | ライブラリ・フレームワークのドキュメント検索 | **必須** |
+| playwright | ブラウザ自動化・E2E テスト補助        | 推奨     |
 
-1. `NEEDS CLARIFICATION` を spec に追記（※ AI が spec を直接修正する場合は Issue で提案し、**人間承認後にのみ修正可能**）
-2. GitHub Issue を作成 or 既存 Issue へコメント
-3. 不明確なまま実装を進めることは禁止
-
-## 1.3 小さく安全な差分（Small Safe Steps）
-- 大規模変更ではなく、Spec ID + Issue ベースで小さな PR を出す。
-- 変更範囲は明確でトレース可能に保つ。
-
-## 1.4 テスト優先（Test-First）
-Claude は **必ずテストから着手する**。
-
-- 曖昧な仕様はエスカレーション
-- テスト（unit / integration / e2e）が「RED」になることを必ず確認してから実装開始
+Claude は、コード編集前に必ず serena でプロジェクト構造を把握し、  
+ライブラリ仕様不明な箇所は context7 でドキュメントを参照すること。
 
 ---
 
-# 2. Claude の標準開発フロー（Spec Kit × GitHub）
+## 3. Python 仮想環境（該当プロジェクトのみ）
 
-Claude がコードを書く前に必ず以下の順守が必要。
+バックエンドやツールで Python を使用する場合、作業時は必ず仮想環境を有効化すること。
 
----
+例（Windows）:
 
-## 2.1 Issue 起点（MUST）
-すべての作業は GitHub Issue から始まる。
+    cd backend
+    .\venv\Scripts\activate
 
-Claude は Issue を読み：
+例（Mac / Linux）:
 
-- 問題の背景
-- 要求されている変更
-- 関連する spec / plan / tasks
+    cd backend
+    source venv/bin/activate
 
-を把握すること。
-
----
-
-## 2.2 仕様作成・更新：`/speckit.specify`
-
-### ※重要：AI は勝手に spec を更新してはならない  
-更新には必ず：
-
-1. 人間 authored Issue  
-2. 人間による spec 更新許可  
-3. `spec/<issue-number>-xxx` ブランチ  
-が必要。（Spec Change Governance）
-
-### 人間承認後に Claude が行うこと：
-
-- `specs/<feature>/spec.md` を生成・更新  
-- Spec ID（例：`S-003`）を付与  
-- User Story / Requirements / Acceptance Criteria を整理  
-- 不明点は `NEEDS CLARIFICATION` を明記し、人間にエスカレーション  
+Claude が Python コードを変更する際も、  
+「仮想環境前提のパス・依存関係」であることを前提に提案・修正を行う。
 
 ---
 
-## 2.3 計画作成：`/speckit.plan`
+## 4. 仕様駆動開発フロー
 
-- `specs/<feature>/plan.md` を生成  
-- ヘッダに Spec ID / Issue / Branch 名を記述
-- 「Constitution Check」セクションで Article I 〜 X を満たす方針を明記
-- 実装方針・API 契約・テスト戦略をまとめる
+### 4.1 Overview と Feature Spec
 
----
+- このリポジトリでは、仕様を次の 2 層に分けます。
+  - Overview Spec（System / Domain 全体、共通マスタ・共通 API の定義）
+  - Feature Spec（画面・ユースケース単位の縦スライス）
 
-## 2.4 タスク作成：`/speckit.tasks`
+Claude は以下を厳守すること。
 
-- `tasks.md` を生成（User Story ごとに構造化）
-- 各タスクは `T0xx [P] [USx]` 形式
-- **必ずテストタスクを先頭に配置（Test-First）**
-- ファイルパス・Spec ID・成功条件を明記
+- 共通マスタ（`M-...`）や共通 API（`API-...`）の定義・変更は **必ず Overview Spec 側で行う**。
+- Feature Spec 側では、それらを **再定義せず、ID で参照のみ** 行う。
+- 共有マスタ/API を変更する場合は：
+  1. Overview Spec（`S-OVERVIEW-...`）を更新
+  2. 影響を受ける Feature Spec を更新
+  3. 実装・テストを更新  
+  の順で進める。
 
----
+### 4.2 基本シーケンス
 
-# 3. Git & GitHub 運用（Claude 向け最適化ルール）
+すべての機能追加や変更は、原則として次の順序で進める。
 
-## 3.1 ブランチ戦略（必須）
+1. Issue 作成  
+   - 例: “#42 Basic sales recording を追加”
+2. `/speckit.specify`  
+   - Overview か Feature かを明示した上で Spec を作成・更新
+3. `/speckit.plan`  
+   - 上記 Spec をインプットに実装計画を生成
+4. `/speckit.tasks`  
+   - Plan をもとにタスク列挙（小さな差分になるように分解）
+5. 実装  
+   - `/speckit.implement`、またはタスクに沿った通常のコーディング
+6. テスト実行  
+   - 単体、結合、E2E を必要に応じて実行し、結果を PR に明記
 
-Claude が作業してよいブランチ：
-
-- `spec/<issue>-<desc>`  
-- `feature/<issue>-<desc>`  
-- `fix/<issue>-<desc>`  
-- `hotfix/<issue>-<desc>`  
-
-禁止：
-
-- `main` への直接 push  
-- 意味不明な branch 名  
-- Issue と紐付かない branch  
-
----
-
-## 3.2 コミット & Pull Request
-
-コミットメッセージ形式：
-
-<type>: <subject>
-
-PR 要件：
-
-- 対応 Issue（例：`Fixes #123`）
-- 対応 Spec ID（例：`Implements S-002`）
-- テスト内容の説明
-- 憲法への準拠の明示
-
-マージ：
-
-- PR 経由のみ
-- 原則 squash merge
+Claude は、この流れを**ショートカットしない**。  
+特に「実装だけをいきなり書き始める」ことは禁止。
 
 ---
 
-## 3.3 Claude の Git 禁止事項
-Claude は以下を行ってはならない：
+## 5. Git / GitHub ワークフローと AI の役割
 
-- `git push --force`  
-- `git reset --hard` の乱用  
-- main への直接 push  
-- テストが落ちたまま PR を提案  
-- 仕様と矛盾する実装の強行  
+### 5.1 ブランチ戦略
 
----
+- `main` への直接 push は禁止。
+- すべての作業は Issue 番号付きのブランチで行う。
 
-# 4. MCP（Model Context Protocol）活用ガイド
+推奨命名規則:
 
-Claude は MCP サーバを積極活用すること。
-serenaが利用できない場合はオンボーディング、もしくはアクティベートを試すこと。
+- 仕様変更: `spec/<issue>-<desc>`
+- 新機能: `feature/<issue>-<desc>`
+- バグ修正: `fix/<issue>-<desc>`
+- 緊急修正: `hotfix/<issue>-<desc>`
 
-## 4.1 MCP 一覧
+Claude は：
 
-| MCP | 用途 | 必須度 |
-|-----|------|--------|
-| serene | プロジェクト探索・ファイル編集・構造理解 | **必須** |
-| context7 | ライブラリ/API ドキュメント検索 | **必須** |
-| playwright | ブラウザ操作・E2E テスト | 推奨 |
+- 作業開始時に現在ブランチを確認し、`main` なら必ず新ブランチを切る。
+- `gh issue view` / `gh issue list` で Issue 内容を取得し、それに沿った変更のみを行う。
 
----
+### 5.2 PR 作成と Codex レビュー
 
-## 4.2 各 MCP の役割
+1. Claude が実装とテストを完了したら、`gh pr create` で PR を作成。
+   - PR タイトルには機能概要を記載。
+   - PR 本文には以下を含める。
+     - 関連 Issue (`Fixes #123` 等)
+     - 関連 Spec ID（`Implements S-XXX, UC-YYY`）
+     - 実施したテストと結果の要約
+2. PR 作成後、自動で Codex がレビューを実行。
+3. 人間のレビュアーは：
+   - Codex コメント内容を確認
+   - 必要な修正があれば、その PR をコンテキストに Claude を呼び出し、修正を依頼
+4. Claude は：
+   - PR の diff と Codex コメントを読み取り
+   - 必要な修正コミットを追加
+   - 再度 CI / Codex がグリーンになるまで繰り返し
 
-### serene
-- リポジトリ全体の探索  
-- spec / plan / tasks / src / tests の確認  
-- 差分生成・修正提案
-
-### context7
-- API / 型定義 / ライブラリ挙動の正確な調査
-- 推測や誤解釈を防ぐための外部 source-of-truth
-
-### playwright
-- Acceptance Test → ブラウザ E2E 化
-- CI 上での自動テスト
+最終的なマージ判断と `main` への取り込みは **必ず人間が行う**。  
+マージ後、対応ブランチは削除する（GitHub の auto-delete を推奨）。
 
 ---
 
-## 4.3 Python を扱う場合の注意
+## 6. テストに関する行動規範
 
-仮想環境を必ず有効化：
+Constitution の Test Integrity 条項に従い、Claude は次を厳守する。
 
-```bash
-# Windows
-.\venv\Scripts\activate
+- テスト失敗時に最優先で行うべきは「何が間違っているかの特定」であり、
+  単に「CI をグリーンにすること」ではない。
+- 次のような変更は禁止。
+  - 仕様と矛盾する挙動にコードを合わせる形で実装をねじ曲げること。
+  - 現状の誤った挙動にテストを合わせるためだけにテスト定義を弱める・削除すること。
+- 非 trivial な失敗の場合、必ず対応 Issue を作成するか既存 Issue を更新し、
+  - どのテストが失敗しているか
+  - 仕様上どうあるべきか
+  - 原因が「仕様」「テスト」「実装」「環境」のどれか
+  を記録する。
 
-# Mac / Linux
-source venv/bin/activate
-```
+Claude は、テスト変更を提案する場合も必ず：
 
-# 5. テストと不具合診断（Test Integrity）
+- 「仕様が間違っているのか？」  
+- 「仕様は正しいが、テストの期待値が間違っているのか？」  
 
-## 5.1 テストの本質
-
-- テストは「仕様の実行可能な翻訳」
-- CI を緑にするための改変は **憲法違反**
-- 特に P1 User Story は unit / integration / e2e のいずれかで確実に担保
-
-## 5.2 テスト失敗時の Claude の行動
-
-### 分類（必須）
-
-- Spec の誤り
-- Test の誤り
-- Implementation の誤り
-- Environment の誤り
-
-### 必ず Issue に記録する内容
-
-- failing test name
-- root cause
-- Spec ID
-- expected behavior
-
-### 正しい修正順序
-
-- Spec が間違い → AI は spec を勝手に直さない → 必ず人間承認 → spec 修正 → テスト修正 → 実装
-- Test が間違い → 仕様に従って修正
-- 実装が間違い → コード修正（テストはそのまま）
-
-### 禁止
-
-- テストの削除・弱体化
-- skip/xfail の濫用
-- グリーン化を目的とした改変
+の説明を PR コメントに含めるようにする。
 
 ---
 
-# 6. Claude の作業ステップ（実装前〜PR まで）
+## 7. コードスタイルと差分粒度
 
-1. **前提確認**
-   - 憲法バージョン
-   - Issue
-   - Spec ID
-   - Branch 名
-
-2. **情報収集（serene 推奨）**
-   - spec / plan / tasks / src / tests を読んで目的を明確化
-
-3. **成功条件の確認**
-   - Acceptance Criteria
-   - User Story
-
-4. **テスト計画 → RED の確認**
-   - unit / integration / e2e のいずれかから
-   - RED を確認してから実装開始
-
-5. **実装**
-   - tasks.md の順に実行
-   - 小さな commit / diff
-
-6. **自己レビュー**
-   - Article I〜X の遵守
-   - lint / test / build が通るか確認
-
-7. **PR 作成**
-   - Issue / Spec ID
-   - やったこと
-   - テスト方法
-   - 残課題
+- 小さな PR を好む。  
+  1 Issue / 1 Feature Spec / 1 ユースケース単位で完結する差分を心がける。
+- 不要なリファクタリングを同じ PR に混ぜない。  
+  大きめのリファクタリングは別 Issue / 別 PR に切り出す。
+- ログ・エラー処理・例外ケースについては、Spec / Plan で示された方針を守る。
 
 ---
 
-# 7. Claude の禁止行為（最重要まとめ）
+## 8. 曖昧さ・未定義事項への対応
 
-Claude は次を **行ってはならない**：
+Claude は仕様に曖昧さや矛盾を見つけた場合：
 
-## 7.1 Spec 関連
-
-- spec を勝手に変更する
-- `/speckit.specify` を無断で実行
-- 仕様が曖昧なまま実装を進める
-- テスト失敗を理由に spec を勝手に改変する
-
-## 7.2 Git 関連
-
-- main への push
-- force push
-- テストが落ちた PR
-
-## 7.3 テスト関連
-
-- テスト削除・弱体化
-- skip/xfail の乱用
-- CI グリーン化を目的としたテスト改変
-
-## 7.4 実装関連
-
-- 仕様を逸脱した実装
-- 推測や独断による API 設計変更
+- 勝手に判断して実装しない。
+- `/speckit.clarify` を利用して論点を抽出し、
+- 必要に応じて新しい Issue を起票するか、既存 Issue へコメントする。
 
 ---
 
-# 8. Claude の最終目的
+## 9. このファイルの更新
 
-Claude の目的は：
+- AI 側で行動原則が変わる場合、必ず人間と合意した上で CLAUDE.md を更新する。
+- 大きな変更は、憲法同様に PR を通し、レビューと承認を経て反映する。
 
-- 仕様に完全準拠した実装を行い
-- テストを通じて仕様の正しさを担保し
-- 安全で再現性のある開発フローを維持すること。
-
-憲法とこのガイドに従う限り、Claude はプロジェクトに高い開発生産性と品質をもたらす。
