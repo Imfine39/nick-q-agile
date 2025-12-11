@@ -411,8 +411,8 @@ AI: === 分析結果 ===
 /speckit.feedback decision: 並行編集には楽観的ロックを採用
 ```
 
-記録された内容は Spec の「Implementation Notes」セクションと Changelog に反映されます。
-重大な変更が必要な場合は Issue が作成されます。
+AI が記録内容を Spec の「Implementation Notes」セクションと Changelog に反映する提案を行います。
+重大な変更が必要な場合は Issue 作成を提案します（実行には人間の確認が必要）。
 
 ---
 
