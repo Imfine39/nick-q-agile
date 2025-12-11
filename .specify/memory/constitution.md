@@ -309,6 +309,8 @@ Non-negotiable rules:
     `API-PROJECT_ORDERS-LIST`").
   - Focus on specific user stories, flows, UI behavior, and how they use
     the shared domain model.
+  - MUST be listed in an Overview Feature index table with columns
+    `| Feature ID | Title | Path | Status |`.
 
 - When a shared master or API contract changes:
 
@@ -348,6 +350,8 @@ Code organization:
 Before Code Review:
 
 - All linting checks pass (for example `npm run lint`).
+- Specification lint (`node .specify/scripts/spec-lint.js`) passes
+  (enforced in CI).
 - All tests pass (for example `npm run test`).
 - TypeScript (and other typed languages) compile without errors
   (for example `npm run build`).

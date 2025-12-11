@@ -30,12 +30,19 @@
 ## 3. 仕様駆動フロー
 
 1. Issue を作成し、作業ブランチを `spec/<issue>-...` / `feature/<issue>-...` などで切る。
+   - コマンド: `node .specify/scripts/branch.js --type feature --slug <slug> --issue <num>`（/speckit.branch）
 2. `/speckit.specify` で Overview/Feature を明示して spec を作成・更新  
    - 共有マスター/共有 API の追加・変更は Overview 側で実施。Feature 側は ID 参照のみ。
+   - 初期ブートストラップは `/speckit.bootstrap`、追加 Feature 提案は `/speckit.propose-features`。
+   - 手動で作る場合も scaffold スクリプトを推奨：  
+     `node .specify/scripts/scaffold-spec.js --kind overview ...`  
+     `node .specify/scripts/scaffold-spec.js --kind feature ... --overview S-OVERVIEW-001`
+   - Overview の Feature index は表形式 `| Feature ID | Title | Path | Status |` で必ず更新されるようにする（scaffold は自動追記）。
 3. `/speckit.plan` で実装方針を具体化し、仕様 ID を明記。
 4. `/speckit.tasks` で小さなタスクに分割（ユーザーストーリー単位で独立テスト可能に）。
 5. 実装。タスク外の変更は行わない。仕様・plan とずれたら先に更新を提案。
 6. テストを実行し、結果を記録。CI で落ちた場合は原因（spec / test / implementation / environment）を分類して Issue に残す。
+7. PR 作成は `node .specify/scripts/pr.js --title ... --body ...`（/speckit.pr）。デフォルトで `spec-lint` を実行。
 
 ---
 

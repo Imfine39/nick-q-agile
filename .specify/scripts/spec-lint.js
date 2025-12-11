@@ -93,6 +93,9 @@ if (specFiles.length === 0) {
 }
 
 const specs = specFiles.map(parseSpec);
+const fileContentCache = new Map(
+  specFiles.map((f) => [f, fs.readFileSync(f, 'utf8')])
+);
 
 // Basic presence checks
 for (const spec of specs) {
@@ -123,9 +126,17 @@ for (const [uc, count] of ucIdCounts.entries()) {
 }
 
 // Collect Overview definitions
+const overviewSpecs = specs.filter((s) => s.specType === 'OVERVIEW');
+const featureSpecs = specs.filter((s) => s.specType === 'FEATURE');
+
+// Presence checks for overview vs feature
+if (featureSpecs.length > 0 && overviewSpecs.length === 0) {
+  errors.push('Feature specs exist but no Overview spec found. Create an Overview spec first.');
+}
+
 const overviewMasters = new Set();
 const overviewApis = new Set();
-for (const spec of specs.filter((s) => s.specType === 'OVERVIEW')) {
+for (const spec of overviewSpecs) {
   spec.masters.forEach((m) => overviewMasters.add(m));
   spec.apis.forEach((a) => overviewApis.add(a));
 }
@@ -133,7 +144,7 @@ for (const spec of specs.filter((s) => s.specType === 'OVERVIEW')) {
 // Validate Feature references
 const usedMasters = new Set();
 const usedApis = new Set();
-for (const spec of specs.filter((s) => s.specType === 'FEATURE')) {
+for (const spec of featureSpecs) {
   for (const m of spec.masters) {
     usedMasters.add(m);
     if (!overviewMasters.has(m)) {
@@ -154,6 +165,42 @@ for (const m of overviewMasters) {
 }
 for (const a of overviewApis) {
   if (!usedApis.has(a)) warnings.push(`API "${a}" defined in Overview is not referenced by any feature.`);
+}
+
+// Check Feature index table in Overview
+const featureIndexHeader = '| FEATURE ID | TITLE | PATH | STATUS |';
+const overviewFeatureRows = new Set();
+for (const spec of overviewSpecs) {
+  const text = fileContentCache.get(spec.file).toUpperCase();
+  if (!text.includes(featureIndexHeader)) {
+    warnings.push(`Overview ${spec.relFile} is missing Feature index table header "${featureIndexHeader}".`);
+    continue;
+  }
+  const lines = text.split(/\r?\n/);
+  let inTable = false;
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (trimmed === featureIndexHeader) {
+      inTable = true;
+      continue;
+    }
+    if (inTable) {
+      if (!trimmed.startsWith('|')) break;
+      const cells = trimmed.split('|').map((c) => c.trim()).filter(Boolean);
+      if (cells.length >= 4) {
+        overviewFeatureRows.add(cells[0]); // Feature ID
+      }
+    }
+  }
+}
+
+// Enforce Feature IDs appear in Overview table
+for (const spec of featureSpecs) {
+  for (const id of spec.specIds) {
+    if (!overviewFeatureRows.has(id.toUpperCase())) {
+      errors.push(`Feature ID "${id}" is not listed in any Overview Feature index table.`);
+    }
+  }
 }
 
 if (errors.length) {

@@ -42,6 +42,8 @@ Where:
 - `[T-000] [P0] Confirm target spec(s) and plan are approved`
 - `[T-001] [P0] Confirm branch and Issue linkage (feature/<issue>-...)`
 - `[T-002] [P0] Read Overview spec and Feature spec; list dependencies: masters (M-...), APIs (API-...), cross-cutting rules`
+- `[T-003] [P0] Use Serena to map relevant directories/files for this change`
+- `[T-004] [P0] Use context7 (or equivalent) to fetch needed library/framework docs`
 
 ---
 

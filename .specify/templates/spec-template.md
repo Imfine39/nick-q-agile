@@ -244,3 +244,8 @@ spec and refer to it here by ID.
 - Related Issues:
 - Related Plans:
 - Related Tasks:
+
+For Overview specs, maintain a Feature index table so Feature specs are discoverable:
+
+| Feature ID | Title | Path | Status |
+| ---------- | ----- | ---- | ------ |
