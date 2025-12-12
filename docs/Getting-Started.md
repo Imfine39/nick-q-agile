@@ -22,6 +22,28 @@ SSD-Template を使い始めるためのガイドです。
 gh auth login
 ```
 
+### MCP サーバー（Claude Code 推奨）
+
+Claude Code を使用する場合、以下の MCP サーバーを推奨します：
+
+| MCP | Purpose | 設定方法 |
+|-----|---------|----------|
+| **serena** | プロジェクト構造・ファイル操作 | `claude mcp add serena` |
+| **context7** | ライブラリ/フレームワークのドキュメント検索 | `claude mcp add context7` |
+| **playwright** | ブラウザ自動化・E2E テスト | `claude mcp add playwright` |
+
+```bash
+# Claude Code での MCP サーバー追加
+claude mcp add serena
+claude mcp add context7
+claude mcp add playwright  # 任意
+
+# インストール確認
+claude mcp list
+```
+
+**注意:** serena が有効でない場合、Claude Code で `serena onboard` または `serena activate` を実行してプロジェクトを有効化してください。
+
 ---
 
 ## Installation

@@ -76,7 +76,7 @@ function matchTokens(content, regex) {
 function parseSpec(file) {
   const content = fs.readFileSync(file, 'utf8');
   const typeMatch = content.match(/Spec Type:\s*([^\n\r]+)/i);
-  const idsMatch = content.match(/Spec ID\(s\):\s*([^\n\r]+)/i);
+  const idsMatch = content.match(/Spec ID(?:\(s\))?:\s*([^\n\r]+)/i);
   const statusMatch = content.match(/Status:\s*([^\n\r]+)/i);
 
   const specType = normalizeSpecType(typeMatch && typeMatch[1]);
