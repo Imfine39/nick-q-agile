@@ -2,6 +2,8 @@
 
 **Spec-Driven Development Framework for AI-Assisted Projects**
 
+
+ニックの最強SDDフレームワーク
 AI コーディングアシスタント（Claude Code など）と人間の協業による仕様駆動開発フレームワークです。
 
 ---
@@ -145,4 +147,4 @@ Fix Bug:
 ## License
 
 このテンプレートは組織内での利用を前提としています。
-使うならせめて、テストを削らず、仕様を大事にしてください。
+使う時はニックへの感謝と見つけたFBをお願いします。
