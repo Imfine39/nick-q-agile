@@ -19,7 +19,7 @@ $ARGUMENTS
 Creates Issue → Branch → Spec, then loops clarify until all ambiguities are resolved.
 
 **Use this when:** You want to add something new and no Issue exists.
-**Use `/speckit.issue` instead when:** Issues already exist (from bootstrap or human creation).
+**Use `/speckit.issue` instead when:** Issues already exist (from `/speckit.design` or human creation).
 
 ## Steps
 

@@ -270,7 +270,7 @@ Spec の内容を読み込み、以下のタクソノミーに基づいて各カ
 ## Behavior Rules
 
 1. **曖昧点がない場合**: 「重大な曖昧点は検出されませんでした」と報告し、次のステップを提案
-2. **Spec が存在しない場合**: 先に `/speckit.bootstrap`（Overview）または `/speckit.issue`（Feature）を実行するよう指示
+2. **Spec が存在しない場合**: 先に `/speckit.vision` + `/speckit.design`（Vision/Domain）または `/speckit.issue`（Feature）を実行するよう指示
 3. **質問数制限**: 1セッションで最大5問、全体で最大10問を超えない
 4. **技術スタック質問**: 機能的な明確性に影響しない限り避ける
 5. **早期終了**: ユーザーの終了シグナルを尊重

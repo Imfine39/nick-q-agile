@@ -16,7 +16,7 @@ $ARGUMENTS
 ## Purpose
 
 Create or update a Spec. This is a **base command** that can be:
-- Called by entry points (`/speckit.add`, `/speckit.fix`, `/speckit.issue`, `/speckit.bootstrap`)
+- Called by entry points (`/speckit.add`, `/speckit.fix`, `/speckit.issue`)
 - Called directly to create/update a spec manually
 
 **Important**: After spec creation, automatically loops `/speckit.clarify` until all `[NEEDS CLARIFICATION]` items are resolved.

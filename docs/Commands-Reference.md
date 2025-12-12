@@ -12,7 +12,6 @@
 | Development Entry | issue, add, fix, featureproposal, change |
 | Development Flow | spec, plan, tasks, implement, pr |
 | Utilities | clarify, lint, analyze, checklist, feedback |
-| Deprecated | bootstrap |
 
 ---
 
@@ -371,19 +370,6 @@ node .specify/scripts/spec-lint.js
 **Updates:**
 - Feature Spec の Implementation Notes セクション
 - 必要に応じて Domain Spec への提案
-
----
-
-## Deprecated
-
-### `/speckit.bootstrap`
-
-**Status:** DEPRECATED
-
-**Replacement:**
-```
-/speckit.vision → /speckit.design
-```
 
 ---
 

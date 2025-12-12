@@ -9,7 +9,7 @@ handoffs:
 
 ## Purpose
 
-**Entry point** for existing Issues (from bootstrap, human creation, etc.).
+**Entry point** for existing Issues (from `/speckit.design`, human creation, etc.).
 Lists Issues → User selects → Creates Branch → Creates Feature Spec → Clarify loop.
 
 **Use this when:** Issues already exist and you want to start working on one.
