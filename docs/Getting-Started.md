@@ -26,18 +26,17 @@ gh auth login
 
 Claude Code を使用する場合、以下の MCP サーバーを推奨します：
 
-| MCP | Purpose | 設定方法 |
-|-----|---------|----------|
-| **serena** | プロジェクト構造・ファイル操作 | `claude mcp add serena -- uvx --from git+https://github.com/oraios/serena serena start-mcp-server --context claude-code --project "$(pwd)"` |
-| **context7** | ライブラリ/フレームワークのドキュメント検索 | `claude mcp add context7 -s project -- npx -y @upstash/context7-mcp` |
-| **playwright** | ブラウザ自動化・E2E テスト | `claude mcp add playwright -s project -- npx -y @playwright/mcp@latest
-` |
+| MCP | Purpose |
+|-----|---------|
+| **serena** | プロジェクト構造・ファイル操作 |
+| **context7** | ライブラリ/フレームワークのドキュメント検索 | 
+| **playwright** | ブラウザ自動化・E2E テスト |
 
 ```bash
 # Claude Code での MCP サーバー追加
-claude mcp add serena
-claude mcp add context7
-claude mcp add playwright  # 任意
+claude mcp add serena -- uvx --from git+https://github.com/oraios/serena serena start-mcp-server --context claude-code --project "$(pwd)"
+claude mcp add --transport http context7 https://mcp.context7.com/mcp
+claude mcp add playwright npx @playwright/mcp@latest
 
 # インストール確認
 claude mcp list
