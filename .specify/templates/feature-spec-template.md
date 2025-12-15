@@ -50,6 +50,19 @@ This feature depends on the following elements from the Domain Spec.
 |---------|-------------|----------------|
 | BR-001 | [Rule] | [How this feature is affected] |
 
+### 2.4 Feature Dependencies
+
+Other features this feature depends on.
+
+| Feature ID | Type | Description |
+|------------|------|-------------|
+| S-[XXX]-001 | Hard/Soft | [Why this feature depends on another] |
+
+**Dependency types:**
+- **Hard**: Cannot implement until dependency is completed (blocks implementation)
+- **Soft**: Can proceed independently, but full integration requires dependency
+- **Parallel**: Can be developed simultaneously with coordination
+
 **Note:** If this feature requires new M-*/API-*/BR-*, update the Domain Spec first.
 
 ---

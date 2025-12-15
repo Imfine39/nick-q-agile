@@ -42,6 +42,7 @@ Where:
 - `[T-000] [P0] Confirm target spec(s) and plan are approved`
 - `[T-001] [P0] Confirm branch and Issue linkage (feature/<issue>-...)`
 - `[T-002] [P0] Read Domain spec and Feature spec; list dependencies: masters (M-...), APIs (API-...), cross-cutting rules`
+- `[T-002.5] [P0] [Spec-First] Verify Screen Spec is updated for all affected screens (SCR-*); confirm status is Planned`
 - `[T-003] [P0] Use Serena to map relevant directories/files for this change`
 - `[T-004] [P0] Use context7 (or equivalent) to fetch needed library/framework docs`
 
@@ -92,6 +93,7 @@ Where:
 - `[T-052] [P1] Address Codex (or other bot) comments: apply valid suggestions or explain rejected ones`
 - `[T-053] [P1] Respond to human reviewer comments`
 - `[T-054] [P2] After merge, verify that the feature behaves as specified in a staging or equivalent environment`
+- `[T-055] [P1] [Spec-First] After merge, update Screen Spec status to Implemented for affected SCR-* IDs`
 
 ---
 

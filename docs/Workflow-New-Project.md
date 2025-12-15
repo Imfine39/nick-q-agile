@@ -11,6 +11,8 @@ Phase 1: Vision     /speckit.vision     目的・ジャーニー定義
     ↓
 Phase 2: Design     /speckit.design     Feature提案・Domain設計
     ↓
+Phase 2.5: Screen   /speckit.screen     画面設計（任意だが推奨）
+    ↓
 Phase 3: Foundation /speckit.issue      基盤実装
     ↓
 Phase 4: Features   /speckit.issue      各Feature実装（繰り返し）
@@ -72,6 +74,37 @@ Phase 4: Features   /speckit.issue      各Feature実装（繰り返し）
 - Feature Issues (GitHub)
 - `.specify/specs/domain/spec.md`
 - Foundation Issue
+
+---
+
+## Phase 2.5: Screen Spec (Optional but Recommended)
+
+### 目的
+画面構成と遷移を設計します。
+
+### コマンド
+```
+/speckit.screen
+```
+
+### AI の動作
+
+1. **入力読み込み**: `.specify/input/screen.md` から読み込み（Quick Input）
+2. **Screen Spec 作成**: 画面一覧、遷移図、ワイヤーフレーム
+3. **曖昧点レポート表示**
+4. **→ `/speckit.clarify` で曖昧点を解消（別コマンド）**
+
+### Human Checkpoint
+- [ ] Screen Spec をレビュー・承認
+
+### 出力
+- `.specify/specs/screen/spec.md`
+
+### Note
+Screen Spec は任意ですが、以下の理由で推奨されます：
+- Feature Spec 作成時に画面参照（SCR-*）が使える
+- Spec-First アプローチで画面の一貫性を保てる
+- デザイナーとの認識共有が容易
 
 ---
 
@@ -159,4 +192,4 @@ Human: PR レビュー・マージ → 次の Feature へ
 
 - [[Workflow-Add-Feature]] - 機能追加フロー
 - [[Commands-Reference]] - 各コマンドの詳細
-- [[Core-Concepts]] - 3層構造の詳細
+- [[Core-Concepts]] - 4層構造の詳細

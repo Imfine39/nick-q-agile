@@ -14,11 +14,15 @@ code reviews, and architectural choices MUST align with them.
 - **Domain spec** (formerly Overview): Single source of truth for shared master
   data (`M-*`), shared API contracts (`API-*`), cross-cutting rules, and domain
   vocabulary.
+- **Screen spec**: Single source of truth for UI design. Defines all screens
+  (`SCR-*`), screen transitions, wireframes, and design tokens. Feature specs
+  reference screens by ID, not redefine them.
 - **Feature spec**: One per feature slice (screen, user flow, change set).
-  Feature specs do not redefine shared masters/APIs; they reference Domain IDs.
-- **Specification IDs**: Stable identifiers (for example `S-001`, `UC-001`,
-  `M-CLIENTS`, `API-PROJECT_ORDERS-LIST`) used across specs, plans, tasks,
-  PRs, and tests for traceability.
+  Feature specs do not redefine shared masters/APIs/screens; they reference
+  Domain and Screen IDs.
+- **Specification IDs**: Stable identifiers used across specs, plans, tasks,
+  PRs, and tests for traceability. See `.specify/guides/id-naming.md` for
+  complete ID format definitions.
 
 ---
 
@@ -381,11 +385,12 @@ represent correct behavior.
 
 ## VIII. Specification Structure and Domain Model
 
-Specifications are organized in a three-tier structure:
+Specifications are organized in a **four-tier structure**:
 
-- Vision spec (project purpose and journeys)
-- Domain spec (shared masters, APIs, business rules)
-- Feature specs (one per feature slice)
+- **Vision spec** (project purpose and journeys)
+- **Domain spec** (shared masters, APIs, business rules)
+- **Screen spec** (screen list, transitions, wireframes, design tokens)
+- **Feature specs** (one per feature slice)
 
 Non-negotiable rules:
 
@@ -397,16 +402,34 @@ Non-negotiable rules:
   - Defines shared business rules, status models, and cross-cutting constraints.
   - Serves as the single source of truth for these definitions.
 
+- Screen spec:
+
+  - Defines all screens in the system (`SCR-001`, `SCR-002`, etc.).
+  - Defines screen transitions and navigation flows.
+  - Contains wireframes and layout specifications.
+  - Defines shared design tokens (colors, typography, spacing).
+  - Uses simplified lifecycle: `Planned` → `Implemented`.
+  - Serves as the single source of truth for UI design.
+
 - Feature specs:
 
-  - MUST NOT re-define shared master data or shared API contracts.
+  - MUST NOT re-define shared master data, shared API contracts, or screens.
   - MUST declare which masters and APIs they depend on by referencing IDs
     from the Domain spec (for example "Depends on `M-CLIENTS` and
     `API-PROJECT_ORDERS-LIST`").
+  - MUST reference screens by `SCR-*` IDs from the Screen spec.
   - Focus on specific user stories, flows, UI behavior, and how they use
     the shared domain model.
   - MUST be listed in a Domain Feature index table with columns
     `| Feature ID | Title | Path | Status | Related M-*/API-* |`.
+
+- Spec-First approach for screens:
+
+  - Screen spec MUST be updated BEFORE creating or modifying a Feature spec.
+  - New screens: Add to Screen Index with status `Planned`.
+  - Modified screens: Add entry to Modification Log with status `Planned`.
+  - After PR merge: Update Screen status to `Implemented`.
+  - This ensures the Screen spec is always the source of truth for UI design.
 
 - When a shared master or API contract changes:
 
@@ -414,6 +437,13 @@ Non-negotiable rules:
   - All Feature specs that reference the changed IDs MUST be reviewed and
     updated as needed.
   - Implementation and tests MUST then be updated accordingly.
+
+- When a screen design changes:
+
+  - The Screen spec MUST be updated first (wireframe, states, transitions).
+  - Modification Log entry MUST be added with status `Planned`.
+  - All Feature specs that reference the changed `SCR-*` MUST be reviewed.
+  - After implementation and PR merge, update Screen status to `Implemented`.
 
 Rationale: Centralizing domain and contract definitions in a single Domain
 spec prevents divergence across feature specs and keeps the system coherent.
@@ -539,4 +569,4 @@ Compliance:
 - Exceptions require documented justification and explicit team approval
   (for example via PR comments or architectural decision records).
 
-Version: 1.5.0 | Ratified: 2025-12-10 | Last Amended: 2025-12-12
+Version: 1.6.0 | Ratified: 2025-12-10 | Last Amended: 2025-12-15

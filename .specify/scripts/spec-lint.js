@@ -223,11 +223,14 @@ if (screenSpecs.length > 0) {
 }
 
 // Check Screen Index table in Screen spec
-const screenIndexHeader = '| SCREEN ID | NAME |';
+// Case-insensitive matching for header
 const screenRows = new Map(); // ID -> name
 for (const spec of screenSpecs) {
-  const text = fileContentCache.get(spec.file).toUpperCase();
-  if (!text.includes(screenIndexHeader.toUpperCase())) {
+  const text = fileContentCache.get(spec.file);
+  const textUpper = text.toUpperCase();
+  // Check for Screen Index header (case-insensitive)
+  const hasScreenIndex = textUpper.includes('| SCREEN ID') && textUpper.includes('| NAME');
+  if (!hasScreenIndex) {
     warnings.push(`Screen ${spec.relFile} is missing Screen Index table header.`);
     continue;
   }
@@ -235,7 +238,9 @@ for (const spec of screenSpecs) {
   let inTable = false;
   for (const line of lines) {
     const trimmed = line.trim();
-    if (trimmed.includes('| SCREEN ID') && trimmed.includes('| NAME')) {
+    const trimmedUpper = trimmed.toUpperCase();
+    // Case-insensitive header detection
+    if (trimmedUpper.includes('| SCREEN ID') && trimmedUpper.includes('| NAME')) {
       inTable = true;
       continue;
     }
@@ -243,8 +248,8 @@ for (const spec of screenSpecs) {
       if (!trimmed.startsWith('|')) break;
       if (trimmed.includes('---')) continue; // Skip separator row
       const cells = trimmed.split('|').map((c) => c.trim()).filter(Boolean);
-      if (cells.length >= 2 && cells[0].startsWith('SCR-')) {
-        screenRows.set(cells[0], cells[1]);
+      if (cells.length >= 2 && cells[0].toUpperCase().startsWith('SCR-')) {
+        screenRows.set(cells[0].toUpperCase(), cells[1]);
       }
     }
   }

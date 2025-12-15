@@ -38,14 +38,20 @@
    node .specify/scripts/branch.js --type feature --slug auth --issue <num>
    ```
 
-3. **Feature Spec 作成**
+3. **[Spec-First] Screen Spec 更新**（画面変更がある場合）
+   - 新規画面: Screen Index に追加（Status: Planned）
+   - 既存画面変更: Modification Log に追加
+   - **Feature Spec 作成前に実施**
+
+4. **Feature Spec 作成**
    - Domain 参照の確認
+   - Screen 参照（SCR-*）の追加
    - Case 1/2/3 判定（[[Core-Concepts]] 参照）
 
-4. **曖昧点レポート表示**
+5. **曖昧点レポート表示**
    → `/speckit.clarify` で 4 問ずつバッチ解消（別コマンド）
 
-5. **Domain Feature Index 更新**
+6. **Domain Feature Index 更新**
 
 ### Human Checkpoint
 - [ ] Feature Spec をレビュー・承認
@@ -256,6 +262,16 @@ Human: PR レビュー・マージ
 - `spec-lint` 自動実行
 - Issue 自動リンク
 - PR テンプレート適用
+
+### Post-Merge: Screen Spec 更新 [Spec-First]
+PR マージ後に Screen Spec の Status を更新：
+```bash
+# main ブランチに切り替え後
+# Screen Index / Modification Log の Status を Implemented に更新
+git add .specify/specs/screen/spec.md
+git commit -m "chore: Update Screen Spec Status to Implemented"
+git push
+```
 
 ---
 

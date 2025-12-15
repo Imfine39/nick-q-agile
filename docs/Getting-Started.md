@@ -91,7 +91,8 @@ your-project/
 │   ├── input/              # Quick Input ファイル（ユーザー入力用）
 │   │   ├── vision.md       # Vision 作成時の入力
 │   │   ├── add.md          # 機能追加時の入力
-│   │   └── fix.md          # バグ修正時の入力
+│   │   ├── fix.md          # バグ修正時の入力
+│   │   └── screen.md       # Screen Spec 作成時の入力
 │   ├── memory/
 │   │   └── constitution.md # Engineering Constitution
 │   ├── scripts/            # Node.js スクリプト
@@ -103,6 +104,7 @@ your-project/
 │   ├── specs/              # 仕様書（自動生成）
 │   │   ├── vision/
 │   │   ├── domain/
+│   │   ├── screen/
 │   │   └── <feature-id>/
 │   ├── state/              # 状態ファイル（自動生成）
 │   └── templates/          # Spec テンプレート
@@ -160,6 +162,9 @@ AI が Issue を作成し、Feature Spec の作成を開始します。
 │  /speckit.clarify    → 曖昧点を解消（4問ずつバッチ）          │
 │         ↓                                                    │
 │  /speckit.design     → Feature 提案 + Domain Spec 作成       │
+│  /speckit.clarify    → 曖昧点を解消                          │
+│         ↓                                                    │
+│  /speckit.screen     → Screen Spec 作成（任意だが推奨）       │
 │  /speckit.clarify    → 曖昧点を解消                          │
 │         ↓                                                    │
 │  /speckit.issue      → Foundation 実装開始                   │

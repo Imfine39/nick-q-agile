@@ -8,7 +8,7 @@
 
 | Category | Commands |
 |----------|----------|
-| Project Initialization | vision, design |
+| Project Initialization | vision, design, screen |
 | Development Entry | issue, add, fix, featureproposal, change |
 | Development Flow | spec, plan, tasks, implement, pr |
 | Utilities | clarify, lint, analyze, checklist, feedback |
@@ -53,6 +53,35 @@
 - Feature Issues (GitHub)
 - `.specify/specs/domain/spec.md`
 - Foundation Issue
+
+**Next:** `/speckit.screen` (optional) or `/speckit.issue` (Foundation)
+
+---
+
+### `/speckit.screen`
+
+**Purpose:** Screen Spec 作成（画面設計）
+
+**Prerequisites:** Domain Spec（推奨）
+
+**Usage:**
+```
+/speckit.screen
+```
+
+**Creates:**
+- `.specify/specs/screen/spec.md`
+
+**Contains:**
+- 画面一覧（Screen Index）
+- 画面遷移図（Mermaid）
+- 各画面のワイヤーフレーム
+- 共通コンポーネント
+- デザイントークン
+
+**Note:**
+- Screen Spec は任意ですが、Spec-First アプローチのために推奨
+- Feature Spec 作成前に画面を定義することで一貫性を保てる
 
 **Next:** `/speckit.issue` (Foundation)
 
@@ -379,10 +408,11 @@ node .specify/scripts/spec-lint.js
 
 ```
 New Project:
-  /speckit.vision → /speckit.design → /speckit.issue → ...
+  /speckit.vision → /speckit.design → /speckit.screen (optional) → /speckit.issue → ...
 
 Add Feature:
   /speckit.add → /speckit.plan → /speckit.tasks → /speckit.implement → /speckit.pr
+  (Note: Screen Spec updated before Feature Spec if UI changes)
 
 Fix Bug:
   /speckit.fix → /speckit.plan (optional) → /speckit.implement → /speckit.pr

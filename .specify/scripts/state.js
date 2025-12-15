@@ -31,7 +31,7 @@ const BRANCH_STATE_PATH = path.join(STATE_DIR, 'branch-state.json');
 
 // Default schemas
 const DEFAULT_REPO_STATE = {
-  version: '1.0.0',
+  version: '1.1.0',
   project: {
     name: '',
     createdAt: new Date().toISOString()
@@ -53,6 +53,12 @@ const DEFAULT_REPO_STATE = {
         apis: [],
         rules: []
       }
+    },
+    screen: {
+      path: '.specify/specs/screen/spec.md',
+      status: 'none',
+      lastModified: null,
+      screenCount: 0
     }
   },
   phase: 'initialization',
@@ -147,6 +153,13 @@ function cmdInit() {
       repoState.specs.domain.path = fs.existsSync(domainPath) ? domainPath : overviewPath;
     }
 
+    // Check if Screen spec exists
+    const screenPath = path.join(process.cwd(), '.specify', 'specs', 'screen', 'spec.md');
+    if (fs.existsSync(screenPath)) {
+      repoState.specs.screen.status = 'draft';
+      repoState.specs.screen.lastModified = new Date().toISOString();
+    }
+
     writeJson(REPO_STATE_PATH, repoState);
     console.log(`Created ${REPO_STATE_PATH}`);
   } else {
@@ -204,6 +217,25 @@ function cmdRepo(args) {
       i++;
     } else if (arg === '--set-domain-clarify') {
       repoState.specs.domain.clarifyComplete = val === 'true';
+      modified = true;
+      i++;
+    } else if (arg === '--set-screen-status' && val) {
+      if (!VALID_STATUSES.includes(val)) {
+        console.error(`Invalid status: ${val}. Valid: ${VALID_STATUSES.join(', ')}`);
+        process.exit(1);
+      }
+      if (!repoState.specs.screen) {
+        repoState.specs.screen = { path: '.specify/specs/screen/spec.md', status: 'none', lastModified: null, screenCount: 0 };
+      }
+      repoState.specs.screen.status = val;
+      repoState.specs.screen.lastModified = new Date().toISOString();
+      modified = true;
+      i++;
+    } else if (arg === '--set-screen-count' && val) {
+      if (!repoState.specs.screen) {
+        repoState.specs.screen = { path: '.specify/specs/screen/spec.md', status: 'none', lastModified: null, screenCount: 0 };
+      }
+      repoState.specs.screen.screenCount = parseInt(val, 10);
       modified = true;
       i++;
     } else if (arg === '--add-master' && val) {
@@ -503,6 +535,13 @@ function cmdQuery(args) {
       console.log(`  Masters: ${repoState.specs.domain.definitions.masters.join(', ') || '(none)'}`);
       console.log(`  APIs: ${repoState.specs.domain.definitions.apis.join(', ') || '(none)'}`);
       console.log(`  Rules: ${repoState.specs.domain.definitions.rules.join(', ') || '(none)'}`);
+      console.log(`\nScreen Spec:`);
+      if (repoState.specs.screen) {
+        console.log(`  Status: ${repoState.specs.screen.status}`);
+        console.log(`  Screen Count: ${repoState.specs.screen.screenCount}`);
+      } else {
+        console.log(`  Status: none`);
+      }
       console.log(`\nFeatures:`);
       console.log(`  Total: ${repoState.features.total}`);
       console.log(`  Backlog: ${repoState.features.byStatus.backlog}`);
@@ -613,9 +652,11 @@ Commands:
 Repo Options:
   --set-vision-status <status>  Set Vision spec status (none|scaffold|draft|clarified|approved)
   --set-domain-status <status>  Set Domain spec status
+  --set-screen-status <status>  Set Screen spec status
   --set-phase <phase>           Set project phase (initialization|vision|design|foundation|development)
   --set-vision-clarify <bool>   Set Vision clarify complete (true|false)
   --set-domain-clarify <bool>   Set Domain clarify complete
+  --set-screen-count <n>        Set screen count in Screen spec
   --add-master <id>             Add master definition (e.g., M-USER)
   --add-api <id>                Add API definition (e.g., API-USER-CREATE)
   --add-rule <id>               Add rule definition (e.g., BR-001)

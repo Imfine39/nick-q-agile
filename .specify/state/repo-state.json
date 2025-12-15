@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "project": {
     "name": "ssd-template",
     "createdAt": "2025-12-11T16:32:17.820Z"
@@ -21,6 +21,12 @@
         "apis": [],
         "rules": []
       }
+    },
+    "screen": {
+      "path": ".specify/specs/screen/spec.md",
+      "status": "none",
+      "lastModified": null,
+      "screenCount": 0
     }
   },
   "phase": "initialization",

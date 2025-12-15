@@ -226,9 +226,87 @@ constraints discovered during implementation.
 
 ---
 
-## 6. Emergency Situations
+## 6. Screen Spec Errors
 
-### 6.1 Production Incident Requiring Immediate Fix
+### 6.1 Screen Spec Not Updated Before Feature Spec (Spec-First Violation)
+
+**Symptoms**: Feature Spec references `SCR-*` that doesn't exist in Screen Spec,
+or spec-lint reports unknown screen references.
+
+**Recovery steps**:
+
+1. **Pause Feature implementation** - Do not proceed until resolved.
+2. **Update Screen Spec**:
+   - Add new screen(s) to Screen Index (Section 2).
+   - Set status to `Planned`.
+   - Add wireframe in Section 4 (Screen Details).
+3. **If modifying existing screen**:
+   - Add entry to Modification Log (Section 2.1).
+   - Update wireframe to show planned changes.
+4. **Run spec-lint** to verify: `node .specify/scripts/spec-lint.js`
+5. **Continue with Feature Spec** after Screen Spec is updated.
+
+### 6.2 Screen Status Not Updated After PR Merge
+
+**Symptoms**: Screen Status is still `Planned` after feature is deployed and
+working in production.
+
+**Recovery steps**:
+
+1. **Switch to main branch** after PR merge:
+   ```bash
+   git checkout main
+   git pull
+   ```
+2. **Update Screen Spec**:
+   - Change Screen Index status from `Planned` to `Implemented`.
+   - Update Modification Log status if applicable.
+3. **Commit the change**:
+   ```bash
+   git add .specify/specs/screen/spec.md
+   git commit -m "chore: Update Screen Spec Status to Implemented for SCR-XXX"
+   git push
+   ```
+
+### 6.3 Screen Spec Conflicts Between Features
+
+**Symptoms**: Two features modify the same screen (`SCR-*`) with conflicting
+changes in Modification Log.
+
+**Recovery steps**:
+
+1. **Identify the conflict** - Review both Modification Log entries.
+2. **Coordinate with other feature owner**:
+   - Determine merge order.
+   - Decide if changes can coexist or need consolidation.
+3. **If changes conflict**:
+   - Create a single consolidated wireframe.
+   - Update both Feature Specs to reference the consolidated design.
+4. **If changes are independent**:
+   - Merge in agreed order.
+   - Second feature rebases and adjusts wireframe as needed.
+5. **Document resolution** in both Issues.
+
+### 6.4 Missing Screen Transitions
+
+**Symptoms**: Screen Spec defines screens but transition flow is incomplete or
+missing navigation paths.
+
+**Recovery steps**:
+
+1. **Review Screen Transition Matrix** (Section 3.2).
+2. **Identify missing paths**:
+   - Entry points: How does user reach each screen?
+   - Exit points: Where can user go from each screen?
+3. **Update Mermaid diagram** (Section 3.1) with missing transitions.
+4. **Update Transition Matrix** with new rows/columns.
+5. **Review affected Feature Specs** for alignment.
+
+---
+
+## 7. Emergency Situations
+
+### 7.1 Production Incident Requiring Immediate Fix
 
 **Recovery steps**:
 
@@ -242,7 +320,7 @@ constraints discovered during implementation.
    - Add proper tests if hotfix lacked them.
    - Document in incident report.
 
-### 6.2 Spec System Itself Is Broken
+### 7.2 Spec System Itself Is Broken
 
 **Symptoms**: spec-lint.js crashes, templates are corrupted, etc.
 
@@ -269,6 +347,9 @@ constraints discovered during implementation.
 | PR rejected | Categorize feedback, fix at correct level |
 | Wrong branch | Stash, create correct branch, apply |
 | Hotfix needed | Create hotfix branch, fix, document later |
+| Screen not in Screen Spec | Update Screen Spec first (Spec-First) |
+| Screen status still Planned | Update to Implemented after PR merge |
+| Screen conflict | Coordinate with other feature owner |
 
 **Key principle**: Always fix problems at the correct level. Never patch a
 lower level to hide a problem at a higher level.

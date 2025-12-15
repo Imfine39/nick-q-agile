@@ -1,11 +1,13 @@
 # Implementation Plan: [FEATURE NAME]
 
-Plan ID: [PLAN-ID]  
-Related Spec(s): [S-001, UC-003, etc.]  
-Related Domain Spec: [for example S-DOMAIN-001]  
-Branch: [feature/<issue-number>-<short-description>]  
-Issue(s): [#123, #124]  
-Date: [DATE]  
+Plan ID: [PLAN-ID]
+Related Spec(s): [S-001, UC-003, etc.]
+Related Domain Spec: [for example S-DOMAIN-001]
+Related Screen Spec: [for example S-SCREEN-001]
+Related Screens: [SCR-001, SCR-002, etc.]
+Branch: [feature/<issue-number>-<short-description>]
+Issue(s): [#123, #124]
+Date: [DATE]
 Owner: [ENGINEER / TEAM]  
 
 Input: Specification from `.specify/specs/[id]/spec.md` (and Domain spec if needed).  

@@ -52,9 +52,11 @@ node .specify/scripts/state.js query [options]
 |--------|-------------|--------|
 | `--set-vision-status` | Vision status | none/scaffold/draft/clarified/approved |
 | `--set-domain-status` | Domain status | 同上 |
+| `--set-screen-status` | Screen status | 同上 |
 | `--set-phase` | Project phase | initialization/vision/design/foundation/development |
 | `--set-vision-clarify` | Clarify 完了 | true/false |
 | `--set-domain-clarify` | Clarify 完了 | true/false |
+| `--set-screen-count` | Screen 数 | number |
 | `--add-master` | Master 追加 | M-XXX |
 | `--add-api` | API 追加 | API-XXX-ACTION |
 | `--add-rule` | Rule 追加 | BR-XXX |
@@ -136,7 +138,7 @@ node .specify/scripts/scaffold-spec.js --kind <kind> --id <id> --title <title> [
 
 | Argument | Description |
 |----------|-------------|
-| `--kind` | Spec 種類: vision / domain / feature |
+| `--kind` | Spec 種類: vision / domain / screen / feature |
 | `--id` | Spec ID (e.g., S-VISION-001) |
 | `--title` | Spec タイトル |
 
@@ -156,6 +158,9 @@ node .specify/scripts/scaffold-spec.js --kind vision --id S-VISION-001 --title "
 # Domain Spec 作成
 node .specify/scripts/scaffold-spec.js --kind domain --id S-DOMAIN-001 --title "在庫管理 Domain" --vision S-VISION-001
 
+# Screen Spec 作成
+node .specify/scripts/scaffold-spec.js --kind screen --id S-SCREEN-001 --title "在庫管理 Screens" --vision S-VISION-001 --domain S-DOMAIN-001
+
 # Feature Spec 作成
 node .specify/scripts/scaffold-spec.js --kind feature --id S-INVENTORY-001 --title "在庫一覧" --domain S-DOMAIN-001
 ```
@@ -166,6 +171,7 @@ node .specify/scripts/scaffold-spec.js --kind feature --id S-INVENTORY-001 --tit
 |------|-------------|
 | vision | `.specify/specs/vision/spec.md` |
 | domain | `.specify/specs/domain/spec.md` |
+| screen | `.specify/specs/screen/spec.md` |
 | feature | `.specify/specs/<id>/spec.md` |
 
 ---
@@ -191,9 +197,11 @@ node .specify/scripts/spec-lint.js [options]
 
 | Check | Description |
 |-------|-------------|
-| Vision/Domain/Feature 存在 | 3層構造の整合性 |
+| Vision/Domain/Screen/Feature 存在 | 4層構造の整合性 |
 | M-*/API-* 参照 | 未定義の参照がないか |
+| SCR-* 参照 | 未定義の Screen 参照がないか |
 | Feature Index | Domain に Feature が登録されているか |
+| Screen Index | Screen Spec に Screen が登録されているか |
 | Plan/Tasks 存在 | 実装中の Spec に plan/tasks があるか |
 | ID 重複 | 同一 ID の重複がないか |
 | Domain freshness | Feature が Domain より古くないか |
@@ -378,6 +386,7 @@ node .specify/scripts/reset-input.js <type>
 | `vision` | Vision 用入力ファイルをリセット |
 | `add` | 機能追加用入力ファイルをリセット |
 | `fix` | バグ修正用入力ファイルをリセット |
+| `screen` | Screen 用入力ファイルをリセット |
 | `all` | 全入力ファイルをリセット |
 
 ### Examples
@@ -386,13 +395,16 @@ node .specify/scripts/reset-input.js <type>
 # Vision 入力ファイルをリセット
 node .specify/scripts/reset-input.js vision
 
+# Screen 入力ファイルをリセット
+node .specify/scripts/reset-input.js screen
+
 # 全入力ファイルをリセット
 node .specify/scripts/reset-input.js all
 ```
 
 ### Notes
 
-- `/speckit.vision`, `/speckit.add`, `/speckit.fix` 完了後、入力ファイルは自動リセットされる
+- `/speckit.vision`, `/speckit.add`, `/speckit.fix`, `/speckit.screen` 完了後、入力ファイルは自動リセットされる
 - 手動リセットが必要な場合にこのスクリプトを使用
 - テンプレートは `.specify/templates/quickinput-*.md` から読み込まれる
 
