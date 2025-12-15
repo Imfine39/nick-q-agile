@@ -1,7 +1,11 @@
 ---
-description: Start from existing Issue (Entry Point). Selects Issue, creates Branch, Spec with clarify loop.
+description: Start from existing Issue (Entry Point). Selects Issue, creates Branch, Spec.
 handoffs:
-  - label: Continue to Plan
+  - label: Clarify Feature
+    agent: speckit.clarify
+    prompt: Clarify the Feature Spec
+    send: true
+  - label: Skip to Plan
     agent: speckit.plan
     prompt: Create plan for the approved spec
     send: true
@@ -10,10 +14,13 @@ handoffs:
 ## Purpose
 
 **Entry point** for existing Issues (from `/speckit.design`, human creation, etc.).
-Lists Issues → User selects → Creates Branch → Creates Feature Spec → Clarify loop.
+Lists Issues → User selects → Creates Branch → Creates Feature Spec. Clarify は別コマンドで実行。
+
+**This command focuses on:** Spec 作成のみ。Clarify は `/speckit.clarify` で実行。
 
 **Use this when:** Issues already exist and you want to start working on one.
 **Use `/speckit.add` or `/speckit.fix` instead when:** No Issue exists yet.
+**Next steps:** `/speckit.clarify` で曖昧点を解消 → `/speckit.plan` で実装計画
 
 **Prerequisites:**
 - Domain spec must exist and be sufficiently clarified (M-*, API-* defined)
@@ -196,26 +203,49 @@ Lists Issues → User selects → Creates Branch → Creates Feature Spec → Cl
     - Check UC IDs are unique
     - Check Feature Index entry exists
 
-### Step 8: Clarify Loop
+### Step 8: Summary & Clarify 推奨
 
-18) **Clarify loop** (uses `/speckit.clarify` logic):
-    - While `[NEEDS CLARIFICATION]` items exist:
-      - Show 1 question at a time with recommended option
-      - Wait for answer
-      - Update spec immediately
-      - Re-run lint
-    - Continue until all resolved
+18) **Spec Summary 表示**:
+    ```
+    === Feature Spec 作成完了 ===
 
-### Step 9: Request Human Review
+    Issue: #[N] [タイトル]
+    Branch: feature/[N]-[slug]
+    Spec: .specify/specs/s-xxx-001/spec.md
 
-19) **Request human review**:
-    - Show spec summary (UC/FR/SC counts)
-    - Show referenced Domain elements (M-*, API-*)
-    - Wait for approval
+    概要:
+    - UC (User Stories): [N] 個
+    - FR (Functional Requirements): [N] 個
+    - SC (Success Criteria): [N] 個
+    - Domain Dependencies: [M-*, API-*, BR-* のリスト]
+    ```
 
-### Step 10: Update State
+19) **曖昧点レポート**:
+    ```
+    === 曖昧点 ===
 
-20) **Update branch state** (on approval):
+    [NEEDS CLARIFICATION] マーク: [N] 箇所
+
+    - Section 4: UC-001 のエッジケースが未定義
+    - Section 5: FR-003 の具体的な処理が不明
+    - ...
+
+    推奨: `/speckit.clarify` で曖昧点を解消してください。
+    ```
+
+20) **次のステップ提示**:
+    ```
+    次のステップ:
+
+    1. [推奨] `/speckit.clarify` - 曖昧点を解消
+    2. `/speckit.plan` - 曖昧点を残したまま計画作成（非推奨）
+
+    Clarify をスキップすると、実装中の手戻りリスクが高まります。
+    ```
+
+### Step 9: Update State
+
+21) **Update branch state** (on approval):
     ```bash
     node .specify/scripts/state.js branch --set-spec-id S-XXX-001 --set-spec-path .specify/specs/s-xxx-001/spec.md --set-step spec_review
     ```
@@ -233,14 +263,15 @@ Lists Issues → User selects → Creates Branch → Creates Feature Spec → Cl
 - Spec path
 - Domain references (M-*, API-*)
 - Spec summary (UC/FR count)
-- Next step: `/speckit.plan`
+- 曖昧点レポート
+- Next step recommendation: `/speckit.clarify`
 
 ## Human Checkpoints
 
 1. Select Issue to work on
 2. Approve Case 3 redirect to `/speckit.change` (if needed)
-3. Answer clarification questions (in loop)
-4. Review and approve spec
+3. Review Spec Summary
+4. → `/speckit.clarify` で曖昧点を解消
 
 ---
 
@@ -284,67 +315,31 @@ AI: Issue #2 "S-INVENTORY-001: 在庫一覧・検索" を選択しました
     - M-INVENTORY (在庫)
     - API-INVENTORY-LIST, API-INVENTORY-SEARCH
 
-    === Clarify: S-INVENTORY-001 (Q1/5) ===
+    === Feature Spec 作成完了 ===
 
-    Use Cases について確認します。
-
-    **質問**: 在庫検索の対象フィールドは？
-
-    **Recommended:** Option A - 最も一般的な検索パターンです
-
-    | Option | Description |
-    |--------|-------------|
-    | A | 商品名 + SKU |
-    | B | 商品名 + SKU + カテゴリ |
-    | C | 全フィールド（フリーテキスト検索） |
-    | Other | 別の組み合わせ |
-
-    回答: オプション文字、"yes"で推奨を採用
-
-人間: B
-
-AI: 回答を記録しました: 商品名 + SKU + カテゴリ
-
-    Spec を更新しました:
-    - Section 6: UC-INV-001 に検索対象フィールドを追記
-    - Clarifications: Q&A を記録
-
-    === Clarify: S-INVENTORY-001 (Q2/5) ===
-
-    User Interaction について確認します。
-
-    **質問**: 検索結果のページネーションは？
-
-    **Suggested:** 20件ずつ - 一般的なリスト表示の標準値
-
-    回答形式: 短い回答。"yes"で提案を採用
-
-人間: yes
-
-AI: 回答を記録しました: 20件ずつ
-
-    Spec を更新しました:
-    - Section 7: FR-INV-002 にページネーション仕様を追記
-
-    === Clarify 完了: S-INVENTORY-001 ===
-
-    質問/回答: 2 問
-    残りの項目は十分に明確です。
-
+    Issue: #2 S-INVENTORY-001: 在庫一覧・検索
+    Branch: feature/2-inventory
     Spec: .specify/specs/s-inventory-001/spec.md
 
     概要:
-    - 参照 Domain 要素: M-PRODUCTS, M-INVENTORY, 4 APIs
-    - UC: 3個 (UC-INV-001, UC-INV-002, UC-INV-003)
-    - FR: 8個
-    - SC: 3個
+    - UC (User Stories): 3 個
+    - FR (Functional Requirements): 8 個
+    - SC (Success Criteria): 3 個
+    - Domain Dependencies: M-PRODUCTS, M-INVENTORY, 4 APIs
 
-    Spec をレビューしてください。
-    問題なければ「OK」と伝えてください。
+    === 曖昧点 ===
 
-人間: OK
+    [NEEDS CLARIFICATION] マーク: 3 箇所
 
-AI: 承認されました。`/speckit.plan` を実行して実装計画を作成します。
+    - Section 6: UC-INV-001 の検索対象フィールドが未定義
+    - Section 7: FR-INV-002 のページネーション仕様が未定義
+    - Section 8: パフォーマンス要件が未定義
+
+    推奨: `/speckit.clarify` で曖昧点を解消してください。
+
+    次のステップ:
+    1. [推奨] `/speckit.clarify` - 曖昧点を解消
+    2. `/speckit.plan` - 曖昧点を残したまま計画作成（非推奨）
 ```
 
 ---

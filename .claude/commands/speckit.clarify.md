@@ -1,7 +1,15 @@
 ---
 description: Clarify ambiguous requirements with the user.
 handoffs:
-  - label: Continue to Plan
+  - label: Start Design (Vision→Domain)
+    agent: speckit.design
+    prompt: Create Domain Spec with technical details
+    send: true
+  - label: Start Feature (Domain→Issue)
+    agent: speckit.issue
+    prompt: Start implementing a feature from an existing issue
+    send: true
+  - label: Create Plan (Feature→Plan)
     agent: speckit.plan
     prompt: Create a plan for the spec
     send: true
@@ -17,8 +25,14 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 ## Purpose
 
-Spec（Vision、Domain、または Feature）の曖昧な点を特定し、人間に **1問ずつ** 質問して解消する。
+Spec（Vision、Domain、または Feature）の曖昧な点を特定し、人間に **バッチ質問** で効率的に解消する。
 回答を受け取るたびに即座に Spec に反映し、曖昧点がなくなるまでループを継続する。
+
+**Key Features:**
+- **バッチ質問**: 4問ずつまとめて質問（会話ラリーを減らす）
+- **推奨オプション**: 各質問に Recommended/Suggested を明示
+- **即時更新**: 回答ごとに Spec を即座に更新
+- **カバレッジサマリー**: 終了時に各カテゴリの状態を報告
 
 **Important**: This clarification workflow is expected to run (and be completed) BEFORE invoking `/speckit.plan`. If the user explicitly states they are skipping clarification (e.g., exploratory spike), you may proceed, but must warn that downstream rework risk increases.
 
@@ -110,7 +124,7 @@ Spec の内容を読み込み、以下のタクソノミーに基づいて各カ
 2. 優先順位付け: **Impact × Uncertainty** で評価
    - Impact: アーキテクチャ、データモデル、テスト設計、UX、運用への影響度
    - Uncertainty: 不確実性の度合い
-3. 最大 **5問** を内部キューに追加（セッション全体で最大 **10問**）
+3. **最大 12問** を内部キューに追加（4問 × 3ラウンド）
 4. 以下の質問は除外:
    - 既に回答済み
    - 実装フェーズで決めるべき詳細
@@ -118,55 +132,62 @@ Spec の内容を読み込み、以下のタクソノミーに基づいて各カ
 
 ---
 
-### Step 4: Sequential Questioning Loop (1問ずつ)
+### Step 4: Batch Questioning Loop (4問ずつ)
 
-**EXACTLY ONE question at a time** で質問する。
+**4問をまとめて提示**（1問ずつではなく、効率的にバッチで質問）。
 
-#### 4.1 質問の提示形式
-
-**複数選択の場合:**
+#### 4.1 バッチ質問の提示形式
 
 ```
-=== Clarify: [Spec ID] (Q[N]/[Total]) ===
+=== Clarify: [Spec ID] (Batch [N]/[Total]) ===
 
-[カテゴリ名] について確認します。
+[Spec Type] について確認させてください。
 
-**質問**: [質問内容]
+Q1: [カテゴリ名] について
+    **質問**: [質問内容]
+    **Recommended:** Option A - [推奨理由（1-2文）]
+    | Option | Description |
+    |--------|-------------|
+    | A | [選択肢Aの説明] |
+    | B | [選択肢Bの説明] |
+    | C | [選択肢Cの説明] |
+    | Other | 別の回答を短く記入（5語以内） |
 
-**Recommended:** Option [X] - [推奨理由（1-2文）]
+Q2: [カテゴリ名] について
+    **質問**: [質問内容]
+    **Suggested:** [提案する回答] - [提案理由（1-2文）]
+    (短答形式: 5語以内で回答。"yes" で提案を採用)
 
-| Option | Description |
-|--------|-------------|
-| A | [選択肢Aの説明] |
-| B | [選択肢Bの説明] |
-| C | [選択肢Cの説明] |
-| Other | 別の回答を短く記入（5語以内） |
+Q3: [カテゴリ名] について
+    **質問**: [質問内容]
+    **Recommended:** Option B - [推奨理由]
+    | Option | Description |
+    |--------|-------------|
+    | A | [選択肢A] |
+    | B | [選択肢B] |
+    | C | [選択肢C] |
 
-回答: オプション文字（例: "A"）、"yes"で推奨を採用、または短い回答を入力
-```
+Q4: [カテゴリ名] について
+    **質問**: [質問内容]
+    **Suggested:** [提案] - [理由]
+    (短答形式)
 
-**短答式の場合:**
-
-```
-=== Clarify: [Spec ID] (Q[N]/[Total]) ===
-
-[カテゴリ名] について確認します。
-
-**質問**: [質問内容]
-
-**Suggested:** [提案する回答] - [提案理由（1-2文）]
-
-回答形式: 短い回答（5語以内）。"yes"で提案を採用、または別の回答を入力
+---
+回答方法:
+- 複数選択: オプション文字（例: "A", "B"）
+- 短答: 5語以内の回答
+- 推奨採用: "yes", "recommended", "suggested" で提示した推奨を採用
+- 例: "A, yes, B, はい" のようにカンマ区切りで回答
 ```
 
 #### 4.2 回答の処理
 
-1. 回答を受け取る
+1. 回答を受け取る（カンマ区切りで4つの回答を期待）
 2. バリデーション:
    - 複数選択: オプション文字またはOtherの短答にマッチするか
    - 短答: 5語以内か
    - "yes", "recommended", "suggested" → 提示した推奨/提案を採用
-3. 曖昧な場合は明確化を求める（同じ質問としてカウント）
+3. **部分的に有効な回答も受け入れる**: 曖昧な回答があれば、その質問だけ再確認
 4. 有効な回答を得たら → Step 5 へ
 
 #### 4.3 ループ終了条件
@@ -174,7 +195,7 @@ Spec の内容を読み込み、以下のタクソノミーに基づいて各カ
 以下のいずれかで終了:
 - 全ての重要な曖昧点が解消された
 - ユーザーが終了を指示（"done", "good", "no more", "stop", "proceed"）
-- 5問に到達
+- 3ラウンド（12問）に到達
 
 ---
 
@@ -184,7 +205,7 @@ Spec の内容を読み込み、以下のタクソノミーに基づいて各カ
 
 #### 5.1 Clarifications セクションの管理
 
-1. `## Clarifications` セクションが存在しなければ作成（Section 15 の後、Traceability の前が推奨）
+1. `## Clarifications` セクションが存在しなければ作成
 2. `### Session YYYY-MM-DD` サブヘッダーを作成（当日分がなければ）
 3. 以下の形式で記録:
    ```markdown
@@ -194,6 +215,17 @@ Spec の内容を読み込み、以下のタクソノミーに基づいて各カ
 #### 5.2 該当セクションへの統合
 
 回答の内容に応じて、最も適切なセクションを更新:
+
+**Vision Spec の場合:**
+
+| 回答の種類 | 更新先セクション |
+|-----------|-----------------|
+| 課題/ビジョン | Section 1 (System Purpose) |
+| ユーザー | Section 2 (Target Users) |
+| ジャーニー | Section 3 (User Journeys) |
+| スコープ | Section 4 (Scope) |
+| 制約 | Section 5 (Constraints) |
+| リスク | Section 6 (Risks) |
 
 **Domain Spec の場合:**
 
@@ -231,21 +263,38 @@ Spec の内容を読み込み、以下のタクソノミーに基づいて各カ
 ### Step 6: Validation (各更新後 + 最終)
 
 各更新後に以下を検証:
-- [ ] Clarifications セクションに回答が1つだけ追加されている（重複なし）
+- [ ] Clarifications セクションに回答が追加されている（重複なし）
 - [ ] 更新したセクションに古い矛盾した記述が残っていない
 - [ ] Markdown構造が有効
 - [ ] 用語の一貫性（同じ概念に異なる用語を使っていない）
 
 ---
 
-### Step 7: Completion Report
+### Step 7: Update State
+
+Clarify 完了後、Spec の status を更新:
+
+```bash
+# Vision Spec の場合
+node .specify/scripts/state.js repo --set-vision-status clarified
+
+# Domain Spec の場合
+node .specify/scripts/state.js repo --set-domain-status clarified
+
+# Feature Spec の場合（ブランチ状態を更新）
+node .specify/scripts/state.js branch --set-step spec-clarified
+```
+
+---
+
+### Step 8: Completion Report
 
 質問ループ終了後、以下を報告:
 
 ```
 === Clarify 完了: [Spec ID] ===
 
-質問/回答: [N] 問
+質問/回答: [N] 問 ([M] ラウンド)
 更新したSpec: [ファイルパス]
 
 更新したセクション:
@@ -259,10 +308,36 @@ Spec の内容を読み込み、以下のタクソノミーに基づいて各カ
 | [カテゴリ2] | Clear | 元から十分 |
 | [カテゴリ3] | Deferred | Plan フェーズで決定 |
 | [カテゴリ4] | Outstanding | 低影響のため保留 |
+```
 
+#### Spec Type に応じた次のステップ
+
+**Vision Spec の場合:**
+```
 次のステップ:
-- [Resolved/Clear が多い場合]: Spec をレビューし、承認後 `/speckit.plan` へ
-- [Outstanding/Deferred が多い場合]: 追加の clarify を推奨、または `/speckit.clarify` を後で再実行
+1. [推奨] `/speckit.design` - 技術設計（Domain Spec + Feature 提案）
+2. `/speckit.clarify` を再実行 - さらに詳細化したい場合
+
+Vision が明確になりました。次は Domain Spec で技術的な詳細を定義します。
+```
+
+**Domain Spec の場合:**
+```
+次のステップ:
+1. [推奨] `/speckit.issue` - Foundation (S-FOUNDATION-001) から実装開始
+2. `/speckit.featureproposal` - 追加の Feature を提案
+3. `/speckit.clarify` を再実行 - さらに詳細化したい場合
+
+Domain が明確になりました。Foundation から実装を始めましょう。
+```
+
+**Feature Spec の場合:**
+```
+次のステップ:
+1. [推奨] `/speckit.plan` - 実装計画を作成
+2. `/speckit.clarify` を再実行 - さらに詳細化したい場合
+
+Feature Spec が明確になりました。人間のレビュー後、Plan を作成します。
 ```
 
 ---
@@ -271,14 +346,14 @@ Spec の内容を読み込み、以下のタクソノミーに基づいて各カ
 
 1. **曖昧点がない場合**: 「重大な曖昧点は検出されませんでした」と報告し、次のステップを提案
 2. **Spec が存在しない場合**: 先に `/speckit.vision` + `/speckit.design`（Vision/Domain）または `/speckit.issue`（Feature）を実行するよう指示
-3. **質問数制限**: 1セッションで最大5問、全体で最大10問を超えない
+3. **質問数制限**: 1ラウンド4問、最大3ラウンド（12問）を超えない
 4. **技術スタック質問**: 機能的な明確性に影響しない限り避ける
 5. **早期終了**: ユーザーの終了シグナルを尊重
-6. **将来の質問を先出ししない**: キューにある質問を事前に見せない
+6. **部分回答の許容**: 4問中一部だけ回答された場合も、有効な回答は処理する
 
 ---
 
-## Example: Domain Clarify Session
+## Example: Domain Clarify Session (Batch)
 
 ```
 人間: /speckit.clarify
@@ -286,148 +361,120 @@ Spec の内容を読み込み、以下のタクソノミーに基づいて各カ
 AI: Domain Spec S-DOMAIN-001 を読み込みました。
     曖昧性スキャンを実行中...
 
-    === Clarify: S-DOMAIN-001 (Q1/5) ===
+    === Clarify: S-DOMAIN-001 (Batch 1/2) ===
 
-    Master Data (M-*) について確認します。
+    Domain Spec について確認させてください。
 
-    **質問**: このシステムで管理する主要なエンティティは何ですか？
+    Q1: Master Data (M-*) について
+        **質問**: このシステムで管理する主要なエンティティは何ですか？
+        **Recommended:** Option A - SFAシステムの標準的な構成で、
+        顧客→案件→売上の流れを管理できます
+        | Option | Description |
+        |--------|-------------|
+        | A | 顧客(M-CLIENTS)、案件(M-PROJECTS)、売上(M-REVENUES) |
+        | B | 顧客(M-CLIENTS)、商品(M-PRODUCTS)、注文(M-ORDERS) |
+        | C | ユーザー(M-USERS)、タスク(M-TASKS)、プロジェクト(M-PROJECTS) |
+        | Other | 別の組み合わせを記入 |
 
-    **Recommended:** Option A - SFAシステムの標準的な構成で、
-    顧客→案件→売上の流れを管理できます
+    Q2: Actors & Permissions について
+        **質問**: システムを利用するアクター（ユーザー種別）は？
+        **Suggested:** 営業担当、マネージャー、管理者 -
+        SFAシステムの一般的な3層権限構造です
+        (短答形式: 5語以内。"yes" で提案を採用)
 
-    | Option | Description |
-    |--------|-------------|
-    | A | 顧客(M-CLIENTS)、案件(M-PROJECTS)、売上(M-REVENUES) |
-    | B | 顧客(M-CLIENTS)、商品(M-PRODUCTS)、注文(M-ORDERS) |
-    | C | ユーザー(M-USERS)、タスク(M-TASKS)、プロジェクト(M-PROJECTS) |
-    | Other | 別の組み合わせを記入 |
+    Q3: State & Lifecycle について
+        **質問**: 案件(M-PROJECTS)のステータス遷移は？
+        **Suggested:** リード → 商談 → 見積 → 受注 → 納品 → 検収 -
+        コンサルティング案件の典型的なパイプライン
+        (短答形式: "yes" で提案を採用、または別の回答)
 
-    回答: オプション文字、"yes"で推奨を採用、または短い回答を入力
+    Q4: API Contracts (API-*) について
+        **質問**: 認証方式は？
+        **Recommended:** Option A - SPAやモバイルアプリに適した
+        ステートレス認証方式です
+        | Option | Description |
+        |--------|-------------|
+        | A | JWT (JSON Web Token) |
+        | B | Session-based (Cookie) |
+        | C | OAuth 2.0 (外部IdP連携) |
 
-人間: yes
+    ---
+    回答方法: カンマ区切りで4つの回答（例: "A, yes, yes, A"）
 
-AI: 回答を記録しました: 顧客(M-CLIENTS)、案件(M-PROJECTS)、売上(M-REVENUES)
+人間: yes, 営業、マネージャー、経理、管理者, yes, A
 
-    Spec を更新しました:
-    - Section 3 (Master Data Definitions): M-CLIENTS, M-PROJECTS, M-REVENUES を追加
-    - Clarifications: Q&A を記録
-
-    === Clarify: S-DOMAIN-001 (Q2/5) ===
-
-    Actors & Permissions について確認します。
-
-    **質問**: システムを利用するアクター（ユーザー種別）は？
-
-    **Suggested:** 営業担当、マネージャー、管理者 -
-    SFAシステムの一般的な3層権限構造です
-
-    回答形式: 短い回答（5語以内）。"yes"で提案を採用、または別の回答
-
-人間: 営業、マネージャー、経理、管理者
-
-AI: 回答を記録しました: 営業、マネージャー、経理、管理者
+AI: 回答を記録しました:
+    - Q1: 顧客(M-CLIENTS)、案件(M-PROJECTS)、売上(M-REVENUES)
+    - Q2: 営業、マネージャー、経理、管理者
+    - Q3: リード → 商談 → 見積 → 受注 → 納品 → 検収
+    - Q4: JWT (JSON Web Token)
 
     Spec を更新しました:
     - Section 2 (Actors): 4種類のアクターを定義
-    - Clarifications: Q&A を記録
-
-    === Clarify: S-DOMAIN-001 (Q3/5) ===
-
-    State & Lifecycle について確認します。
-
-    **質問**: 案件(M-PROJECTS)のステータス遷移は？
-
-    **Suggested:** リード → 商談 → 見積 → 受注 → 納品 → 検収 -
-    コンサルティング案件の典型的なパイプライン
-
-    回答形式: 短い回答。"yes"で提案を採用、または別の回答
-
-人間: yes
-
-AI: 回答を記録しました: リード → 商談 → 見積 → 受注 → 納品 → 検収
-
-    Spec を更新しました:
-    - Section 5 (State & Lifecycle): ステータス遷移を定義
-    - Section 3 (Master Data Definitions): M-PROJECTS に status フィールドを追加
-    - Clarifications: Q&A を記録
-
-    === Clarify: S-DOMAIN-001 (Q4/5) ===
-
-    API Contracts (API-*) について確認します。
-
-    **質問**: 認証方式は？
-
-    **Recommended:** Option A - SPAやモバイルアプリに適した
-    ステートレス認証方式です
-
-    | Option | Description |
-    |--------|-------------|
-    | A | JWT (JSON Web Token) |
-    | B | Session-based (Cookie) |
-    | C | OAuth 2.0 (外部IdP連携) |
-    | D | API Key (サービス間通信用) |
-
-    回答: オプション文字、"yes"で推奨を採用、または短い回答
-
-人間: A
-
-AI: 回答を記録しました: JWT (JSON Web Token)
-
-    Spec を更新しました:
+    - Section 3 (Master Data): M-CLIENTS, M-PROJECTS, M-REVENUES を追加
     - Section 4 (API Contracts): 認証方式を JWT と定義
-    - Section 7 (Non-Functional Requirements): セキュリティ要件に追記
-    - Clarifications: Q&A を記録
+    - Section 5 (State & Lifecycle): ステータス遷移を定義
+    - Clarifications: Session 2025-12-12 に4問を記録
 
-    === Clarify: S-DOMAIN-001 (Q5/5) ===
+    === Clarify: S-DOMAIN-001 (Batch 2/2) ===
 
-    Business Rules について確認します。
+    Q5: Business Rules について
+        **質問**: 売上(M-REVENUES)の計算方法は？
+        **Suggested:** 契約金額を納品月に一括計上 -
+        中小企業向けの一般的な計上方法
+        (短答形式)
 
-    **質問**: 売上(M-REVENUES)の計算方法は？
+    Q6: Non-Functional について
+        **質問**: 同時接続ユーザー数の想定は？
+        **Recommended:** Option A - 中小企業の標準的な規模
+        | Option | Description |
+        |--------|-------------|
+        | A | 10名以下 |
+        | B | 10-50名 |
+        | C | 50-100名 |
 
-    **Suggested:** 案件の契約金額を契約期間で月按分 -
-    コンサルティング収益認識の一般的な方法
+    ---
+    回答方法: カンマ区切りで2つの回答
 
-    回答形式: 短い回答。"yes"で提案を採用、または別の回答
+人間: yes, A
 
-人間: 契約金額を納品月に一括計上
-
-AI: 回答を記録しました: 契約金額を納品月に一括計上
+AI: 回答を記録しました:
+    - Q5: 契約金額を納品月に一括計上
+    - Q6: 10名以下
 
     Spec を更新しました:
-    - Section 6 (Shared Business Rules): 売上計上ルールを定義
-    - Clarifications: Q&A を記録
+    - Section 6 (Business Rules): 売上計上ルールを定義
+    - Section 7 (Non-Functional): 同時接続数を定義
+    - Clarifications: 2問を追記
 
     === Clarify 完了: S-DOMAIN-001 ===
 
-    質問/回答: 5 問
+    質問/回答: 6 問 (2 ラウンド)
     更新したSpec: .specify/specs/domain/spec.md
 
     更新したセクション:
-    - Section 2 (Actors and Roles): 4種類のアクター定義
-    - Section 3 (Master Data Definitions): 3つのマスター定義 (M-*)
+    - Section 2 (Actors): 4種類のアクター定義
+    - Section 3 (Master Data): 3つのマスター定義 (M-*)
     - Section 4 (API Contracts): 認証方式
     - Section 5 (State & Lifecycle): ステータス遷移
-    - Section 6 (Shared Business Rules): 売上計上ルール
-    - Section 7 (Non-Functional Requirements): セキュリティ要件
-    - Clarifications: Session 2025-12-11 追加
+    - Section 6 (Business Rules): 売上計上ルール
+    - Section 7 (Non-Functional): 同時接続数
+    - Clarifications: Session 2025-12-12 追加
 
     カバレッジサマリー:
     | Category | Status | Notes |
     |----------|--------|-------|
     | Domain & Vocabulary | Clear | システム目的は明確 |
     | Master Data (M-*) | Resolved | 3エンティティ定義 |
-    | API Contracts (API-*) | Partial | CRUD詳細は次回 |
+    | API Contracts (API-*) | Resolved | 認証方式定義 |
     | State & Lifecycle | Resolved | 案件ステータス定義 |
     | Actors & Permissions | Resolved | 4アクター定義 |
     | Business Rules | Resolved | 売上計上ルール定義 |
-    | Non-Functional | Partial | 認証のみ、性能は未定義 |
-    | Integration | Deferred | 外部連携はPlanで検討 |
+    | Non-Functional | Resolved | 同時接続数定義 |
+    | Technology Decisions | Deferred | Plan で詳細化 |
 
     次のステップ:
-    - API の CRUD 詳細を追加で clarify するか
-    - または Spec をレビューし、承認後 `/speckit.plan` へ
-
-    追加の clarify が必要ですか？ ("yes" で継続、"no" でレビューへ)
+    Spec をレビューし、承認後 `/speckit.plan` へ進んでください。
 ```
 
 ---
@@ -439,4 +486,4 @@ AI: 回答を記録しました: 契約金額を納品月に一括計上
 - Feature clarify は Domain が十分に定義されていることが前提
 - 人間が「後で」「スキップ」と言った場合は `[NEEDS CLARIFICATION]` を残し、Deferred としてレポート
 - 各セッションは独立（前回のセッションを自動継続しない）
-- 10問を超えるセッションが必要な場合は、Spec の分割を検討
+- 12問を超えるセッションが必要な場合は、Spec の分割を検討

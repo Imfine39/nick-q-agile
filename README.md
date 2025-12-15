@@ -122,11 +122,14 @@ Fix Bug:
 
 ```
 .
-├── .claude/commands/       # speckit.* コマンド (17+)
+├── .claude/
+│   ├── commands/           # speckit.* コマンド (17+)
+│   └── settings.local.json # Hooks 設定
 ├── .specify/
 │   ├── memory/constitution.md   # Engineering Constitution
-│   ├── templates/          # Spec テンプレート (6)
-│   ├── scripts/            # Node.js スクリプト (6)
+│   ├── input/              # Quick Input ファイル（ユーザー入力用）
+│   ├── templates/          # Spec + Quick Input テンプレート (9)
+│   ├── scripts/            # Node.js スクリプト (7)
 │   ├── specs/              # 仕様書（自動生成）
 │   └── state/              # 状態ファイル
 ├── docs/                   # ドキュメント
@@ -141,6 +144,8 @@ Fix Bug:
 |------|---------|
 | `CLAUDE.md` | AI エージェントの行動指針 |
 | `.specify/memory/constitution.md` | Engineering Constitution（最上位ルール） |
+| `.claude/settings.local.json` | Hooks 設定（SessionStart で状態自動読込） |
+| `.specify/input/*.md` | Quick Input ファイル（コマンド実行前にユーザーが記入） |
 
 ---
 

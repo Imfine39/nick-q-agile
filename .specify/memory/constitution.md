@@ -148,7 +148,7 @@ Non-negotiable rules:
 
   1. **Entry Point** (`/speckit.add`, `/speckit.fix`, or `/speckit.issue`):
      - Issue creation (if not exists) → Branch creation → Spec creation
-     - Clarify loop until all ambiguities resolved
+     - `/speckit.clarify` で曖昧点を解消（4 問ずつバッチ質問）
      - Human reviews and approves spec
   2. `/speckit.plan` to derive a technical implementation plan aligned with the spec.
      - Human reviews and approves plan

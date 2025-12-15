@@ -14,6 +14,7 @@ Node.js スクリプトのリファレンスです。
 | `branch.js` | ブランチ作成 |
 | `pr.js` | PR 作成 |
 | `spec-metrics.js` | メトリクス収集 |
+| `reset-input.js` | Quick Input ファイルリセット |
 
 **Location:** `.specify/scripts/`
 
@@ -357,6 +358,43 @@ HEALTH
   Issues:
     - 1 feature(s) may be outdated
 ```
+
+---
+
+## reset-input.js
+
+**Purpose:** Quick Input ファイルをテンプレートにリセット
+
+### Usage
+
+```bash
+node .specify/scripts/reset-input.js <type>
+```
+
+### Arguments
+
+| Argument | Description |
+|----------|-------------|
+| `vision` | Vision 用入力ファイルをリセット |
+| `add` | 機能追加用入力ファイルをリセット |
+| `fix` | バグ修正用入力ファイルをリセット |
+| `all` | 全入力ファイルをリセット |
+
+### Examples
+
+```bash
+# Vision 入力ファイルをリセット
+node .specify/scripts/reset-input.js vision
+
+# 全入力ファイルをリセット
+node .specify/scripts/reset-input.js all
+```
+
+### Notes
+
+- `/speckit.vision`, `/speckit.add`, `/speckit.fix` 完了後、入力ファイルは自動リセットされる
+- 手動リセットが必要な場合にこのスクリプトを使用
+- テンプレートは `.specify/templates/quickinput-*.md` から読み込まれる
 
 ---
 

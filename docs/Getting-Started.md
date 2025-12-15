@@ -88,12 +88,17 @@ your-project/
 │       └── ...
 ├── .specify/
 │   ├── guides/             # ガイドドキュメント
+│   ├── input/              # Quick Input ファイル（ユーザー入力用）
+│   │   ├── vision.md       # Vision 作成時の入力
+│   │   ├── add.md          # 機能追加時の入力
+│   │   └── fix.md          # バグ修正時の入力
 │   ├── memory/
 │   │   └── constitution.md # Engineering Constitution
 │   ├── scripts/            # Node.js スクリプト
 │   │   ├── state.js
 │   │   ├── scaffold-spec.js
 │   │   ├── spec-lint.js
+│   │   ├── reset-input.js  # Quick Input リセット
 │   │   └── ...
 │   ├── specs/              # 仕様書（自動生成）
 │   │   ├── vision/
@@ -112,20 +117,34 @@ your-project/
 ### 1. 新規プロジェクトの場合
 
 ```
+# Option A: Quick Input を使用（推奨）
+# 1. .specify/input/vision.md を編集
+# 2. 以下を実行
+/speckit.vision
+
+# Option B: コマンドラインから直接
 /speckit.vision 〇〇システムを作りたい
 ```
 
 AI が Vision Spec を作成し、プロジェクトの目的を明確化します。
+作成後、`/speckit.clarify` で曖昧点を解消します。
 
 詳細: [[Workflow-New-Project]]
 
 ### 2. 既存プロジェクトへの機能追加
 
 ```
+# Option A: Quick Input を使用（推奨）
+# 1. .specify/input/add.md を編集
+# 2. 以下を実行
+/speckit.add
+
+# Option B: コマンドラインから直接
 /speckit.add ユーザー認証機能を追加したい
 ```
 
 AI が Issue を作成し、Feature Spec の作成を開始します。
+作成後、`/speckit.clarify` で曖昧点を解消します。
 
 詳細: [[Workflow-Add-Feature]]
 
@@ -138,10 +157,13 @@ AI が Issue を作成し、Feature Spec の作成を開始します。
 │                    NEW PROJECT                               │
 ├─────────────────────────────────────────────────────────────┤
 │  /speckit.vision     → Vision Spec 作成                      │
+│  /speckit.clarify    → 曖昧点を解消（4問ずつバッチ）          │
 │         ↓                                                    │
 │  /speckit.design     → Feature 提案 + Domain Spec 作成       │
+│  /speckit.clarify    → 曖昧点を解消                          │
 │         ↓                                                    │
 │  /speckit.issue      → Foundation 実装開始                   │
+│  /speckit.clarify    → 曖昧点を解消                          │
 │         ↓                                                    │
 │  /speckit.plan       → 実装計画作成                          │
 │         ↓                                                    │

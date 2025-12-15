@@ -211,7 +211,18 @@ Rules that apply only to this feature (not shared across domain).
 
 ---
 
-## 14. Changelog
+## 14. Original Input
+
+User-provided input that was used to generate this spec.
+This section preserves the original context for future reference.
+
+```
+[ORIGINAL_INPUT_CONTENT]
+```
+
+---
+
+## 15. Changelog
 
 | Date | Change Type | Description | Issue |
 |------|-------------|-------------|-------|
@@ -221,7 +232,7 @@ Change types: Created, Updated, Clarified, Extended, Deprecated, Superseded, Bug
 
 ---
 
-## 15. Implementation Notes
+## 16. Implementation Notes
 
 Notes discovered during implementation.
 

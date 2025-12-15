@@ -1,6 +1,10 @@
 ---
 description: Change Vision or Domain Spec (existing M-*/API-*/BR-*/VR-*). Analyzes impact on Features.
 handoffs:
+  - label: Clarify Changes
+    agent: speckit.clarify
+    prompt: Clarify the Spec changes
+    send: true
   - label: Resume Suspended Work
     agent: speckit.issue
     prompt: Resume the suspended feature implementation
@@ -191,9 +195,9 @@ This command handles **modifications to existing items**, not additions.
     - Update affected FR/UC
     - Add Changelog entry noting the change
 
-16) **Clarify loop** (if needed):
-    - If change introduces ambiguity, clarify
-    - Update specs immediately
+16) **曖昧点の検出**:
+    - If change introduces ambiguity, mark as `[NEEDS CLARIFICATION]`
+    - 推奨: `/speckit.clarify` で曖昧点を解消
 
 ### Step 6: Lint and Review
 

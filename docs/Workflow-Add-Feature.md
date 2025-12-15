@@ -42,7 +42,8 @@
    - Domain 参照の確認
    - Case 1/2/3 判定（[[Core-Concepts]] 参照）
 
-4. **Clarify ループ**
+4. **曖昧点レポート表示**
+   → `/speckit.clarify` で 4 問ずつバッチ解消（別コマンド）
 
 5. **Domain Feature Index 更新**
 
@@ -121,7 +122,7 @@ AI に Feature 候補を提案させたい場合。
 
 3. **Feature Spec 作成**
    - Domain 参照チェック
-   - Clarify ループ
+   → `/speckit.clarify` で曖昧点を解消（別コマンド）
 
 4. **Feature Index 更新**
 
@@ -158,7 +159,8 @@ AI に Feature 候補を提案させたい場合。
    - 関連する Feature Spec を探す
    - Changelog セクションに記録
 
-4. **Clarify ループ**
+4. **曖昧点レポート表示**
+   → `/speckit.clarify` で解消（別コマンド）
    - 再現手順
    - 期待される動作
    - 修正方針
@@ -204,7 +206,7 @@ Vision または Domain Spec の変更が必要な場合。
 
 4. **Domain Spec 更新**
    - 影響分析（依存する Feature を特定）
-   - Clarify ループ
+   → `/speckit.clarify` で曖昧点を解消（別コマンド）
    - Changelog 更新
 
 5. **PR 作成 & マージ**

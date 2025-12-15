@@ -1,7 +1,11 @@
 ---
-description: Create or update a Spec (Vision, Domain, or Feature). Loops clarify until no ambiguity remains.
+description: Create or update a Spec (Vision, Domain, or Feature).
 handoffs:
-  - label: Continue to Plan
+  - label: Clarify Spec
+    agent: speckit.clarify
+    prompt: Clarify the Spec
+    send: true
+  - label: Skip to Plan
     agent: speckit.plan
     prompt: Create implementation plan from this spec
     send: true
@@ -19,7 +23,8 @@ Create or update a Spec. This is a **base command** that can be:
 - Called by entry points (`/speckit.add`, `/speckit.fix`, `/speckit.issue`)
 - Called directly to create/update a spec manually
 
-**Important**: After spec creation, automatically loops `/speckit.clarify` until all `[NEEDS CLARIFICATION]` items are resolved.
+**This command focuses on:** Spec 作成のみ。Clarify は `/speckit.clarify` で実行。
+**Next steps:** `/speckit.clarify` で曖昧点を解消 → `/speckit.plan` で実装計画
 
 ## Modes
 
@@ -77,24 +82,35 @@ Generate detailed spec content from description.
 5) **Run lint**:
    - Execute: `node .specify/scripts/spec-lint.js`
 
-6) **Clarify loop**:
-   - If `[NEEDS CLARIFICATION]` items exist:
-     - Show items to human
-     - Ask for clarification
-     - Update spec with answers
-     - Repeat until all resolved
-   - This loop continues until spec has zero `[NEEDS CLARIFICATION]`
+6) **Summary & Clarify 推奨**:
+   ```
+   === Spec 作成完了 ===
 
-7) **Request human review**:
-   - Show final spec summary
-   - Wait for approval before proceeding to plan
+   Spec: [ファイルパス]
+
+   概要:
+   - UC: [N] 個
+   - FR: [N] 個
+   - SC: [N] 個
+
+   === 曖昧点 ===
+
+   [NEEDS CLARIFICATION] マーク: [N] 箇所
+   - [曖昧点のリスト]
+
+   推奨: `/speckit.clarify` で曖昧点を解消してください。
+
+   次のステップ:
+   1. [推奨] `/speckit.clarify` - 曖昧点を解消
+   2. `/speckit.plan` - 曖昧点を残したまま計画作成（非推奨）
+   ```
 
 ## Output
 
 - Spec file path
 - Spec summary (UC/FR/SC counts)
-- Confirmation that all clarifications resolved
-- Next step: `/speckit.plan`
+- 曖昧点レポート
+- Next step recommendation: `/speckit.clarify`
 
 ## Example
 
@@ -106,19 +122,16 @@ AI: Feature Spec を作成しました: .specify/specs/s-auth-001/spec.md
     - FR: 8個
     - SC: 4個
 
-    [NEEDS CLARIFICATION]:
-    1. パスワードの最小文字数は？
-    2. ログイン失敗時のロック条件は？
+    === 曖昧点 ===
 
-人間: 1. 8文字以上  2. 5回失敗で30分ロック
+    [NEEDS CLARIFICATION] マーク: 2 箇所
 
-AI: Spec を更新しました。
-    [NEEDS CLARIFICATION] はすべて解決しました。
+    - FR-002: パスワードの最小文字数が未定義
+    - FR-005: ログイン失敗時のロック条件が未定義
 
-    Specをレビューしてください。
-    問題なければ「OK」と伝えてください。
+    推奨: `/speckit.clarify` で曖昧点を解消してください。
 
-人間: OK
-
-AI: /speckit.plan を実行します...
+    次のステップ:
+    1. [推奨] `/speckit.clarify` - 曖昧点を解消
+    2. `/speckit.plan` - 曖昧点を残したまま計画作成（非推奨）
 ```

@@ -1,6 +1,23 @@
 {
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .specify/scripts/state.js query --all 2>/dev/null || echo \"[SSD State] Not initialized. Run: node .specify/scripts/state.js init\""
+          }
+        ]
+      }
+    ]
+  },
   "permissions": {
+    "defaultMode": "acceptEdits",
     "allow": [
+      "Edit",
+      "MultiEdit",
+      "Bash(npm run lint)",
+      "Bash(npm run test:*)",
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Bash(git rev-parse:*)",
@@ -19,5 +36,10 @@
       "Bash(git remote add:*)",
       "Bash(git branch:*)"
     ]
-  }
+  },
+  "enabledMcpjsonServers": [
+    "serena"
+  ],
+  "enableAllProjectMcpServers": true,
+  "outputStyle": "default"
 }

@@ -1,7 +1,11 @@
 ---
-description: Add a new feature (Entry Point). Creates Issue, Branch, Spec with clarify loop.
+description: Add a new feature (Entry Point). Creates Issue, Branch, Spec.
 handoffs:
-  - label: Continue to Plan
+  - label: Clarify Feature
+    agent: speckit.clarify
+    prompt: Clarify the Feature Spec
+    send: true
+  - label: Skip to Plan
     agent: speckit.plan
     prompt: Create plan for the approved spec
     send: true
@@ -16,92 +20,234 @@ $ARGUMENTS
 ## Purpose
 
 **Entry point** for new features when no Issue exists.
-Creates Issue → Branch → Spec, then loops clarify until all ambiguities are resolved.
+Creates Issue → Branch → Spec. Clarify は別コマンドで実行。
+
+**This command focuses on:** Spec 作成のみ。Clarify は `/speckit.clarify` で実行。
 
 **Use this when:** You want to add something new and no Issue exists.
 **Use `/speckit.issue` instead when:** Issues already exist (from `/speckit.design` or human creation).
+**Next steps:** `/speckit.clarify` で曖昧点を解消 → `/speckit.plan` で実装計画
 
 ## Steps
 
-1) **Parse feature description**:
-   - Extract from `$ARGUMENTS`
-   - If empty, ask user to describe the feature
+### Step 1: Quick Input Collection
 
-2) **Check Domain Spec exists and is clarified**:
+**Goal:** 構造化された入力を収集し、AI が的確な Feature Spec を生成できるようにする。
+
+#### 1.1 入力ファイルの読み込み
+
+**まず `.specify/input/add.md` を読み込む。**
+
+```bash
+# 入力ファイルを読み込み
+cat .specify/input/add.md
+```
+
+#### 1.2 入力方式の判定
+
+以下の優先順位で入力を判定:
+
+1. **入力ファイルにユーザー記入がある場合**
+   - `.specify/input/add.md` の各項目（機能名、課題など）に記入がある
+   - → その内容を使用して Step 1.4 へ
+
+2. **$ARGUMENTS に十分な情報がある場合**
+   - 機能名、解決したい課題、期待する動作が含まれる
+   - → その内容を使用して Step 1.4 へ
+
+3. **どちらも不十分な場合**
+   - → Step 1.3 で入力ファイルの記入を促す
+
+**入力ファイルが「記入済み」かの判定:**
+- 「機能名」が空でない
+- 「期待する動作」に1つ以上の項目がある
+- → 両方満たせば「記入済み」と判定
+
+#### 1.3 入力ファイルの記入を促す
+
+```
+入力が不足しています。
+
+以下のいずれかの方法で情報を提供してください:
+
+Option A: 入力ファイルを編集（推奨）
+  1. `.specify/input/add.md` をエディタで開く
+  2. テンプレートを埋める
+  3. `/speckit.add` を再実行
+
+Option B: チャットで情報を提供
+  追加したい機能について教えてください:
+  - 機能名
+  - 解決したい課題
+  - 期待する動作（3-5個）
+```
+
+**入力ファイルの編集を待つか、チャットでの入力を受け付ける。**
+
+#### 1.4 入力の解析
+
+入力から以下を抽出:
+
+| 項目 | 抽出先 |
+|------|--------|
+| 機能名 | Feature Spec タイトル, Issue タイトル |
+| 解決したい課題 | Section 1 (Purpose) |
+| 誰が使うか | Section 3 (Actors) |
+| 期待する動作 | Section 4-5 (User Stories, Functional Requirements) |
+| 関連する既存機能 | Section 2 (Domain Dependencies) |
+| 制約 | Section 8 (Non-Functional Requirements) |
+
+---
+
+### Step 2: Check Prerequisites
+
+1. **Check Domain Spec exists and is clarified**:
    - Look for Domain spec in `.specify/specs/domain/` (or legacy `.specify/specs/overview/`)
    - If not found: "Domain Spec が見つかりません。先に `/speckit.design` を実行してください"
    - Check Domain has M-* and API-* definitions (not just placeholders)
    - If Domain is scaffold or missing M-*/API-*:
      "Domain Spec がまだ精密化されていません。先に `/speckit.design` を完了してください"
 
-3) **Create GitHub Issue**:
-   ```bash
-   gh issue create --title "[Feature] <title>" --body "..." --label feature
+---
+
+### Step 3: Create GitHub Issue
+
+```bash
+gh issue create --title "[Feature] <title>" --body "..." --label feature
+```
+
+---
+
+### Step 4: Create Branch
+
+```bash
+node .specify/scripts/branch.js --type feature --slug <slug> --issue <num>
+```
+
+---
+
+### Step 5: Analyze Codebase
+
+- Use Serena to explore existing code structure
+- Identify related components, patterns, dependencies
+- Use context7 for library documentation if needed
+
+---
+
+### Step 6: Create Feature Spec
+
+- Scaffold: `node .specify/scripts/scaffold-spec.js --kind feature --id S-XXX-001 --title "..." --domain S-DOMAIN-001`
+- Fill sections: Purpose, Actors, Domain Model (M-*, API-*), UC, FR, SC, Edge Cases, NFR
+- Reference analyzed code patterns and constraints
+- Mark unclear items as `[NEEDS CLARIFICATION]`
+
+---
+
+### Step 7: Check M-*/API-* Requirements
+
+Identify all M-*, API-*, BR-* that this Feature needs and classify:
+
+| Case | Situation | Action |
+|------|-----------|--------|
+| Case 1 | Existing M-*/API-* is sufficient | Add reference to Feature Spec |
+| Case 2 | New M-*/API-*/BR-* needed | Add to Domain Spec, continue |
+| Case 3 | Existing M-*/API-*/BR-* needs modification | Trigger `/speckit.change` |
+
+**Case 2 handling**:
+- Add new definitions to Domain Spec
+- Update correspondence table
+- Continue with Feature Spec creation
+
+**Case 3 handling**:
+- Stop Feature Spec creation
+- Prompt: "既存の [M-xxx] の変更が必要です。`/speckit.change` を実行しますか？"
+- After change merged, resume with `/speckit.issue`
+
+---
+
+### Step 8: Update Domain Spec Feature Index
+
+Open `.specify/specs/domain/spec.md` and add entry in Section 8 (Feature Index):
+```markdown
+| S-XXX-001 | [Feature Title] | `.specify/specs/s-xxx-001/` | Draft | [M-*, API-*] |
+```
+
+---
+
+### Step 9: Run Lint
+
+```bash
+node .specify/scripts/spec-lint.js
+```
+- Check Feature correctly references Domain M-*/API-*
+- Check Feature Index entry exists
+
+---
+
+### Step 10: Record Original Input & Reset
+
+入力ファイル（`.specify/input/add.md`）から入力があった場合:
+
+1. **Spec の末尾に「Original Input」セクションを追加**:
+   ```markdown
+   ---
+
+   ## Original Input
+
+   > 以下は `/speckit.add` 実行時に `.specify/input/add.md` から取得した元の入力です。
+
+   [入力ファイルの内容をそのまま引用]
    ```
 
-4) **Create branch**:
+2. **入力ファイルをリセット**:
    ```bash
-   node .specify/scripts/branch.js --type feature --slug <slug> --issue <num>
+   node .specify/scripts/reset-input.js add
    ```
 
-5) **Analyze codebase** (context collection):
-   - Use Serena to explore existing code structure
-   - Identify related components, patterns, dependencies
-   - Use context7 for library documentation if needed
+---
 
-6) **Create spec** (uses `/speckit.spec` logic):
-   - Scaffold: `node .specify/scripts/scaffold-spec.js --kind feature --id S-XXX-001 --title "..." --domain S-DOMAIN-001`
-   - Fill sections: Purpose, Actors, Domain Model (M-*, API-*), UC, FR, SC, Edge Cases, NFR
-   - Reference analyzed code patterns and constraints
-   - Mark unclear items as `[NEEDS CLARIFICATION]`
+### Step 11: Summary & Clarify 推奨
 
-7) **Check M-*/API-* Requirements (Case 2/3 Branching)**:
-   - Identify all M-*, API-*, BR-* that this Feature needs
-   - Compare against existing Domain Spec definitions
-   - Classify each requirement:
+#### 11.1 Spec Summary 表示
 
-   | Case | Situation | Action |
-   |------|-----------|--------|
-   | Case 1 | Existing M-*/API-* is sufficient | Add reference to Feature Spec |
-   | Case 2 | New M-*/API-*/BR-* needed | Add to Domain Spec, continue |
-   | Case 3 | Existing M-*/API-*/BR-* needs modification | Trigger `/speckit.change` |
+```
+=== Feature Spec 作成完了 ===
 
-   **Case 2 handling**:
-   - Add new definitions to Domain Spec
-   - Update correspondence table
-   - Continue with Feature Spec creation
+Issue: #[N] [Feature] [タイトル]
+Branch: feature/[N]-[slug]
+Spec: .specify/specs/s-xxx-001/spec.md
 
-   **Case 3 handling**:
-   - Stop Feature Spec creation
-   - Prompt: "既存の [M-xxx] の変更が必要です。`/speckit.change` を実行しますか？"
-   - After change merged, resume with `/speckit.issue`
+概要:
+- UC (User Stories): [N] 個
+- FR (Functional Requirements): [N] 個
+- SC (Success Criteria): [N] 個
+- Domain Dependencies: [M-*, API-*, BR-* のリスト]
+```
 
-8) **Update Domain Spec Feature Index**:
-   - Open `.specify/specs/domain/spec.md`
-   - Add entry in Section 8 (Feature Index):
-     ```markdown
-     | S-XXX-001 | [Feature Title] | `.specify/specs/s-xxx-001/` | Draft | [M-*, API-*] |
-     ```
+#### 11.2 曖昧点レポート
 
-9) **Run lint**:
-   ```bash
-   node .specify/scripts/spec-lint.js
-   ```
-   - Check Feature correctly references Domain M-*/API-*
-   - Check Feature Index entry exists
+```
+=== 曖昧点 ===
 
-10) **Clarify loop** (uses `/speckit.clarify` logic):
-   - While `[NEEDS CLARIFICATION]` items exist:
-     - Show **1 question at a time** with recommended option
-     - Wait for answer
-     - Update spec **immediately**
-     - Re-run lint
-   - Continue until all resolved
+[NEEDS CLARIFICATION] マーク: [N] 箇所
 
-11) **Request human review**:
-    - Show Issue URL, branch, spec path
-    - Show spec summary (UC/FR/SC counts)
-    - Wait for approval
+- Section 4: UC-001 のエッジケースが未定義
+- Section 5: FR-003 の具体的な処理が不明
+- Section 7: パフォーマンス要件が未定義
+
+推奨: `/speckit.clarify` で曖昧点を解消してください。
+```
+
+#### 11.3 次のステップ提示
+
+```
+次のステップ:
+
+1. [推奨] `/speckit.clarify` - 曖昧点を解消
+2. `/speckit.plan` - 曖昧点を残したまま計画作成（非推奨）
+
+Clarify をスキップすると、実装中の手戻りリスクが高まります。
+```
 
 ## Output
 
@@ -109,41 +255,69 @@ Creates Issue → Branch → Spec, then loops clarify until all ambiguities are 
 - Branch name
 - Spec path
 - Spec summary
-- Next step: `/speckit.plan`
+- 曖昧点レポート
+- Next step recommendation: `/speckit.clarify`
 
 ## Human Checkpoints
 
-1. Approve Case 3 redirect to `/speckit.change` (if needed)
-2. Answer clarification questions (in loop)
-3. Review and approve final spec
+1. 入力ファイルを埋める（または情報を提供）
+2. Approve Case 3 redirect to `/speckit.change` (if needed)
+3. Review Spec Summary
+4. → `/speckit.clarify` で曖昧点を解消
 
 ## Example
 
+### Example A: 入力ファイルから読み込み
+
 ```
-人間: /speckit.add ユーザーがPDFエクスポートできる機能
+Human: /speckit.add
 
-AI: Issue #45 を作成しました: [Feature] PDFエクスポート機能
+AI: `.specify/input/add.md` を読み込みます...
+
+    入力ファイルから情報を取得しました:
+    - 機能名: PDFエクスポート
+    - 課題: レポートをPDFで共有したい
+    - 期待する動作: 一覧画面からPDF出力、A4サイズ、ヘッダー/フッター付き
+
+    Issue を作成中...
+    Issue #45 を作成しました: [Feature] PDFエクスポート機能
     Branch feature/45-pdf-export を作成しました
-    Spec を作成中...
 
-    [NEEDS CLARIFICATION]:
-    1. 出力するPDFのページサイズは？ (A4/Letter/指定なし)
-    2. ヘッダー/フッターは必要？
+    Feature Spec を作成中...
 
-人間: 1. A4固定  2. 日付とページ番号をフッターに
+    === Feature Spec 作成完了 ===
 
-AI: Spec を更新しました。
-    [NEEDS CLARIFICATION] はすべて解決しました。
-
+    Issue: #45 [Feature] PDFエクスポート機能
+    Branch: feature/45-pdf-export
     Spec: .specify/specs/s-pdf-export-001/spec.md
+
     概要:
     - UC: 2個
     - FR: 5個
     - SC: 2個
 
-    レビューしてください。
+    === 曖昧点 ===
 
-人間: OK
+    [NEEDS CLARIFICATION] マーク: 2 箇所
 
-AI: /speckit.plan を実行します...
+    - Section 5: FR-003 ページレイアウトの詳細が未定義
+    - Section 7: 大量データ時のパフォーマンス要件が未定義
+
+    推奨: `/speckit.clarify` で曖昧点を解消してください。
+
+    入力ファイルをリセットしました。
 ```
+
+### Example B: チャットから入力
+
+```
+Human: /speckit.add ユーザーがPDFエクスポートできる機能
+
+AI: `.specify/input/add.md` を読み込みます...
+    入力ファイルは空のため、$ARGUMENTS を確認します。
+
+    追加で確認させてください:
+    - **解決したい課題**: [未入力]
+    - **期待する動作**: [未入力]
+
+    上記を教えてください。

@@ -174,7 +174,18 @@ Record of clarification questions and answers during the vision refinement proce
 
 ---
 
-## 10. Changelog
+## 10. Original Input
+
+User-provided input that was used to generate this spec.
+This section preserves the original context for future reference.
+
+```
+[ORIGINAL_INPUT_CONTENT]
+```
+
+---
+
+## 11. Changelog
 
 | Date | Change Type | Description | Author |
 |------|-------------|-------------|--------|

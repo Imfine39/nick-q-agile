@@ -30,11 +30,11 @@ Phase 4: Features   /speckit.issue      各Feature実装（繰り返し）
 
 ### AI の動作
 
-1. **初期質問**: 問題、ユーザー、成功の定義
+1. **入力読み込み**: `.specify/input/vision.md` から読み込み（Quick Input）
 2. **Vision Spec 作成**: scaffold-spec.js で作成
 3. **セクション記入**: Purpose, Users, Journeys, Scope, Constraints, Risks
-4. **Clarify ループ**: 曖昧点を1問ずつ解消
-5. **サマリー表示 & レビュー依頼**
+4. **サマリー表示 & 曖昧点レポート**
+5. **→ `/speckit.clarify` で曖昧点を 4 問ずつバッチ解消（別コマンド）**
 
 ### Human Checkpoint
 - [ ] Vision Spec をレビュー・承認

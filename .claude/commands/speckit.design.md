@@ -1,6 +1,10 @@
 ---
 description: Create Domain Spec (M-*/API-*) with Feature proposal. Technical design phase after Vision.
 handoffs:
+  - label: Clarify Domain
+    agent: speckit.clarify
+    prompt: Clarify the Domain Spec
+    send: true
   - label: Start Foundation
     agent: speckit.issue
     prompt: Start implementing the foundation (S-FOUNDATION-001)
@@ -24,9 +28,11 @@ $ARGUMENTS
 2. Domain Spec creation (M-*/API-*, business rules)
 3. Foundation Issue creation (S-FOUNDATION-001)
 
-**Use this when:** Vision is approved and ready to start technical design.
+**This command focuses on:** Spec 作成のみ。Clarify は別コマンドで実行。
+
+**Use this when:** Vision is clarified and ready to start technical design.
 **Use `/speckit.vision` first if:** No Vision Spec exists.
-**Next steps:** `/speckit.issue` to start Foundation, then Features.
+**Next steps:** `/speckit.clarify` で曖昧点を解消 → `/speckit.issue` to start Foundation
 
 ## Prerequisites
 
@@ -41,10 +47,10 @@ $ARGUMENTS
    node .specify/scripts/state.js query --repo
    ```
    - Check Vision status
-   - If status is not "approved":
+   - If status is not "approved" or "clarified":
      ```
      WARNING: Vision Spec がまだ承認されていません（status: [status]）。
-     技術設計の前に `/speckit.vision` でプロジェクトの目的を明確にすることを推奨します。
+     技術設計の前に `/speckit.vision` + `/speckit.clarify` を推奨します。
      続行しますか？ (y/N)
      ```
    - Human can choose to proceed
@@ -54,8 +60,7 @@ $ARGUMENTS
    - If not found:
      ```
      WARNING: Vision Spec が見つかりません。
-     技術設計の前に `/speckit.vision` でプロジェクトの目的を明確にすることを推奨します。
-     続行しますか？ (y/N)
+     `/speckit.vision` を先に実行してください。
      ```
 
 3) **Read Vision Spec** (if exists):
@@ -70,7 +75,7 @@ $ARGUMENTS
    - Identify existing entities and relationships
    - Use context7 for library documentation if needed
 
-### Step 3: Feature Proposal (uses featureproposal logic)
+### Step 3: Feature Proposal
 
 4) **Ensure labels exist**:
    ```bash
@@ -79,28 +84,26 @@ $ARGUMENTS
    gh label create in-progress --description "Work in progress" --color 7057FF --force
    ```
 
-5) **Generate Feature proposals**:
-   - Based on Vision journeys and scope
+5) **Generate Feature proposals from Vision Journeys**:
+   - Vision の Journey を Feature 候補に変換
    - Generate 3-7 Feature proposals
    - Each proposal includes:
      - Feature ID (e.g., S-XXX-001)
      - Title
+     - Which Journey it maps to
      - Brief description (1-2 sentences)
-     - Expected M-*/API-* dependencies (tentative)
 
 6) **Present to human**:
    ```
    === Feature 提案 ===
 
-   Vision に基づいて以下の Feature を提案します:
+   Vision の Journey から以下の Feature を提案します:
 
-   1. S-INVENTORY-001: 在庫一覧・検索
-      説明: 在庫の一覧表示と検索機能
-
-   2. S-RECEIVING-001: 入荷処理
-      説明: 商品の入荷登録と在庫更新
-
-   [...]
+   [x] S-FOUNDATION-001: 基盤構築 (必須)
+   [x] S-INVENTORY-001: 在庫一覧・検索 ← Journey 1
+   [x] S-RECEIVING-001: 入荷処理 ← Journey 2
+   [x] S-SHIPPING-001: 出荷処理 ← Journey 2
+   [x] S-STOCKTAKE-001: 棚卸し ← Journey 3
 
    どの Feature を採用しますか？
    - 「全部」: 全 Feature 採用
@@ -150,24 +153,9 @@ $ARGUMENTS
     node .specify/scripts/spec-lint.js
     ```
 
-### Step 6: Clarify Loop
+### Step 6: Create Foundation Issue
 
-11) **Clarify loop** (Domain-focused taxonomy):
-    - While `[NEEDS CLARIFICATION]` items exist:
-      - Show **1 question at a time** with recommended option
-      - Focus on:
-        - Entity relationships and constraints
-        - API request/response shapes
-        - Business rule details
-        - Technology choices
-      - Wait for answer
-      - Update spec **immediately**
-      - Re-run lint
-    - Continue until all resolved
-
-### Step 7: Create Foundation Issue
-
-12) **Create Foundation Issue**:
+11) **Create Foundation Issue**:
     ```bash
     gh issue create \
       --title "[Feature] S-FOUNDATION-001: 基盤構築" \
@@ -187,74 +175,87 @@ $ARGUMENTS
     Ready - Domain Spec が完成したため、実装開始可能です。
 
     ## Next Steps
-    /speckit.issue でこの Issue を選択して開始してください。" \
+    /speckit.clarify で曖昧点を解消後、/speckit.issue でこの Issue を選択して開始してください。" \
       --label feature --label backlog
     ```
 
-### Step 8: Request Human Review
+### Step 7: Design Summary & Clarify 推奨
 
-13) **Show summary**:
+12) **Show summary**:
     ```
     === Design 完了 ===
 
     Feature Issues 作成:
-    - #2 [feature][backlog] S-INVENTORY-001: 在庫一覧・検索
-    - #3 [feature][backlog] S-RECEIVING-001: 入荷処理
+    - #2 [feature][backlog] S-FOUNDATION-001: 基盤構築
+    - #3 [feature][backlog] S-INVENTORY-001: 在庫一覧・検索
+    - #4 [feature][backlog] S-RECEIVING-001: 入荷処理
     - ...
 
     Domain Spec:
-    - Master Data: M-XXX-001, M-XXX-002, ...
-    - API Contracts: API-XXX-001, API-XXX-002, ...
+    - Master Data: M-XXX, M-YYY, ...
+    - API Contracts: API-XXX, API-YYY, ...
     - Business Rules: [Count]
     - Feature Index: [Count] features
 
-    Foundation Issue:
-    - #X [feature][backlog] S-FOUNDATION-001: 基盤構築
-
     Spec: .specify/specs/domain/spec.md
+    ```
 
+13) **曖昧点レポート**:
+    ```
+    === 曖昧点 ===
+
+    [NEEDS CLARIFICATION] マーク: [N] 箇所
+
+    - Section 3: M-PRODUCT のフィールド詳細が未定義
+    - Section 4: API-AUTH の認証方式が未定義
+    - Section 6: パフォーマンス要件が未定義
+
+    推奨: `/speckit.clarify` で曖昧点を解消してください。
+    ```
+
+14) **次のステップ提示**:
+    ```
     次のステップ:
-    `/speckit.issue` で #X (基盤構築) を選択して開始してください。
-    基盤完了後、他の Feature に取り掛かれます。
+
+    1. [推奨] `/speckit.clarify` - Domain Spec の曖昧点を解消
+    2. `/speckit.issue` - 曖昧点を残したまま Foundation 実装開始（非推奨）
+
+    Clarify をスキップすると、実装中の手戻りリスクが高まります。
     ```
 
-14) **Request approval**:
-    - Wait for human to review and approve
-    - Offer to adjust based on feedback
+### Step 8: Update State
 
-### Step 9: Update State
-
-15) **Update repo state** (on approval):
+15) **Update repo state**:
     ```bash
-    # Update domain status
-    node .specify/scripts/state.js repo --set-domain-status approved --set-domain-clarify true --set-phase design
-
-    # Add defined masters/APIs (repeat for each)
-    node .specify/scripts/state.js repo --add-master M-PRODUCT --add-master M-INVENTORY
-    node .specify/scripts/state.js repo --add-api API-PRODUCT-LIST --add-api API-INVENTORY-UPDATE
-
-    # Update feature counts
-    node .specify/scripts/state.js repo --set-features-total 5 --set-features-backlog 5
+    node .specify/scripts/state.js repo --set-domain-status draft --set-phase design
     ```
+
+**Note:** Domain status は `draft`。Clarify 完了後に `clarified`、承認後に `approved` に更新される。
+
+---
 
 ## Output
 
 - Feature Issues (numbers and titles)
-- Domain spec path
-- Summary of M-*, API-*, rules
+- Domain spec: `.specify/specs/domain/spec.md`
+- 曖昧点レポート
 - Foundation Issue number
-- Next step: `/speckit.issue` to start Foundation
+- Next step recommendation: `/speckit.clarify`
+
+---
 
 ## Human Checkpoints
 
 1. Confirm to proceed without Vision (if missing)
-2. Select which Features to adopt
-3. Answer clarification questions (in loop)
-4. Review and approve Domain spec
+2. Select which Features to adopt (Vision の Journey から変換)
+3. Review Domain Summary
+4. → `/speckit.clarify` で曖昧点を解消
+
+---
 
 ## Clarify Taxonomy (Domain)
 
-Focus areas for Domain clarification:
+Domain Spec の clarify で Focus する領域（`/speckit.clarify` で使用）:
 
 1. **Master Data (M-*)**
    - Entity purpose and scope
@@ -286,6 +287,8 @@ Focus areas for Domain clarification:
    - Security requirements
    - Audit requirements
 
+---
+
 ## Example
 
 ```
@@ -301,24 +304,56 @@ AI: Vision Spec を確認中...
     2. 入出荷処理
     3. 棚卸し
 
-    Feature Issues を取得中...
-    - #2 S-INVENTORY-001: 在庫一覧・検索
-    - #3 S-RECEIVING-001: 入荷処理
-    - #4 S-SHIPPING-001: 出荷処理
+    === Feature 提案 ===
+    Vision の Journey から以下の Feature を提案します:
+
+    [x] S-FOUNDATION-001: 基盤構築 (必須)
+    [x] S-INVENTORY-001: 在庫一覧・検索 ← Journey 1
+    [x] S-RECEIVING-001: 入荷処理 ← Journey 2
+    [x] S-SHIPPING-001: 出荷処理 ← Journey 2
+    [x] S-STOCKTAKE-001: 棚卸し ← Journey 3
+
+    採用する Feature を選択（全部 / 番号指定 / 追加提案）
+
+人間: 全部
+
+AI: Feature Issues を作成中...
+    - #2 S-FOUNDATION-001: 基盤構築
+    - #3 S-INVENTORY-001: 在庫一覧・検索
+    - #4 S-RECEIVING-001: 入荷処理
+    - #5 S-SHIPPING-001: 出荷処理
+    - #6 S-STOCKTAKE-001: 棚卸し
 
     Domain Spec を作成中...
 
-    === Clarify: Domain (Q1/8) ===
+    === Design 完了 ===
 
-    **Master Data について確認します。**
+    Feature Issues:
+    - #2 S-FOUNDATION-001: 基盤構築
+    - #3 S-INVENTORY-001: 在庫一覧・検索
+    - #4 S-RECEIVING-001: 入荷処理
+    - #5 S-SHIPPING-001: 出荷処理
+    - #6 S-STOCKTAKE-001: 棚卸し
 
-    **質問**: 商品マスタ (M-PRODUCT) に必要な主要フィールドは？
+    Domain Spec:
+    - Master Data: M-PRODUCT, M-INVENTORY, M-LOCATION
+    - API Contracts: API-PRODUCT-*, API-INVENTORY-*
+    - Business Rules: 5 rules (推定)
+    - Feature Index: 5 features
 
-    **Recommended:** Option A - 基本的な在庫管理に必要なフィールド
+    === 曖昧点 ===
 
-    | Option | Description |
-    |--------|-------------|
-    | A | SKU, 商品名, カテゴリ, 単価 |
-    | B | A + バーコード, ロット管理 |
-    | C | B + 賞味期限, シリアル番号 |
-    | Other | 別の構成 |
+    [NEEDS CLARIFICATION] マーク: 8 箇所
+
+    - Section 3: M-PRODUCT のフィールド詳細
+    - Section 3: M-INVENTORY の状態管理
+    - Section 4: 認証方式
+    - Section 6: パフォーマンス要件
+    - ...
+
+    Spec: .specify/specs/domain/spec.md
+
+    次のステップ:
+    1. [推奨] `/speckit.clarify` - 曖昧点を解消
+    2. `/speckit.issue` - Foundation 実装開始（非推奨）
+```

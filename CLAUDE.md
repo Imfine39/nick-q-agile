@@ -33,22 +33,23 @@
 
 ```
 Phase 1: /speckit.vision
+  → .specify/input/vision.md に入力（Quick Input）
   → Vision Spec 作成（目的、ジャーニー、スコープ）
-  → clarify ループで曖昧点解消
+  → /speckit.clarify で曖昧点解消（4問ずつバッチ質問）
   → 人間: Vision をレビュー・承認
 
 Phase 2: /speckit.design
   → Feature 候補提案 → 人間が採用を選択
   → Feature Issues 一括作成
   → Domain Spec 作成（M-*/API-*、ビジネスルール）
-  → clarify ループで曖昧点解消
+  → /speckit.clarify で曖昧点解消
   → Foundation Issue (S-FOUNDATION-001) 自動作成
   → 人間: Domain Spec をレビュー・承認
 
 Phase 3: /speckit.issue (Foundation Issue を選択)
   → S-FOUNDATION-001 を選択
   → Foundation Feature Spec 作成
-  → clarify ループで曖昧点解消
+  → /speckit.clarify で曖昧点解消
   → 人間: Spec をレビュー・承認
 
 Phase 4: plan → tasks → implement → pr
@@ -56,22 +57,24 @@ Phase 4: plan → tasks → implement → pr
   → 人間: PR レビュー・マージ
 
 Phase 5以降: Feature 開発（繰り返し）
-  /speckit.issue → plan → tasks → implement → pr
+  /speckit.issue → clarify → plan → tasks → implement → pr
 ```
 
 ### 既存プロジェクトへの機能追加フロー
 
 ```
-/speckit.add (自分で決めた Feature) または /speckit.featureproposal (AI に提案させる)
-  → Issue 作成
-  → /speckit.issue で開始
-  → Feature Spec 作成 → clarify ループ
+/speckit.add
+  → .specify/input/add.md に入力（Quick Input）
+  → Issue 作成 → Branch 作成
+  → Feature Spec 作成
+  → /speckit.clarify で曖昧点解消
   → 人間: Spec をレビュー・承認
   → plan → tasks → implement → pr
 
 /speckit.fix (バグ修正)
+  → .specify/input/fix.md に入力（または --quick でスキップ）
   → Issue 作成 → Branch 作成 → 既存 Spec 更新
-  → clarify ループ
+  → /speckit.clarify で曖昧点解消
   → 人間: Spec をレビュー・承認
   → plan → tasks → implement → pr
 ```
@@ -107,7 +110,7 @@ Phase 5以降: Feature 開発（繰り返し）
 |---------|------|
 | `/speckit.analyze` | 実装と Spec の整合性分析（PR 前の安心確認） |
 | `/speckit.feedback` | Spec へのフィードバック記録 |
-| `/speckit.clarify` | 要件の曖昧点を 1 問ずつ質問 → 即時 Spec 更新 |
+| `/speckit.clarify` | 要件の曖昧点を 4 問ずつバッチ質問 → 即時 Spec 更新 |
 | `/speckit.checklist` | 要件品質チェックリスト生成（Unit Tests for English） |
 | `/speckit.lint` | Spec 整合性チェック |
 
@@ -133,6 +136,44 @@ Domain Spec で全 Feature を表形式で管理:
 node .specify/scripts/scaffold-spec.js --kind vision --id S-VISION-001 --title "..."
 node .specify/scripts/scaffold-spec.js --kind domain --id S-DOMAIN-001 --title "..." --vision S-VISION-001
 node .specify/scripts/scaffold-spec.js --kind feature --id S-XXX-001 --title "..." --domain S-DOMAIN-001
+```
+
+### Quick Input システム
+
+ユーザーが事前に入力ファイルを埋めてからコマンドを実行することで、AI が的確な Spec を生成できる。
+
+**ファイル構成:**
+```
+.specify/
+├── templates/           # ベーステンプレート（読み取り専用）
+│   ├── quickinput-vision.md
+│   ├── quickinput-add.md
+│   └── quickinput-fix.md
+│
+├── input/               # ユーザー入力用（編集対象）
+│   ├── vision.md
+│   ├── add.md
+│   └── fix.md
+│
+└── scripts/
+    └── reset-input.js   # 入力ファイルリセット
+```
+
+**使い方:**
+1. `.specify/input/<type>.md` を編集して情報を入力
+2. 対応するコマンド（`/speckit.vision`, `/speckit.add`, `/speckit.fix`）を実行
+3. 完了後、入力内容は Spec の「Original Input」セクションに記録され、入力ファイルは自動リセット
+
+**fix の緊急対応:**
+```bash
+/speckit.fix --quick ログインできない
+```
+`--quick` オプションで入力ファイルをスキップして即座に開始可能。
+
+**リセットスクリプト:**
+```bash
+node .specify/scripts/reset-input.js vision   # vision のみリセット
+node .specify/scripts/reset-input.js all      # 全てリセット
 ```
 
 ---
@@ -163,9 +204,9 @@ node .specify/scripts/scaffold-spec.js --kind feature --id S-XXX-001 --title "..
 
 - 仕様が曖昧・矛盾している場合、勝手に実装しない。
 - `/speckit.clarify` で論点を整理し、必要に応じて新規 Issue を起票する。
-- **Clarify は 1 問ずつ質問し、推奨オプションを提示、回答ごとに即時 Spec 更新**。
-- **各コマンド（vision, design, issue, add, fix）に clarify ループが組み込まれている**。
-- エントリーポイント（add/fix/issue）では、Spec 作成後に Clarify ループで曖昧点を解消してから人間レビューを依頼。
+- **Clarify は 4 問ずつバッチ質問**し、推奨オプションを提示、回答ごとに即時 Spec 更新。
+- **Clarify は独立したコマンド**として分離されている（vision, design, add, fix の各コマンドには組み込まない）。
+- 各コマンド（vision, design, issue, add, fix）は Spec 作成後に曖昧点レポートを表示し、`/speckit.clarify` を推奨する。
 
 ---
 
@@ -202,6 +243,29 @@ node .specify/scripts/state.js query --suspended       # 中断中のブラン�
 ### 警告ベースアプローチ
 - 各コマンドは前提条件をチェックし、満たさない場合は警告を表示
 - **人間の判断で警告を無視して続行可能**（強制ブロックはしない）
+
+### SessionStart Hook（自動状態読込）
+
+セッション開始時に自動でプロジェクト状態がコンテキストに読み込まれます。
+
+**設定ファイル:** `.claude/settings.local.json`
+```json
+{
+  "hooks": {
+    "SessionStart": [{
+      "hooks": [{
+        "type": "command",
+        "command": "node .specify/scripts/state.js query --all 2>/dev/null || echo \"[SSD State] Not initialized\""
+      }]
+    }]
+  }
+}
+```
+
+**効果:**
+- 「どのブランチで作業中か」「どのステップか」を自動把握
+- 毎回の状態確認コマンド実行が不要
+- 継続作業がスムーズに
 
 ---
 

@@ -89,9 +89,10 @@ ID は以下で参照され、追跡可能性を確保します：
 
 ---
 
-## 3. Clarify Loop
+## 3. Clarify (独立コマンド)
 
 曖昧さを排除するための対話的プロセスです。
+**Clarify は独立したコマンド (`/speckit.clarify`) として実行**し、各コマンド (vision, design, add, fix) には組み込みません。
 
 ### 仕組み
 
@@ -99,35 +100,46 @@ ID は以下で参照され、追跡可能性を確保します：
 ┌─────────────────────────────────────────────────────────────┐
 │  1. Spec に `[NEEDS CLARIFICATION]` マークを付ける           │
 │                           ↓                                  │
-│  2. AI が 1 問ずつ質問を提示                                 │
+│  2. `/speckit.clarify` を実行                                │
+│                           ↓                                  │
+│  3. AI が 4 問ずつバッチで質問を提示                          │
 │     - 推奨オプション (Recommended) を先頭に                  │
 │     - 選択肢を表形式で提示                                   │
 │                           ↓                                  │
-│  3. 人間が回答                                               │
+│  4. 人間がまとめて回答                                       │
 │                           ↓                                  │
-│  4. AI が Spec を即時更新                                    │
+│  5. AI が Spec を即時更新                                    │
 │                           ↓                                  │
-│  5. すべての `[NEEDS CLARIFICATION]` が解消されるまで繰り返し │
+│  6. すべての `[NEEDS CLARIFICATION]` が解消されるまで繰り返し │
 └─────────────────────────────────────────────────────────────┘
 ```
 
 ### Clarify の例
 
 ```
-=== Clarify: Domain (Q1/5) ===
+=== Clarify: S-DOMAIN-001 (Batch 1/2) ===
 
-**Master Data について確認します。**
+以下の 4 問にまとめてお答えください:
 
-**質問**: 商品マスタ (M-PRODUCT) に必要な主要フィールドは？
-
-**Recommended:** Option A - 基本的な在庫管理に必要なフィールド
+**Q1. Master Data について確認します。**
+商品マスタ (M-PRODUCT) に必要な主要フィールドは？
 
 | Option | Description |
 |--------|-------------|
-| A | SKU, 商品名, カテゴリ, 単価 |
+| A (推奨) | SKU, 商品名, カテゴリ, 単価 |
 | B | A + バーコード, ロット管理 |
 | C | B + 賞味期限, シリアル番号 |
-| Other | 別の構成 |
+
+**Q2. ユーザー認証について**
+...（他の質問が続く）
+
+**Q3. API形式について**
+...
+
+**Q4. 在庫単位について**
+...
+
+回答例: 「Q1: A, Q2: B, Q3: C, Q4: A」
 ```
 
 ### Clarify Taxonomy
@@ -323,6 +335,95 @@ Draft → In Review → Approved → Implementing → Completed
 | **Medium** | 新UC追加、複数ファイル変更 | Full: Spec → Plan → Tasks |
 | **Large** | Domain変更、アーキ変更 | Full + Impact分析 + レビュー会議 |
 | **Emergency** | セキュリティ修正 | Hotfix → 48時間以内にSpec作成 |
+
+---
+
+## 9. Quick Input System
+
+コマンド実行前にユーザーが構造化された情報を入力するシステムです。
+
+### 仕組み
+
+```
+.specify/
+├── templates/           # ベーステンプレート（読み取り専用）
+│   ├── quickinput-vision.md
+│   ├── quickinput-add.md
+│   └── quickinput-fix.md
+│
+├── input/               # ユーザー入力用（編集対象）
+│   ├── vision.md
+│   ├── add.md
+│   └── fix.md
+│
+└── scripts/
+    └── reset-input.js   # 入力ファイルリセット
+```
+
+### 使い方
+
+1. `.specify/input/<type>.md` を編集して情報を入力
+2. 対応するコマンド（`/speckit.vision`, `/speckit.add`, `/speckit.fix`）を実行
+3. 完了後、入力内容は Spec の「Original Input」セクションに記録され、入力ファイルは自動リセット
+
+### メリット
+
+- **構造化**: AI が的確な Spec を生成できる
+- **再現性**: 入力が Spec に記録されるため追跡可能
+- **効率性**: チャットでの往復を減らせる
+
+---
+
+## 10. Claude Code Hooks
+
+セッション開始時に自動でプロジェクト状態を読み込む仕組みです。
+
+### 設定
+
+`.claude/settings.local.json`:
+
+```json
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .specify/scripts/state.js query --all 2>/dev/null || echo \"[SSD State] Not initialized\""
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+### 効果
+
+- **自動コンテキスト**: セッション開始時に現在の状態がコンテキストに入る
+- **継続性**: 「どのブランチで作業中か」「どのステップか」を自動把握
+- **効率性**: 毎回の状態確認が不要
+
+### 出力例
+
+セッション開始時に以下が自動表示：
+
+```
+=== Repo State ===
+Project: my-project
+Phase: development
+Vision Spec: approved
+Domain Spec: approved
+
+=== All Branches ===
+feature/45-auth:
+  Type: feature
+  Issue: 45
+  Spec ID: S-AUTH-001
+  Step: implement
+  Task Progress: 3/10
+```
 
 ---
 
