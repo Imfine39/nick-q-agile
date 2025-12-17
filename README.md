@@ -2,7 +2,6 @@
 
 **Spec-Driven Development Framework for AI-Assisted Projects**
 
-
 ニックの最強SDDフレームワーク
 AI コーディングアシスタント（Claude Code など）と人間の協業による仕様駆動開発フレームワークです。
 
@@ -37,52 +36,56 @@ node .specify/scripts/state.cjs init
 
 詳細なドキュメントは [docs/](docs/) を参照してください：
 
-| Page | Description |
-|------|-------------|
-| [Home](docs/Home.md) | ドキュメントホーム |
-| [Getting Started](docs/Getting-Started.md) | インストールと最初のステップ |
-| [Core Concepts](docs/Core-Concepts.md) | 3層構造、Clarify ループ、状態管理 |
-| [Workflow: New Project](docs/Workflow-New-Project.md) | 新規プロジェクト立ち上げフロー |
-| [Workflow: Add Feature](docs/Workflow-Add-Feature.md) | 機能追加・バグ修正フロー |
-| [Commands Reference](docs/Commands-Reference.md) | 全コマンドのリファレンス |
-| [Templates Reference](docs/Templates-Reference.md) | Spec テンプレートの説明 |
-| [Scripts Reference](docs/Scripts-Reference.md) | Node.js スクリプトの使用方法 |
-| [Troubleshooting](docs/Troubleshooting.md) | よくある問題と解決方法 |
+| Page                                                  | Description                       |
+| ----------------------------------------------------- | --------------------------------- |
+| [Home](docs/Home.md)                                  | ドキュメントホーム                |
+| [Getting Started](docs/Getting-Started.md)            | インストールと最初のステップ      |
+| [Core Concepts](docs/Core-Concepts.md)                | 3層構造、Clarify ループ、状態管理 |
+| [Workflow: New Project](docs/Workflow-New-Project.md) | 新規プロジェクト立ち上げフロー    |
+| [Workflow: Add Feature](docs/Workflow-Add-Feature.md) | 機能追加・バグ修正フロー          |
+| [Commands Reference](docs/Commands-Reference.md)      | 全コマンドのリファレンス          |
+| [Templates Reference](docs/Templates-Reference.md)    | Spec テンプレートの説明           |
+| [Scripts Reference](docs/Scripts-Reference.md)        | Node.js スクリプトの使用方法      |
+| [Troubleshooting](docs/Troubleshooting.md)            | よくある問題と解決方法            |
 
 ---
 
 ## Command Overview
 
 ### Project Initialization
-| Command | Purpose |
-|---------|---------|
+
+| Command           | Purpose                                              |
+| ----------------- | ---------------------------------------------------- |
 | `/speckit.vision` | Vision Spec 作成（目的 + ジャーニー + Screen Hints） |
-| `/speckit.design` | **Screen + Domain Spec 同時作成** + Feature Issues |
+| `/speckit.design` | **Screen + Domain Spec 同時作成** + Feature Issues   |
 
 ### Development Entry Points
-| Command | Purpose |
-|---------|---------|
-| `/speckit.issue` | 既存 Issue から開発開始 |
-| `/speckit.add` | 新機能追加（Issue 自動作成） |
-| `/speckit.fix` | バグ修正（Issue 自動作成） |
-| `/speckit.featureproposal` | AI に Feature を提案させる |
-| `/speckit.change` | Vision/Domain Spec 変更 |
+
+| Command                    | Purpose                      |
+| -------------------------- | ---------------------------- |
+| `/speckit.issue`           | 既存 Issue から開発開始      |
+| `/speckit.add`             | 新機能追加（Issue 自動作成） |
+| `/speckit.fix`             | バグ修正（Issue 自動作成）   |
+| `/speckit.featureproposal` | AI に Feature を提案させる   |
+| `/speckit.change`          | Vision/Domain Spec 変更      |
 
 ### Development Flow
-| Command | Purpose |
-|---------|---------|
-| `/speckit.plan` | 実装計画作成 |
-| `/speckit.tasks` | タスク分割 |
-| `/speckit.implement` | 実装 |
-| `/speckit.pr` | PR 作成 |
+
+| Command              | Purpose      |
+| -------------------- | ------------ |
+| `/speckit.plan`      | 実装計画作成 |
+| `/speckit.tasks`     | タスク分割   |
+| `/speckit.implement` | 実装         |
+| `/speckit.pr`        | PR 作成      |
 
 ### Utilities
-| Command | Purpose |
-|---------|---------|
-| `/speckit.clarify` | 曖昧点の解消 |
-| `/speckit.lint` | Spec 整合性チェック |
-| `/speckit.analyze` | 実装と Spec の整合性分析 |
-| `/speckit.checklist` | 品質チェックリスト生成 |
+
+| Command              | Purpose                  |
+| -------------------- | ------------------------ |
+| `/speckit.clarify`   | 曖昧点の解消             |
+| `/speckit.lint`      | Spec 整合性チェック      |
+| `/speckit.analyze`   | 実装と Spec の整合性分析 |
+| `/speckit.checklist` | 品質チェックリスト生成   |
 
 ---
 
@@ -113,16 +116,16 @@ npm install
 
 ### npm scripts
 
-| コマンド | 説明 |
-|----------|------|
-| `npm run lint` | ESLint によるコードチェック |
-| `npm run lint:fix` | ESLint 自動修正 |
-| `npm run typecheck` | TypeScript 型チェック |
-| `npm run format` | Prettier によるフォーマット |
-| `npm run deps:circular` | 循環依存の検出（madge） |
-| `npm run deps:check` | 依存関係ルールチェック（dependency-cruiser） |
-| `npm run unused` | 未使用コード・依存の検出（knip） |
-| `npm run quality` | 全チェック一括実行 |
+| コマンド                | 説明                                         |
+| ----------------------- | -------------------------------------------- |
+| `npm run lint`          | ESLint によるコードチェック                  |
+| `npm run lint:fix`      | ESLint 自動修正                              |
+| `npm run typecheck`     | TypeScript 型チェック                        |
+| `npm run format`        | Prettier によるフォーマット                  |
+| `npm run deps:circular` | 循環依存の検出（madge）                      |
+| `npm run deps:check`    | 依存関係ルールチェック（dependency-cruiser） |
+| `npm run unused`        | 未使用コード・依存の検出（knip）             |
+| `npm run quality`       | 全チェック一括実行                           |
 
 ### Claude Hooks による自動チェック
 
@@ -131,13 +134,17 @@ npm install
 ```json
 {
   "hooks": {
-    "PostToolUse": [{
-      "matcher": "Edit|Write",
-      "hooks": [{
-        "type": "command",
-        "command": "npm run lint --silent -- --max-warnings 0"
-      }]
-    }]
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npm run lint --silent -- --max-warnings 0"
+          }
+        ]
+      }
+    ]
   }
 }
 ```
@@ -178,11 +185,11 @@ npm install
 
 ### Recommended MCP Servers (Claude Code)
 
-| MCP | Purpose |
-|-----|---------|
-| serena | プロジェクト探索・ファイル編集 |
-| context7 | ライブラリドキュメント検索 |
-| playwright | E2E テスト自動化 |
+| MCP        | Purpose                        |
+| ---------- | ------------------------------ |
+| serena     | プロジェクト探索・ファイル編集 |
+| context7   | ライブラリドキュメント検索     |
+| playwright | E2E テスト自動化               |
 
 ---
 
@@ -218,16 +225,16 @@ npm install
 
 ## Key Files
 
-| File | Purpose |
-|------|---------|
-| `CLAUDE.md` | AI エージェントの行動指針 |
-| `.specify/memory/constitution.md` | Engineering Constitution（最上位ルール） |
-| `.claude/settings.local.json` | Hooks 設定（SessionStart + Lint 自動実行） |
-| `.specify/input/*.md` | Quick Input ファイル（コマンド実行前にユーザーが記入） |
-| `.dependency-cruiser.cjs` | 依存関係ルール（循環依存禁止など） |
-| `eslint.config.js` | ESLint Flat Config（TypeScript 対応） |
-| `knip.json` | 未使用コード・依存検出設定 |
-| `tsconfig.json` | TypeScript strict 設定 |
+| File                              | Purpose                                                |
+| --------------------------------- | ------------------------------------------------------ |
+| `CLAUDE.md`                       | AI エージェントの行動指針                              |
+| `.specify/memory/constitution.md` | Engineering Constitution（最上位ルール）               |
+| `.claude/settings.local.json`     | Hooks 設定（SessionStart + Lint 自動実行）             |
+| `.specify/input/*.md`             | Quick Input ファイル（コマンド実行前にユーザーが記入） |
+| `.dependency-cruiser.cjs`         | 依存関係ルール（循環依存禁止など）                     |
+| `eslint.config.js`                | ESLint Flat Config（TypeScript 対応）                  |
+| `knip.json`                       | 未使用コード・依存検出設定                             |
+| `tsconfig.json`                   | TypeScript strict 設定                                 |
 
 ---
 

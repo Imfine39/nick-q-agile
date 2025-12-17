@@ -12,16 +12,10 @@
       "mcp__serena__*",
       "mcp__context7__*"
     ],
-    "deny": [
-      "Bash(rm -rf:*)",
-      "Bash(sudo:*)",
-      "Bash(git push --force:*)"
-    ]
+    "deny": ["Bash(rm -rf:*)", "Bash(sudo:*)", "Bash(git push --force:*)"]
   },
   "enableAllProjectMcpServers": true,
-  "enabledMcpjsonServers": [
-    "serena"
-  ],
+  "enabledMcpjsonServers": ["serena"],
   "hooks": {
     "PostToolUse": [
       {

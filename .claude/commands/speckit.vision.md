@@ -20,6 +20,7 @@ $ARGUMENTS
 ## Purpose
 
 **First step** for new projects. Creates Vision Spec that defines:
+
 - Why we're building this system
 - Who will use it and what problems it solves
 - Main user journeys (high-level)
@@ -33,6 +34,7 @@ $ARGUMENTS
 
 **Unified Quick Input:**
 入力ファイル `.specify/input/vision.md` は統合版で、以下の3パートを含む:
+
 - **Part A**: ビジョン（必須）- 基本情報、課題、ユーザー、やりたいこと
 - **Part B**: 画面イメージ（任意だが推奨）- 画面リスト、遷移、主な要素
 - **Part C**: デザイン希望（任意）- スタイル、レスポンシブ、参考画像
@@ -93,6 +95,7 @@ Use the Read tool to read: .specify/input/vision.md
    - → Step 1.3 で入力ファイルの記入を促す
 
 **入力ファイルが「記入済み」かの判定:**
+
 - 「プロジェクト名」が空でない
 - 「やりたいこと」に1つ以上の項目がある
 - → 両方満たせば「記入済み」と判定
@@ -125,30 +128,30 @@ Option B: チャットで情報を提供
 
 **Part A (ビジョン) → Vision Spec メイン部分:**
 
-| 項目 | 抽出先 |
-|------|--------|
-| プロジェクト名 | Vision Spec タイトル |
-| 課題/問題 | Section 1 (System Purpose) |
-| ユーザー | Section 2 (Target Users) |
-| やりたいこと | Section 3 (User Journeys) の原材料 |
-| やらないこと | Section 4 (Scope - Out of Scope) |
-| 制約 | Section 6 (Constraints) |
+| 項目           | 抽出先                             |
+| -------------- | ---------------------------------- |
+| プロジェクト名 | Vision Spec タイトル               |
+| 課題/問題      | Section 1 (System Purpose)         |
+| ユーザー       | Section 2 (Target Users)           |
+| やりたいこと   | Section 3 (User Journeys) の原材料 |
+| やらないこと   | Section 4 (Scope - Out of Scope)   |
+| 制約           | Section 6 (Constraints)            |
 
 **Part B (画面イメージ) → Vision Spec Section 5 (Screen Hints):**
 
-| 項目 | 抽出先 |
-|------|--------|
-| 主要画面リスト | Section 5.1 (Screen List) |
-| 画面遷移 | Section 5.2 (Screen Transitions) |
-| 各画面の主な要素 | Section 5.1 (Key Elements 列) |
+| 項目             | 抽出先                           |
+| ---------------- | -------------------------------- |
+| 主要画面リスト   | Section 5.1 (Screen List)        |
+| 画面遷移         | Section 5.2 (Screen Transitions) |
+| 各画面の主な要素 | Section 5.1 (Key Elements 列)    |
 
 **Part C (デザイン希望) → Vision Spec Section 5.3 (Design Preferences):**
 
-| 項目 | 抽出先 |
-|------|--------|
-| デザインスタイル | Section 5.3 Style |
-| レスポンシブ対応 | Section 5.3 Responsive |
-| 参考画像 | Section 5.3 Reference Images |
+| 項目             | 抽出先                       |
+| ---------------- | ---------------------------- |
+| デザインスタイル | Section 5.3 Style            |
+| レスポンシブ対応 | Section 5.3 Responsive       |
+| 参考画像         | Section 5.3 Reference Images |
 
 ---
 
@@ -169,39 +172,47 @@ node .specify/scripts/scaffold-spec.cjs --kind vision --id S-VISION-001 --title 
 Quick Input の内容を各セクションに展開:
 
 **Section 1 (System Purpose):**
+
 - Problem statement: 「現状の問題」から
 - Vision statement: 「一言で説明」+ 「なぜ解決したいか」から
 - Success definition: 推定（`[NEEDS CLARIFICATION]` でマーク）
 
 **Section 2 (Target Users):**
+
 - Primary users: 「主なユーザー」から
 - Goals: 「達成したいこと」から
 
 **Section 3 (User Journeys):**
+
 - 「やりたいこと」の各項目を Journey に変換
 - 各 Journey に Actor, Goal, Key Steps を付与
 - 不明点は `[NEEDS CLARIFICATION]` でマーク
 
 **Section 4 (Scope):**
+
 - In-scope: Journey から導出
 - Out-of-scope: 「やらないこと」から
 - Future considerations: 推定
 
 **Section 5 (Screen Hints) - Part B/C から:**
+
 - Screen List: 「主要画面リスト」「各画面の主な要素」から
 - Screen Transitions: 「画面遷移」から
 - Design Preferences: 「デザインスタイル」「レスポンシブ」「参考画像」から
 - **空の場合**: テーブルを空のまま残す（`/speckit.design` で入力を促す）
 
 **Section 6 (Constraints):**
+
 - 「制約」から展開
 
 **Section 7 (Risks):**
+
 - 推定（`[NEEDS CLARIFICATION]` でマーク）
 
 #### 2.3 曖昧点のマーキング
 
 以下の項目を `[NEEDS CLARIFICATION]` でマーク:
+
 - 不明確なユーザー定義
 - Journey の詳細が不足している箇所
 - Success definition が推定のみの場合
@@ -271,6 +282,7 @@ Note: Screen Hints が入力されていない場合、/speckit.design で画面
 入力ファイル（`.specify/input/vision.md`）から入力があった場合:
 
 1. **Spec の末尾に「Original Input」セクションを追加**:
+
    ```markdown
    ---
 
@@ -364,3 +376,4 @@ AI: `.specify/input/vision.md` を読み込みます...
     - **やりたいこと**: [未入力]
 
     上記を教えてください。
+```

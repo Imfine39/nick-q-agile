@@ -55,16 +55,16 @@ SSD-Template では仕様を4層構造で管理します。
 
 ### 各層の責務
 
-| Layer | Responsibility | Contains | Example |
-|-------|---------------|----------|---------|
-| **Vision** | WHY | 目的、ユーザー、スコープ | "中小企業の在庫管理を効率化" |
-| **Domain** | WHAT (技術) | マスタ、API、ルール | M-PRODUCT, API-INVENTORY-LIST |
-| **Screen** | WHAT (UX) | 画面、遷移、ワイヤーフレーム | SCR-001: ダッシュボード |
-| **Feature** | HOW | UC、FR、実装詳細 | UC-001: 在庫検索 |
+| Layer       | Responsibility | Contains                     | Example                       |
+| ----------- | -------------- | ---------------------------- | ----------------------------- |
+| **Vision**  | WHY            | 目的、ユーザー、スコープ     | "中小企業の在庫管理を効率化"  |
+| **Domain**  | WHAT (技術)    | マスタ、API、ルール          | M-PRODUCT, API-INVENTORY-LIST |
+| **Screen**  | WHAT (UX)      | 画面、遷移、ワイヤーフレーム | SCR-001: ダッシュボード       |
+| **Feature** | HOW            | UC、FR、実装詳細             | UC-001: 在庫検索              |
 
 ### 重要なルール
 
-1. **Feature は Domain/Screen を参照のみ** - M-*/API-*/SCR-* を再定義しない
+1. **Feature は Domain/Screen を参照のみ** - M-_/API-_/SCR-\* を再定義しない
 2. **Domain は技術の Single Source of Truth** - 共有定義は Domain に集約
 3. **Screen は UX の Single Source of Truth** - 画面構成は Screen に集約
 4. **Screen Index で対応管理** - 画面 ↔ Feature ↔ API ↔ Master の対応を一元管理
@@ -77,19 +77,19 @@ SSD-Template では仕様を4層構造で管理します。
 
 ### ID 体系
 
-| Prefix | Meaning | Example |
-|--------|---------|---------|
-| `S-VISION-001` | Vision Spec | プロジェクト Vision |
-| `S-DOMAIN-001` | Domain Spec | システム Domain |
-| `S-XXX-001` | Feature Spec | S-INVENTORY-001 |
-| `UC-XXX-001` | Use Case | UC-INV-001 |
-| `FR-XXX-001` | Functional Req | FR-INV-001 |
-| `M-XXX` | Master Data | M-PRODUCT, M-USER |
-| `API-XXX-ACTION` | API Contract | API-PRODUCT-LIST |
-| `BR-001` | Business Rule | BR-001 |
-| `VR-001` | Validation Rule | VR-001 |
-| `CR-001` | Calculation Rule | CR-001 |
-| `SC-XXX-001` | Success Criteria | SC-INV-001 |
+| Prefix           | Meaning          | Example             |
+| ---------------- | ---------------- | ------------------- |
+| `S-VISION-001`   | Vision Spec      | プロジェクト Vision |
+| `S-DOMAIN-001`   | Domain Spec      | システム Domain     |
+| `S-XXX-001`      | Feature Spec     | S-INVENTORY-001     |
+| `UC-XXX-001`     | Use Case         | UC-INV-001          |
+| `FR-XXX-001`     | Functional Req   | FR-INV-001          |
+| `M-XXX`          | Master Data      | M-PRODUCT, M-USER   |
+| `API-XXX-ACTION` | API Contract     | API-PRODUCT-LIST    |
+| `BR-001`         | Business Rule    | BR-001              |
+| `VR-001`         | Validation Rule  | VR-001              |
+| `CR-001`         | Calculation Rule | CR-001              |
+| `SC-XXX-001`     | Success Criteria | SC-INV-001          |
 
 ### Traceability
 
@@ -160,6 +160,7 @@ ID は以下で参照され、追跡可能性を確保します：
 質問は以下のカテゴリに分類されます：
 
 **Vision Clarify:**
+
 - System Purpose（目的）
 - Target Users（ユーザー）
 - User Journeys（ジャーニー）
@@ -167,15 +168,17 @@ ID は以下で参照され、追跡可能性を確保します：
 - Constraints（制約）
 
 **Domain Clarify:**
-- Master Data (M-*)
-- API Contracts (API-*)
-- Business Rules (BR-*, VR-*, CR-*)
+
+- Master Data (M-\*)
+- API Contracts (API-\*)
+- Business Rules (BR-_, VR-_, CR-\*)
 - Technology Decisions
 - Non-Functional Requirements
 
 **Feature Clarify:**
-- Use Cases (UC-*)
-- Functional Requirements (FR-*)
+
+- Use Cases (UC-\*)
+- Functional Requirements (FR-\*)
 - UI/UX Behavior
 - Edge Cases
 - Testing Strategy
@@ -199,7 +202,7 @@ ID は以下で参照され、追跡可能性を確保します：
 ```json
 {
   "vision": {
-    "status": "approved",    // none|scaffold|draft|clarified|approved
+    "status": "approved", // none|scaffold|draft|clarified|approved
     "clarifyComplete": true
   },
   "domain": {
@@ -209,7 +212,7 @@ ID は以下で参照され、追跡可能性を確保します：
     "definedApis": ["API-PRODUCT-LIST"],
     "definedRules": ["BR-001"]
   },
-  "phase": "development",    // initialization|vision|design|foundation|development
+  "phase": "development", // initialization|vision|design|foundation|development
   "features": {
     "total": 5,
     "backlog": 2,
@@ -229,7 +232,7 @@ ID は以下で参照され、追跡可能性を確保します：
       "issue": 123,
       "specId": "S-INVENTORY-001",
       "specPath": ".specify/specs/s-inventory-001/spec.md",
-      "step": "implement",     // idle|spec|spec_review|plan|plan_review|tasks|implement|pr|suspended
+      "step": "implement", // idle|spec|spec_review|plan|plan_review|tasks|implement|pr|suspended
       "taskProgress": {
         "completed": 3,
         "total": 10
@@ -285,17 +288,17 @@ SSD-Template は強制ブロックではなく、警告ベースのアプロー�
 
 ---
 
-## 6. M-*/API-* Handling in Features
+## 6. M-_/API-_ Handling in Features
 
 Feature Spec 作成時の Domain 要素の扱い方。
 
 ### 3つのケース
 
-| Case | Situation | Action |
-|------|-----------|--------|
-| **Case 1** | 既存の M-*/API-* で足りる | 参照を追加 |
-| **Case 2** | 新規 M-*/API-* が必要 | Feature 作成中に Domain を更新 |
-| **Case 3** | 既存 M-*/API-* の変更が必要 | `/speckit.change` で Domain 変更を先行 |
+| Case       | Situation                   | Action                                 |
+| ---------- | --------------------------- | -------------------------------------- |
+| **Case 1** | 既存の M-_/API-_ で足りる   | 参照を追加                             |
+| **Case 2** | 新規 M-_/API-_ が必要       | Feature 作成中に Domain を更新         |
+| **Case 3** | 既存 M-_/API-_ の変更が必要 | `/speckit.change` で Domain 変更を先行 |
 
 ### Case 3 のフロー
 
@@ -325,15 +328,15 @@ Draft → In Review → Approved → Implementing → Completed
                               Deprecated / Superseded
 ```
 
-| Status | Description |
-|--------|-------------|
-| **Draft** | 作成中、自由に編集可能 |
-| **In Review** | レビュー中、軽微な修正のみ |
-| **Approved** | 承認済み、実装開始可能 |
-| **Implementing** | 実装中 |
-| **Completed** | 実装完了、参照のみ |
-| **Deprecated** | 廃止（理由を記録） |
-| **Superseded** | 後続 Spec に置換（ID を記録） |
+| Status           | Description                   |
+| ---------------- | ----------------------------- |
+| **Draft**        | 作成中、自由に編集可能        |
+| **In Review**    | レビュー中、軽微な修正のみ    |
+| **Approved**     | 承認済み、実装開始可能        |
+| **Implementing** | 実装中                        |
+| **Completed**    | 実装完了、参照のみ            |
+| **Deprecated**   | 廃止（理由を記録）            |
+| **Superseded**   | 後続 Spec に置換（ID を記録） |
 
 ---
 
@@ -341,13 +344,13 @@ Draft → In Review → Approved → Implementing → Completed
 
 変更の大きさによってワークフローが異なります。
 
-| Size | Examples | Workflow |
-|------|----------|----------|
-| **Trivial** | Typo修正、フォーマット | PR直接（Spec不要） |
-| **Small** | 単一UCのバグ修正 | Issue + Spec Changelog更新 |
-| **Medium** | 新UC追加、複数ファイル変更 | Full: Spec → Plan → Tasks |
-| **Large** | Domain変更、アーキ変更 | Full + Impact分析 + レビュー会議 |
-| **Emergency** | セキュリティ修正 | Hotfix → 48時間以内にSpec作成 |
+| Size          | Examples                   | Workflow                         |
+| ------------- | -------------------------- | -------------------------------- |
+| **Trivial**   | Typo修正、フォーマット     | PR直接（Spec不要）               |
+| **Small**     | 単一UCのバグ修正           | Issue + Spec Changelog更新       |
+| **Medium**    | 新UC追加、複数ファイル変更 | Full: Spec → Plan → Tasks        |
+| **Large**     | Domain変更、アーキ変更     | Full + Impact分析 + レビュー会議 |
+| **Emergency** | セキュリティ修正           | Hotfix → 48時間以内にSpec作成    |
 
 ---
 

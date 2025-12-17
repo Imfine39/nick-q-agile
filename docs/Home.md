@@ -8,12 +8,12 @@ SSD-Template は、AI コーディングアシスタント（Claude Code など�
 
 ## Quick Links
 
-| 目的 | ページ |
-|------|--------|
-| 初めての方 | [[Getting-Started]] |
+| 目的                 | ページ                   |
+| -------------------- | ------------------------ |
+| 初めての方           | [[Getting-Started]]      |
 | 新規プロジェクト開始 | [[Workflow-New-Project]] |
-| 機能追加・バグ修正 | [[Workflow-Add-Feature]] |
-| コマンド一覧 | [[Commands-Reference]] |
+| 機能追加・バグ修正   | [[Workflow-Add-Feature]] |
+| コマンド一覧         | [[Commands-Reference]]   |
 
 ---
 
@@ -31,21 +31,26 @@ SSD-Template は以下を提供します：
 ## Documentation Structure
 
 ### Getting Started
+
 - [[Getting-Started]] - インストールと最初のステップ
 
 ### Core Concepts
+
 - [[Core-Concepts]] - 3層構造、Clarify ループ、状態管理の解説
 
 ### Workflows
+
 - [[Workflow-New-Project]] - 新規プロジェクト立ち上げフロー
 - [[Workflow-Add-Feature]] - 機能追加・バグ修正フロー
 
 ### Reference
+
 - [[Commands-Reference]] - 全コマンドの詳細リファレンス
 - [[Templates-Reference]] - Spec テンプレートの説明
 - [[Scripts-Reference]] - Node.js スクリプトの使用方法
 
 ### Troubleshooting
+
 - [[Troubleshooting]] - よくある問題と解決方法
 
 ---
@@ -64,37 +69,41 @@ SSD-Template は [Engineering Constitution](.specify/memory/constitution.md) に
 ## Command Categories
 
 ### Project Initialization (2)
-| Command | Purpose |
-|---------|---------|
+
+| Command           | Purpose                               |
+| ----------------- | ------------------------------------- |
 | `/speckit.vision` | Vision Spec 作成（目的 + ジャーニー） |
-| `/speckit.design` | Feature 提案 + Domain Spec 作成 |
+| `/speckit.design` | Feature 提案 + Domain Spec 作成       |
 
 ### Development Entry Points (5)
-| Command | Purpose |
-|---------|---------|
-| `/speckit.issue` | 既存 Issue から開発開始 |
-| `/speckit.add` | 新機能追加（Issue 自動作成） |
-| `/speckit.fix` | バグ修正（Issue 自動作成） |
-| `/speckit.featureproposal` | AI に Feature を提案させる |
-| `/speckit.change` | Vision/Domain Spec 変更 |
+
+| Command                    | Purpose                      |
+| -------------------------- | ---------------------------- |
+| `/speckit.issue`           | 既存 Issue から開発開始      |
+| `/speckit.add`             | 新機能追加（Issue 自動作成） |
+| `/speckit.fix`             | バグ修正（Issue 自動作成）   |
+| `/speckit.featureproposal` | AI に Feature を提案させる   |
+| `/speckit.change`          | Vision/Domain Spec 変更      |
 
 ### Development Flow (5)
-| Command | Purpose |
-|---------|---------|
-| `/speckit.spec` | Spec 作成/更新 |
-| `/speckit.plan` | 実装計画作成 |
-| `/speckit.tasks` | タスク分割 |
-| `/speckit.implement` | 実装 |
-| `/speckit.pr` | PR 作成 |
+
+| Command              | Purpose        |
+| -------------------- | -------------- |
+| `/speckit.spec`      | Spec 作成/更新 |
+| `/speckit.plan`      | 実装計画作成   |
+| `/speckit.tasks`     | タスク分割     |
+| `/speckit.implement` | 実装           |
+| `/speckit.pr`        | PR 作成        |
 
 ### Utilities (5)
-| Command | Purpose |
-|---------|---------|
-| `/speckit.clarify` | 曖昧点の解消 |
-| `/speckit.lint` | Spec 整合性チェック |
-| `/speckit.analyze` | 実装と Spec の整合性分析 |
-| `/speckit.checklist` | 品質チェックリスト生成 |
-| `/speckit.feedback` | Spec へのフィードバック記録 |
+
+| Command              | Purpose                     |
+| -------------------- | --------------------------- |
+| `/speckit.clarify`   | 曖昧点の解消                |
+| `/speckit.lint`      | Spec 整合性チェック         |
+| `/speckit.analyze`   | 実装と Spec の整合性分析    |
+| `/speckit.checklist` | 品質チェックリスト生成      |
+| `/speckit.feedback`  | Spec へのフィードバック記録 |
 
 ---
 

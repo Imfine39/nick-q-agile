@@ -29,6 +29,7 @@ Spec（Vision、Domain、または Feature）の曖昧な点を特定し、人�
 回答を受け取るたびに即座に Spec に反映し、曖昧点がなくなるまでループを継続する。
 
 **Key Features:**
+
 - **バッチ質問**: 4問ずつまとめて質問（会話ラリーを減らす）
 - **推奨オプション**: 各質問に Recommended/Suggested を明示
 - **即時更新**: 回答ごとに Spec を即座に更新
@@ -90,59 +91,60 @@ Spec（Vision、Domain、または Feature）の曖昧な点を特定し、人�
 ### Step 2: Structured Ambiguity Scan
 
 Spec の内容を読み込み、以下のタクソノミーに基づいて各カテゴリのステータスを判定:
+
 - **Clear**: 十分に定義されている
 - **Partial**: 一部定義されているが不完全
 - **Missing**: 定義されていない
 
 #### Vision Spec タクソノミー
 
-| Category | Check Items |
-|----------|-------------|
-| **System Purpose** | 解決する課題、ビジネス価値、成功指標の定義 |
-| **Target Users** | プライマリ/セカンダリユーザー、ペルソナ、痛点 |
-| **User Journeys** | 主要ワークフロー、エントリー/イグジットポイント、ハッピーパス |
-| **Scope** | 必須 vs あると良い、明示的な除外事項、フェーズ境界 |
-| **Constraints** | タイムライン、予算、技術制約、コンプライアンス |
-| **Risks** | 主要な不確実性、外部依存、緩和策 |
+| Category           | Check Items                                                   |
+| ------------------ | ------------------------------------------------------------- |
+| **System Purpose** | 解決する課題、ビジネス価値、成功指標の定義                    |
+| **Target Users**   | プライマリ/セカンダリユーザー、ペルソナ、痛点                 |
+| **User Journeys**  | 主要ワークフロー、エントリー/イグジットポイント、ハッピーパス |
+| **Scope**          | 必須 vs あると良い、明示的な除外事項、フェーズ境界            |
+| **Constraints**    | タイムライン、予算、技術制約、コンプライアンス                |
+| **Risks**          | 主要な不確実性、外部依存、緩和策                              |
 
 #### Domain Spec タクソノミー
 
-| Category | Check Items |
-|----------|-------------|
-| **Domain & Vocabulary** | ドメイン固有用語の定義、ビジネスコンテキスト |
-| **Master Data (M-*)** | 主要エンティティ、フィールド、関係性、一意性制約 |
-| **API Contracts (API-*)** | CRUD操作、命名規則、リクエスト/レスポンス形式、エラー形式 |
-| **State & Lifecycle** | ステータス遷移、ライフサイクルルール |
-| **Actors & Permissions** | アクター定義、権限レベル、認証方式 |
-| **Business Rules** | 計算ロジック(CR-*)、バリデーション(VR-*)、制約(BR-*) |
-| **Non-Functional** | パフォーマンス、セキュリティ、可用性、データ保持 |
-| **Technology Decisions** | 技術スタック、外部依存、統合パターン |
+| Category                   | Check Items                                               |
+| -------------------------- | --------------------------------------------------------- |
+| **Domain & Vocabulary**    | ドメイン固有用語の定義、ビジネスコンテキスト              |
+| **Master Data (M-\*)**     | 主要エンティティ、フィールド、関係性、一意性制約          |
+| **API Contracts (API-\*)** | CRUD操作、命名規則、リクエスト/レスポンス形式、エラー形式 |
+| **State & Lifecycle**      | ステータス遷移、ライフサイクルルール                      |
+| **Actors & Permissions**   | アクター定義、権限レベル、認証方式                        |
+| **Business Rules**         | 計算ロジック(CR-_)、バリデーション(VR-_)、制約(BR-\*)     |
+| **Non-Functional**         | パフォーマンス、セキュリティ、可用性、データ保持          |
+| **Technology Decisions**   | 技術スタック、外部依存、統合パターン                      |
 
 #### Screen Spec タクソノミー
 
-| Category | Check Items |
-|----------|-------------|
-| **Screen Index (SCR-*)** | 全画面の網羅性、ID命名規則、Purpose明確性 |
-| **Screen Transitions** | 遷移図の完全性、Entry/Exit Points、エラー遷移 |
-| **Layout & Structure** | ワイヤーフレームの詳細度、コンポーネント配置、レスポンシブ対応 |
-| **UI States** | Default/Loading/Empty/Error各状態の定義 |
-| **Navigation** | メニュー構造、パンくず、戻る/進むの挙動 |
-| **Design Tokens** | カラースキーム、タイポグラフィ、スペーシング、アイコン |
-| **Responsive Design** | ブレークポイント、モバイル対応、タブレット対応 |
-| **Accessibility** | WCAG準拠レベル、キーボード操作、スクリーンリーダー対応 |
+| Category                  | Check Items                                                    |
+| ------------------------- | -------------------------------------------------------------- |
+| **Screen Index (SCR-\*)** | 全画面の網羅性、ID命名規則、Purpose明確性                      |
+| **Screen Transitions**    | 遷移図の完全性、Entry/Exit Points、エラー遷移                  |
+| **Layout & Structure**    | ワイヤーフレームの詳細度、コンポーネント配置、レスポンシブ対応 |
+| **UI States**             | Default/Loading/Empty/Error各状態の定義                        |
+| **Navigation**            | メニュー構造、パンくず、戻る/進むの挙動                        |
+| **Design Tokens**         | カラースキーム、タイポグラフィ、スペーシング、アイコン         |
+| **Responsive Design**     | ブレークポイント、モバイル対応、タブレット対応                 |
+| **Accessibility**         | WCAG準拠レベル、キーボード操作、スクリーンリーダー対応         |
 
 #### Feature Spec タクソノミー
 
-| Category | Check Items |
-|----------|-------------|
-| **Functional Scope** | ユーザーゴール、成功基準、スコープ外の明示 |
-| **Domain Alignment** | M-*/API-*/BR-* 参照の妥当性、Domain に追加すべき要素 |
-| **Domain & Data** | エンティティ、属性、関係、データ量想定 |
-| **User Interaction** | ユーザージャーニー、画面遷移、空/エラー/ローディング状態 |
-| **Use Cases (UC-*)** | 前提条件、主要フロー、代替/例外フロー、受け入れ条件 |
-| **Edge Cases** | ネガティブシナリオ、レート制限、競合解決 |
-| **Non-Functional** | パフォーマンス、スケーラビリティ、セキュリティ |
-| **Completion Signals** | テスト可能な受け入れ条件、Definition of Done |
+| Category               | Check Items                                              |
+| ---------------------- | -------------------------------------------------------- |
+| **Functional Scope**   | ユーザーゴール、成功基準、スコープ外の明示               |
+| **Domain Alignment**   | M-_/API-_/BR-\* 参照の妥当性、Domain に追加すべき要素    |
+| **Domain & Data**      | エンティティ、属性、関係、データ量想定                   |
+| **User Interaction**   | ユーザージャーニー、画面遷移、空/エラー/ローディング状態 |
+| **Use Cases (UC-\*)**  | 前提条件、主要フロー、代替/例外フロー、受け入れ条件      |
+| **Edge Cases**         | ネガティブシナリオ、レート制限、競合解決                 |
+| **Non-Functional**     | パフォーマンス、スケーラビリティ、セキュリティ           |
+| **Completion Signals** | テスト可能な受け入れ条件、Definition of Done             |
 
 #### 共通チェック項目
 
@@ -227,6 +229,7 @@ Q4: [カテゴリ名] について
 #### 4.3 ループ終了条件
 
 以下のいずれかで終了:
+
 - 全ての重要な曖昧点が解消された
 - ユーザーが終了を指示（"done", "good", "no more", "stop", "proceed"）
 - 3ラウンド（12問）に到達
@@ -252,49 +255,49 @@ Q4: [カテゴリ名] について
 
 **Vision Spec の場合:**
 
-| 回答の種類 | 更新先セクション |
-|-----------|-----------------|
+| 回答の種類    | 更新先セクション           |
+| ------------- | -------------------------- |
 | 課題/ビジョン | Section 1 (System Purpose) |
-| ユーザー | Section 2 (Target Users) |
-| ジャーニー | Section 3 (User Journeys) |
-| スコープ | Section 4 (Scope) |
-| 制約 | Section 5 (Constraints) |
-| リスク | Section 6 (Risks) |
+| ユーザー      | Section 2 (Target Users)   |
+| ジャーニー    | Section 3 (User Journeys)  |
+| スコープ      | Section 4 (Scope)          |
+| 制約          | Section 5 (Constraints)    |
+| リスク        | Section 6 (Risks)          |
 
 **Domain Spec の場合:**
 
-| 回答の種類 | 更新先セクション |
-|-----------|-----------------|
-| アクター/権限 | Section 2 (Actors and Roles) |
-| マスターデータ (M-*) | Section 3 (Master Data Definitions) |
-| API定義 (API-*) | Section 4 (API Contracts) |
-| 状態/ライフサイクル | Section 5 (State & Lifecycle) |
-| ビジネスルール (BR-*/VR-*/CR-*) | Section 6 (Shared Business Rules) |
-| 非機能要件 | Section 7 (Non-Functional Requirements) |
+| 回答の種類                       | 更新先セクション                        |
+| -------------------------------- | --------------------------------------- |
+| アクター/権限                    | Section 2 (Actors and Roles)            |
+| マスターデータ (M-\*)            | Section 3 (Master Data Definitions)     |
+| API定義 (API-\*)                 | Section 4 (API Contracts)               |
+| 状態/ライフサイクル              | Section 5 (State & Lifecycle)           |
+| ビジネスルール (BR-_/VR-_/CR-\*) | Section 6 (Shared Business Rules)       |
+| 非機能要件                       | Section 7 (Non-Functional Requirements) |
 
 **Screen Spec の場合:**
 
-| 回答の種類 | 更新先セクション |
-|-----------|-----------------|
-| 画面定義 (SCR-*) | Section 2 (Screen Index) |
-| 画面遷移 | Section 3 (Screen Transitions) |
-| レイアウト/ワイヤーフレーム | Section 4 (Screen Details) |
-| 共通コンポーネント | Section 5 (Shared Components) |
-| デザイントークン | Section 6 (Design Tokens) |
-| レスポンシブ対応 | Section 7 (Responsive Breakpoints) |
-| アクセシビリティ | Section 8 (Accessibility) |
+| 回答の種類                  | 更新先セクション                   |
+| --------------------------- | ---------------------------------- |
+| 画面定義 (SCR-\*)           | Section 2 (Screen Index)           |
+| 画面遷移                    | Section 3 (Screen Transitions)     |
+| レイアウト/ワイヤーフレーム | Section 4 (Screen Details)         |
+| 共通コンポーネント          | Section 5 (Shared Components)      |
+| デザイントークン            | Section 6 (Design Tokens)          |
+| レスポンシブ対応            | Section 7 (Responsive Breakpoints) |
+| アクセシビリティ            | Section 8 (Accessibility)          |
 
 **Feature Spec の場合:**
 
-| 回答の種類 | 更新先セクション |
-|-----------|-----------------|
-| Domain依存 (M-*/API-*/BR-*) | Section 2 (Domain Dependencies) |
-| アクター | Section 3 (Actors) |
-| ユーザーストーリー (UC-*) | Section 4 (User Stories / Use Cases) |
-| 機能要件 (FR-*) | Section 5 (Functional Requirements) |
-| 成功条件 (SC-*) | Section 6 (Success Criteria) |
-| エッジケース | Section 7 (Edge Cases) |
-| 非機能要件 | Section 8 (Non-Functional Requirements) |
+| 回答の種類                   | 更新先セクション                        |
+| ---------------------------- | --------------------------------------- |
+| Domain依存 (M-_/API-_/BR-\*) | Section 2 (Domain Dependencies)         |
+| アクター                     | Section 3 (Actors)                      |
+| ユーザーストーリー (UC-\*)   | Section 4 (User Stories / Use Cases)    |
+| 機能要件 (FR-\*)             | Section 5 (Functional Requirements)     |
+| 成功条件 (SC-\*)             | Section 6 (Success Criteria)            |
+| エッジケース                 | Section 7 (Edge Cases)                  |
+| 非機能要件                   | Section 8 (Non-Functional Requirements) |
 
 #### 5.3 更新ルール
 
@@ -309,6 +312,7 @@ Q4: [カテゴリ名] について
 ### Step 6: Validation (各更新後 + 最終)
 
 各更新後に以下を検証:
+
 - [ ] Clarifications セクションに回答が追加されている（重複なし）
 - [ ] 更新したセクションに古い矛盾した記述が残っていない
 - [ ] Markdown構造が有効
@@ -359,6 +363,7 @@ node .specify/scripts/state.cjs branch --set-step spec-clarified
 #### Spec Type に応じた次のステップ
 
 **Vision Spec の場合:**
+
 ```
 次のステップ:
 1. [推奨] `/speckit.design` - 技術設計（Domain Spec + Feature 提案）
@@ -368,6 +373,7 @@ Vision が明確になりました。次は Domain Spec で技術的な詳細を
 ```
 
 **Domain/Screen Spec の場合:**
+
 ```
 次のステップ:
 1. [推奨] `/speckit.issue` - Foundation (S-FOUNDATION-001) から実装開始
@@ -379,6 +385,7 @@ Domain/Screen が明確になりました。Feature の実装を始めましょ�
 ```
 
 **Feature Spec の場合:**
+
 ```
 次のステップ:
 1. [推奨] `/speckit.plan` - 実装計画を作成
@@ -535,7 +542,7 @@ AI: 回答を記録しました:
 ## Notes
 
 - Vision clarify は `/speckit.vision` 後に実行（目的とジャーニーの明確化）
-- Domain/Screen clarify は `/speckit.design` 後に実行（M-*/API-*/BR-*/SCR-* の明確化）
+- Domain/Screen clarify は `/speckit.design` 後に実行（M-_/API-_/BR-_/SCR-_ の明確化）
 - Feature clarify は Domain/Screen が十分に定義されていることが前提
 - 人間が「後で」「スキップ」と言った場合は `[NEEDS CLARIFICATION]` を残し、Deferred としてレポート
 - 各セッションは独立（前回のセッションを自動継続しない）

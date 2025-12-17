@@ -30,14 +30,14 @@
 
 このテンプレートには以下のコード品質ツールが組み込まれています:
 
-| ツール | 用途 | コマンド |
-|--------|------|----------|
-| ESLint | コードチェック | `npm run lint` |
-| Prettier | フォーマット | `npm run format` |
-| TypeScript | 型チェック | `npm run typecheck` |
-| madge | 循環依存検出 | `npm run deps:circular` |
-| dependency-cruiser | 依存関係ルール | `npm run deps:check` |
-| knip | 未使用コード検出 | `npm run unused` |
+| ツール             | 用途             | コマンド                |
+| ------------------ | ---------------- | ----------------------- |
+| ESLint             | コードチェック   | `npm run lint`          |
+| Prettier           | フォーマット     | `npm run format`        |
+| TypeScript         | 型チェック       | `npm run typecheck`     |
+| madge              | 循環依存検出     | `npm run deps:circular` |
+| dependency-cruiser | 依存関係ルール   | `npm run deps:check`    |
+| knip               | 未使用コード検出 | `npm run unused`        |
 
 **初回セットアップ:** `npm install` を実行してください。
 
@@ -50,13 +50,17 @@
 ```json
 {
   "hooks": {
-    "PostToolUse": [{
-      "matcher": "Edit|Write",
-      "hooks": [{
-        "type": "command",
-        "command": "npm run lint --silent -- --max-warnings 0"
-      }]
-    }]
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npm run lint --silent -- --max-warnings 0"
+          }
+        ]
+      }
+    ]
   }
 }
 ```
@@ -173,8 +177,9 @@ Phase 5以降: Feature 開発（繰り返し）
 ## 4. Spec ドキュメント構成
 
 ### 4層構造
+
 - **Vision Spec** (`.specify/specs/vision/`): プロジェクトの目的、ユーザージャーニー、スコープ、**Screen Hints**
-- **Screen Spec** (`.specify/specs/screen/`): 画面一覧、画面遷移図、ワイヤーフレーム、**Screen Index (M-*/API-* 対応表)**
+- **Screen Spec** (`.specify/specs/screen/`): 画面一覧、画面遷移図、ワイヤーフレーム、**Screen Index (M-_/API-_ 対応表)**
 - **Domain Spec** (`.specify/specs/domain/`): 共有マスタ (`M-*`)、共有 API (`API-*`)、ビジネスルール、Feature Index、**Used by screens 参照**
 - **Feature Spec** (`.specify/specs/<feature-id>/`): 個別機能の詳細仕様。Domain/Screen を参照するのみ、マスタ/API/画面を再定義しない。
 
@@ -189,9 +194,10 @@ Feature (HOW)
 ```
 
 **Screen ↔ Domain 対応ルール:**
+
 - Screen Index に `APIs`, `Masters` 列を含める
-- M-* 定義に `Used by screens: SCR-XXX, SCR-YYY` を記載
-- API-* 定義に `Used by screens: SCR-XXX` を記載
+- M-\* 定義に `Used by screens: SCR-XXX, SCR-YYY` を記載
+- API-\* 定義に `Used by screens: SCR-XXX` を記載
 - `/speckit.lint` で整合性チェック
 
 ### Screen Spec と Spec-First アプローチ
@@ -205,30 +211,35 @@ Feature (HOW)
 | `Implemented` | 実装完了、本番稼働中 |
 
 **Spec-First ワークフロー:**
+
 1. 画面変更が必要な Feature を特定
 2. **Feature Spec 作成前に** Screen Spec を更新（新規画面追加 or Modification Log に記録）
 3. Screen Spec の Status を `Planned` に設定
-4. Feature Spec を作成し、SCR-* を参照
+4. Feature Spec を作成し、SCR-\* を参照
 5. 実装 → PR 作成 → マージ
 6. **マージ後** Screen Spec の Status を `Implemented` に更新
 
 **Modification Log (Section 2.1):**
 既存画面への変更予定を記録。Feature 実装前に Screen Spec を更新し、PR マージ後に Status を更新。
+
 ```markdown
-| Screen ID | Modification | Feature ID | Status | Issue |
-|-----------|-------------|------------|--------|-------|
-| SCR-001 | フィルター機能追加 | S-XXX-001 | Planned | #45 |
+| Screen ID | Modification       | Feature ID | Status  | Issue |
+| --------- | ------------------ | ---------- | ------- | ----- |
+| SCR-001   | フィルター機能追加 | S-XXX-001  | Planned | #45   |
 ```
 
 ### Feature Index
+
 Domain Spec で全 Feature を表形式で管理:
+
 ```markdown
-| Feature ID | Title | Path | Status | Related M-*/API-* |
-|------------|-------|------|--------|-------------------|
-| S-AUTH-001 | 認証機能 | .specify/specs/s-auth-001/ | Completed | M-USER, API-AUTH-* |
+| Feature ID | Title    | Path                       | Status    | Related M-_/API-_   |
+| ---------- | -------- | -------------------------- | --------- | ------------------- |
+| S-AUTH-001 | 認証機能 | .specify/specs/s-auth-001/ | Completed | M-USER, API-AUTH-\* |
 ```
 
 ### scaffold スクリプト
+
 ```bash
 node .specify/scripts/scaffold-spec.cjs --kind vision --id S-VISION-001 --title "..."
 node .specify/scripts/scaffold-spec.cjs --kind domain --id S-DOMAIN-001 --title "..." --vision S-VISION-001
@@ -241,6 +252,7 @@ node .specify/scripts/scaffold-spec.cjs --kind feature --id S-XXX-001 --title ".
 ユーザーが事前に入力ファイルを埋めてからコマンドを実行することで、AI が的確な Spec を生成できる。
 
 **ファイル構成:**
+
 ```
 .specify/
 ├── templates/           # ベーステンプレート（読み取り専用）
@@ -258,6 +270,7 @@ node .specify/scripts/scaffold-spec.cjs --kind feature --id S-XXX-001 --title ".
 ```
 
 **統合 Quick Input（vision.md）の構造:**
+
 ```
 Part A: ビジョン（必須）
   - プロジェクト名、課題、ユーザー、やりたいこと、やらないこと、制約
@@ -272,18 +285,22 @@ Part C: デザイン希望（任意）
 ```
 
 **使い方:**
+
 1. `.specify/input/vision.md` を編集して情報を入力（Part A 必須、Part B/C 推奨）
 2. `/speckit.vision` を実行 → Vision Spec 作成（Screen Hints 含む）
 3. `/speckit.design` を実行 → Screen + Domain Spec 同時作成
 4. 完了後、入力内容は Spec の「Original Input」セクションに記録され、入力ファイルは自動リセット
 
 **fix の緊急対応:**
+
 ```bash
 /speckit.fix --quick ログインできない
 ```
+
 `--quick` オプションで入力ファイルをスキップして即座に開始可能。
 
 **リセットスクリプト:**
+
 ```bash
 node .specify/scripts/reset-input.cjs vision   # vision のみリセット
 node .specify/scripts/reset-input.cjs all      # 全てリセット
@@ -300,7 +317,7 @@ node .specify/scripts/reset-input.cjs all      # 全てリセット
   - 関連 Issue (`Fixes #123`)
   - 関連 Spec ID (`Implements S-001, UC-003` など)
   - 実行したテストと結果
-  - **Screen Status 更新が必要な SCR-* ID**（Spec-First）
+  - **Screen Status 更新が必要な SCR-\* ID**（Spec-First）
 - PR 作成は `/speckit.pr` を使用（`spec-lint` 自動実行）。
 
 ### PR マージ後の Screen Spec 更新
@@ -351,16 +368,19 @@ git push
 プロジェクトとブランチの状態を追跡するための 2 層構造:
 
 ### Repo State (`.specify/state/repo-state.json`)
+
 - Vision/Domain Spec の完成度（none/scaffold/draft/clarified/approved）
 - プロジェクトフェーズ（initialization/vision/design/foundation/development）
 - Feature 進捗カウント
 
 ### Branch State (`.specify/state/branch-state.json`)
+
 - ブランチごとの作業ステップ（spec/plan/tasks/implement/pr）
 - タスク進捗（completed/total）
 - 中断情報（`/speckit.change` による中断時）
 
 ### 状態管理コマンド
+
 ```bash
 node .specify/scripts/state.cjs init                    # 初期化
 node .specify/scripts/state.cjs query --repo            # Repo 状態確認
@@ -369,6 +389,7 @@ node .specify/scripts/state.cjs query --suspended       # 中断中のブラン�
 ```
 
 ### 警告ベースアプローチ
+
 - 各コマンドは前提条件をチェックし、満たさない場合は警告を表示
 - **人間の判断で警告を無視して続行可能**（強制ブロックはしない）
 
@@ -377,35 +398,41 @@ node .specify/scripts/state.cjs query --suspended       # 中断中のブラン�
 セッション開始時に自動でプロジェクト状態がコンテキストに読み込まれます。
 
 **設定ファイル:** `.claude/settings.local.json`
+
 ```json
 {
   "hooks": {
-    "SessionStart": [{
-      "hooks": [{
-        "type": "command",
-        "command": "node .specify/scripts/state.cjs query --all 2>/dev/null || echo \"[SSD State] Not initialized\""
-      }]
-    }]
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .specify/scripts/state.cjs query --all 2>/dev/null || echo \"[SSD State] Not initialized\""
+          }
+        ]
+      }
+    ]
   }
 }
 ```
 
 **効果:**
+
 - 「どのブランチで作業中か」「どのステップか」を自動把握
 - 毎回の状態確認コマンド実行が不要
 - 継続作業がスムーズに
 
 ---
 
-## 10. Feature Spec 作成時の M-*/API-* 対応
+## 10. Feature Spec 作成時の M-_/API-_ 対応
 
-Feature Spec 作成時（/speckit.issue, /speckit.add）に必要な M-*/API-* を特定した際の分岐:
+Feature Spec 作成時（/speckit.issue, /speckit.add）に必要な M-_/API-_ を特定した際の分岐:
 
-| Case | 状況 | 対応 |
-|------|------|------|
-| Case 1 | 既存の M-*/API-* で足りる | そのまま参照を追加 |
-| Case 2 | 新規 M-*/API-* が必要 | Feature Spec 作成中に Domain に追加 |
-| Case 3 | 既存 M-*/API-* の変更が必要 | `/speckit.change` を実行 |
+| Case   | 状況                        | 対応                                |
+| ------ | --------------------------- | ----------------------------------- |
+| Case 1 | 既存の M-_/API-_ で足りる   | そのまま参照を追加                  |
+| Case 2 | 新規 M-_/API-_ が必要       | Feature Spec 作成中に Domain に追加 |
+| Case 3 | 既存 M-_/API-_ の変更が必要 | `/speckit.change` を実行            |
 
 **Case 3 の場合**: Feature 実装を中断し、`/speckit.change` で Spec 変更を先に完了させる。
 

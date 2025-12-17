@@ -101,6 +101,7 @@ Use the Read tool to read: .specify/input/fix.md
    - → Step 1.4 で入力ファイルの記入を促す
 
 **入力ファイルが「記入済み」かの判定:**
+
 - 「何が起きているか」が空でない
 - → 満たせば「記入済み」と判定
 
@@ -132,14 +133,14 @@ Option C: 緊急対応
 
 入力から以下を抽出:
 
-| 項目 | 抽出先 |
-|------|--------|
-| 何が起きているか | Issue Body (Actual behavior) |
-| 期待する動作 | Issue Body (Expected behavior) |
-| 再現手順 | Issue Body (Steps to reproduce) |
-| 影響範囲 | 影響 Spec の特定に使用 |
-| 緊急度 | Issue ラベルの判断に使用 |
-| 関連情報 | Issue Body, Spec Changelog |
+| 項目             | 抽出先                          |
+| ---------------- | ------------------------------- |
+| 何が起きているか | Issue Body (Actual behavior)    |
+| 期待する動作     | Issue Body (Expected behavior)  |
+| 再現手順         | Issue Body (Steps to reproduce) |
+| 影響範囲         | 影響 Spec の特定に使用          |
+| 緊急度           | Issue ラベルの判断に使用        |
+| 関連情報         | Issue Body, Spec Changelog      |
 
 ---
 
@@ -165,6 +166,7 @@ gh issue create --title "[Bug] <description>" --body "..." --label bug
 ```
 
 Body includes:
+
 - Bug description (何が起きているか)
 - Expected behavior (期待する動作, from spec)
 - Actual behavior (実際の動作)
@@ -172,6 +174,7 @@ Body includes:
 - Affected Spec ID/UC/FR
 
 緊急度が「高」の場合:
+
 ```bash
 gh label create urgent --description "Urgent fix needed" --color FF0000 --force
 gh issue edit <num> --add-label urgent
@@ -197,9 +200,10 @@ node .specify/scripts/branch.cjs --type fix --slug <slug> --issue <num>
 
 ### Step 7: Check if Domain/Screen Changes Needed
 
-If bug fix reveals incorrect M-*/API-*/BR-*/SCR-* definition:
+If bug fix reveals incorrect M-_/API-_/BR-_/SCR-_ definition:
 
 **Domain 変更が必要な場合:**
+
 ```
 このバグ修正には Domain Spec の変更が必要です:
 - M-USER.password: バリデーションルールの変更が必要
@@ -208,6 +212,7 @@ If bug fix reveals incorrect M-*/API-*/BR-*/SCR-* definition:
 ```
 
 **Screen 変更が必要な場合:**
+
 ```
 このバグ修正には Screen Spec の変更が必要です:
 - SCR-003: フィルターパネルのレイアウト変更が必要

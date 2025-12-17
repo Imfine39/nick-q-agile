@@ -25,11 +25,13 @@ Spec の**要件品質**を検証するチェックリストを生成する。
 「Unit Tests for English」- 実装テストではなく、**要件記述の品質をテスト**する。
 
 **Use this when:**
+
 - Spec が clarify を通過した後、Plan 作成前
 - 重要な Feature の最終レビュー前
 - ドメイン専門家（UX, Security等）のレビュー前
 
 **NOT for:**
+
 - 実装の動作確認（それは通常のテスト）
 - Spec の曖昧点解消（それは `/speckit.clarify`）
 
@@ -61,12 +63,12 @@ Spec の**要件品質**を検証するチェックリストを生成する。
 
 ### Step 1: Identify Target Spec
 
-1) **Parse input**:
+1. **Parse input**:
    - `$ARGUMENTS` で Spec ID またはドメイン（ux, api, security等）が指定されていればそれを使用
    - なければ現在のブランチから推測
    - 対象 Spec を読み込む
 
-2) **Determine Spec type**:
+2. **Determine Spec type**:
    - Vision → Vision Quality Dimensions
    - Domain → Domain Quality Dimensions
    - Feature → Feature Quality Dimensions + Domain-specific checks
@@ -75,10 +77,11 @@ Spec の**要件品質**を検証するチェックリストを生成する。
 
 ### Step 2: Select Focus Areas
 
-3) **If $ARGUMENTS specifies domain** (e.g., "ux", "api", "security"):
+3. **If $ARGUMENTS specifies domain** (e.g., "ux", "api", "security"):
    - そのドメインに特化したチェックを生成
 
-4) **If no domain specified**, ask user:
+4. **If no domain specified**, ask user:
+
    ```
    どの観点でチェックしますか？
 
@@ -98,21 +101,22 @@ Spec の**要件品質**を検証するチェックリストを生成する。
 
 ### Step 3: Generate Checklist
 
-5) **Apply Quality Dimensions** to each focus area:
+5. **Apply Quality Dimensions** to each focus area:
 
 #### Quality Dimensions (全ドメイン共通)
 
-| Dimension | Question Pattern | Example |
-|-----------|------------------|---------|
-| **Completeness** | Are all necessary requirements present? | "Are error handling requirements defined for all API failure modes?" |
-| **Clarity** | Are requirements unambiguous and specific? | "Is 'fast loading' quantified with specific timing thresholds?" |
-| **Consistency** | Do requirements align with each other? | "Do navigation requirements align across all pages?" |
-| **Measurability** | Can requirements be objectively verified? | "Can 'visual hierarchy' be objectively measured?" |
-| **Coverage** | Are all scenarios/edge cases addressed? | "Are requirements defined for zero-state scenarios?" |
+| Dimension         | Question Pattern                           | Example                                                              |
+| ----------------- | ------------------------------------------ | -------------------------------------------------------------------- |
+| **Completeness**  | Are all necessary requirements present?    | "Are error handling requirements defined for all API failure modes?" |
+| **Clarity**       | Are requirements unambiguous and specific? | "Is 'fast loading' quantified with specific timing thresholds?"      |
+| **Consistency**   | Do requirements align with each other?     | "Do navigation requirements align across all pages?"                 |
+| **Measurability** | Can requirements be objectively verified?  | "Can 'visual hierarchy' be objectively measured?"                    |
+| **Coverage**      | Are all scenarios/edge cases addressed?    | "Are requirements defined for zero-state scenarios?"                 |
 
 #### Domain-Specific Checks
 
 **UX Focus:**
+
 - Visual hierarchy and layout specifications
 - Interaction states (hover, focus, active, disabled)
 - Responsive/adaptive requirements
@@ -121,6 +125,7 @@ Spec の**要件品質**を検証するチェックリストを生成する。
 - Loading and transition states
 
 **API Focus:**
+
 - Request/response shape completeness
 - Error code and message definitions
 - Authentication/authorization requirements
@@ -129,6 +134,7 @@ Spec の**要件品質**を検証するチェックリストを生成する。
 - Backward compatibility
 
 **Security Focus:**
+
 - Authentication mechanism details
 - Authorization model (RBAC, ABAC, etc.)
 - Data protection requirements (encryption, masking)
@@ -137,6 +143,7 @@ Spec の**要件品質**を検証するチェックリストを生成する。
 - Compliance requirements
 
 **Performance Focus:**
+
 - Latency targets (p50, p95, p99)
 - Throughput requirements
 - Resource limits (memory, CPU, connections)
@@ -145,6 +152,7 @@ Spec の**要件品質**を検証するチェックリストを生成する。
 - Caching strategy
 
 **Data Focus:**
+
 - Data integrity constraints
 - Validation rules completeness
 - Migration/versioning strategy
@@ -156,11 +164,11 @@ Spec の**要件品質**を検証するチェックリストを生成する。
 
 ### Step 4: Format and Save
 
-6) **Generate checklist document**:
+6. **Generate checklist document**:
    - Save to `[SPEC_DIR]/checklist-[domain].md`
    - If `all` or `general`, save as `checklist.md`
 
-7) **Checklist format**:
+7. **Checklist format**:
 
 ```markdown
 # Requirements Quality Checklist: [Spec ID]
@@ -171,13 +179,13 @@ Generated: [DATE]
 
 ## Quality Summary
 
-| Dimension | Items | Notes |
-|-----------|-------|-------|
-| Completeness | [count] | |
-| Clarity | [count] | |
-| Consistency | [count] | |
-| Measurability | [count] | |
-| Coverage | [count] | |
+| Dimension     | Items   | Notes |
+| ------------- | ------- | ----- |
+| Completeness  | [count] |       |
+| Clarity       | [count] |       |
+| Consistency   | [count] |       |
+| Measurability | [count] |       |
+| Coverage      | [count] |       |
 
 ---
 
@@ -216,18 +224,19 @@ Generated: [DATE]
 
 Issues that should be addressed before proceeding:
 
-| Priority | Item | Recommended Action |
-|----------|------|--------------------|
-| High | CHK-010 | Quantify 'high performance' with p95 latency target |
-| Medium | CHK-040 | Add concurrent access requirements or explicitly exclude |
-| Low | CHK-030 | Define measurable UX criteria or accept subjective evaluation |
+| Priority | Item    | Recommended Action                                            |
+| -------- | ------- | ------------------------------------------------------------- |
+| High     | CHK-010 | Quantify 'high performance' with p95 latency target           |
+| Medium   | CHK-040 | Add concurrent access requirements or explicitly exclude      |
+| Low      | CHK-030 | Define measurable UX criteria or accept subjective evaluation |
 ```
 
 ---
 
 ### Step 5: Report and Recommend
 
-8) **Present summary**:
+8. **Present summary**:
+
    ```
    === Checklist 生成完了: [Spec ID] ===
 
@@ -254,7 +263,7 @@ Issues that should be addressed before proceeding:
    - [ ] Proceed to `/speckit.plan` when satisfied
    ```
 
-9) **If critical issues found**:
+9. **If critical issues found**:
    - Recommend running `/speckit.clarify` to address them
    - Do NOT block, but warn
 
@@ -265,6 +274,7 @@ Issues that should be addressed before proceeding:
 ### Vision Spec Checklist
 
 Focus on:
+
 - System purpose clarity
 - User journey completeness
 - Scope boundary definitions
@@ -274,17 +284,19 @@ Focus on:
 ### Domain Spec Checklist
 
 Focus on:
-- M-* field definitions completeness
-- API-* contract completeness
-- BR-*/VR-*/CR-* rule clarity
+
+- M-\* field definitions completeness
+- API-\* contract completeness
+- BR-_/VR-_/CR-\* rule clarity
 - Cross-entity consistency
 - NFR measurability
 
 ### Feature Spec Checklist
 
 Focus on:
-- UC-* acceptance criteria measurability
-- FR-* requirement clarity
+
+- UC-\* acceptance criteria measurability
+- FR-\* requirement clarity
 - Domain reference correctness
 - Edge case coverage
 - UI state definitions
@@ -318,3 +330,4 @@ AI: Feature Spec S-AUTH-001 を読み込みました。
     Next steps:
     - Rate limiting の閾値を clarify で明確化することを推奨
     - エラーレスポンス形式を Domain の API-* と整合させる
+```

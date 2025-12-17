@@ -11,47 +11,52 @@ PR作成前の「安心確認」として、実装が Spec/Domain の要件を�
 ## What This Checks
 
 ### 1. Spec要件の充足確認
+
 - 各 UC (Use Case) が実装されているか
 - 各 FR (Functional Requirement) が満たされているか
 - 各 SC (Success Criteria) がテストでカバーされているか
 - Edge Cases が考慮されているか
 
 ### 2. Domain との整合性
-- 使用している M-* (マスタ) が Domain に定義されているか
-- 使用している API-* が Domain に定義されているか
+
+- 使用している M-\* (マスタ) が Domain に定義されているか
+- 使用している API-\* が Domain に定義されているか
 - Domain の NFR (Non-Functional Requirements) に違反していないか
 - 他の Feature との依存関係に問題がないか
 
 ### 3. コードベース分析
+
 - 新規追加コードが既存パターンに従っているか
 - 命名規則の一貫性
 - セキュリティ上の懸念点
 - パフォーマンス上の懸念点
 
 ### 4. テストカバレッジ
+
 - UC ごとにテストが存在するか
 - 正常系・異常系の両方がカバーされているか
 - Spec由来のテストと実装の対応
 
 ## Steps
 
-1) **Load context**:
+1. **Load context**:
    - Feature Spec + Domain Spec
    - Plan + Tasks
    - 実装済みコード
    - テストコード
 
-2) **Use Serena** to explore:
+2. **Use Serena** to explore:
    - 実装されたファイル/クラス/関数
    - テストファイル
    - 既存コードとの関係
 
-3) **Cross-reference analysis**:
+3. **Cross-reference analysis**:
    - Spec の各 UC/FR/SC と実装を照合
    - Domain のマスタ/API定義と実際の使用を照合
    - Plan の設計方針と実装を照合
 
-4) **Generate report**:
+4. **Generate report**:
+
    ```
    === 分析結果 ===
 
@@ -73,7 +78,7 @@ PR作成前の「安心確認」として、実装が Spec/Domain の要件を�
      - SC: 4/5 (80%)
    ```
 
-5) **Provide recommendations**:
+5. **Provide recommendations**:
    - 問題がある場合: 修正提案
    - 問題がない場合: PR作成の推奨
 

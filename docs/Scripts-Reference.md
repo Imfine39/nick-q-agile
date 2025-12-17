@@ -6,15 +6,15 @@ Node.js スクリプトのリファレンスです。
 
 ## Overview
 
-| Script | Purpose |
-|--------|---------|
-| `state.js` | 状態管理（Repo/Branch） |
-| `scaffold-spec.js` | Spec テンプレート作成 |
-| `spec-lint.js` | Spec 整合性チェック |
-| `branch.js` | ブランチ作成 |
-| `pr.js` | PR 作成 |
-| `spec-metrics.js` | メトリクス収集 |
-| `reset-input.js` | Quick Input ファイルリセット |
+| Script             | Purpose                      |
+| ------------------ | ---------------------------- |
+| `state.js`         | 状態管理（Repo/Branch）      |
+| `scaffold-spec.js` | Spec テンプレート作成        |
+| `spec-lint.js`     | Spec 整合性チェック          |
+| `branch.js`        | ブランチ作成                 |
+| `pr.js`            | PR 作成                      |
+| `spec-metrics.js`  | メトリクス収集               |
+| `reset-input.js`   | Quick Input ファイルリセット |
 
 **Location:** `.specify/scripts/`
 
@@ -48,60 +48,60 @@ node .specify/scripts/state.cjs query [options]
 
 ### Repo Options
 
-| Option | Description | Values |
-|--------|-------------|--------|
-| `--set-vision-status` | Vision status | none/scaffold/draft/clarified/approved |
-| `--set-domain-status` | Domain status | 同上 |
-| `--set-screen-status` | Screen status | 同上 |
-| `--set-phase` | Project phase | initialization/vision/design/foundation/development |
-| `--set-vision-clarify` | Clarify 完了 | true/false |
-| `--set-domain-clarify` | Clarify 完了 | true/false |
-| `--set-screen-count` | Screen 数 | number |
-| `--add-master` | Master 追加 | M-XXX |
-| `--add-api` | API 追加 | API-XXX-ACTION |
-| `--add-rule` | Rule 追加 | BR-XXX |
-| `--set-features-total` | Feature 総数 | number |
-| `--set-features-backlog` | Backlog 数 | number |
-| `--set-features-inprogress` | In Progress 数 | number |
-| `--set-features-completed` | Completed 数 | number |
+| Option                      | Description    | Values                                              |
+| --------------------------- | -------------- | --------------------------------------------------- |
+| `--set-vision-status`       | Vision status  | none/scaffold/draft/clarified/approved              |
+| `--set-domain-status`       | Domain status  | 同上                                                |
+| `--set-screen-status`       | Screen status  | 同上                                                |
+| `--set-phase`               | Project phase  | initialization/vision/design/foundation/development |
+| `--set-vision-clarify`      | Clarify 完了   | true/false                                          |
+| `--set-domain-clarify`      | Clarify 完了   | true/false                                          |
+| `--set-screen-count`        | Screen 数      | number                                              |
+| `--add-master`              | Master 追加    | M-XXX                                               |
+| `--add-api`                 | API 追加       | API-XXX-ACTION                                      |
+| `--add-rule`                | Rule 追加      | BR-XXX                                              |
+| `--set-features-total`      | Feature 総数   | number                                              |
+| `--set-features-backlog`    | Backlog 数     | number                                              |
+| `--set-features-inprogress` | In Progress 数 | number                                              |
+| `--set-features-completed`  | Completed 数   | number                                              |
 
 ### Branch Options
 
-| Option | Description | Values |
-|--------|-------------|--------|
-| `--name` | Branch 名 | string (default: current) |
-| `--set-type` | Branch type | feature/fix/spec-change/spec |
-| `--set-issue` | Issue 番号 | number |
-| `--set-spec-id` | Spec ID | S-XXX-001 |
-| `--set-spec-path` | Spec パス | path |
-| `--set-step` | Workflow step | idle/spec/spec_review/plan/plan_review/tasks/implement/pr/suspended |
-| `--set-task-progress` | タスク進捗 | n/m (e.g., 3/10) |
-| `--delete` | Branch 削除 | - |
+| Option                | Description   | Values                                                              |
+| --------------------- | ------------- | ------------------------------------------------------------------- |
+| `--name`              | Branch 名     | string (default: current)                                           |
+| `--set-type`          | Branch type   | feature/fix/spec-change/spec                                        |
+| `--set-issue`         | Issue 番号    | number                                                              |
+| `--set-spec-id`       | Spec ID       | S-XXX-001                                                           |
+| `--set-spec-path`     | Spec パス     | path                                                                |
+| `--set-step`          | Workflow step | idle/spec/spec_review/plan/plan_review/tasks/implement/pr/suspended |
+| `--set-task-progress` | タスク進捗    | n/m (e.g., 3/10)                                                    |
+| `--delete`            | Branch 削除   | -                                                                   |
 
 ### Suspend Options
 
-| Option | Description |
-|--------|-------------|
-| `--branch` | Branch 名 (default: current) |
-| `--reason` | 中断理由 |
-| `--related` | 関連 Issue 番号 |
-| `--resume-after` | 再開条件 |
+| Option           | Description                  |
+| ---------------- | ---------------------------- |
+| `--branch`       | Branch 名 (default: current) |
+| `--reason`       | 中断理由                     |
+| `--related`      | 関連 Issue 番号              |
+| `--resume-after` | 再開条件                     |
 
 ### Resume Options
 
-| Option | Description |
-|--------|-------------|
-| `--branch` | Branch 名 (default: current) |
-| `--step` | 再開先 step (default: implement) |
+| Option     | Description                      |
+| ---------- | -------------------------------- |
+| `--branch` | Branch 名 (default: current)     |
+| `--step`   | 再開先 step (default: implement) |
 
 ### Query Options
 
-| Option | Description |
-|--------|-------------|
-| `--repo` | Repo 状態表示 |
-| `--branch [name]` | Branch 状態表示 |
-| `--suspended` | 中断中 Branch 一覧 |
-| `--all` | 全状態表示 |
+| Option            | Description        |
+| ----------------- | ------------------ |
+| `--repo`          | Repo 状態表示      |
+| `--branch [name]` | Branch 状態表示    |
+| `--suspended`     | 中断中 Branch 一覧 |
+| `--all`           | 全状態表示         |
 
 ### Examples
 
@@ -136,18 +136,18 @@ node .specify/scripts/scaffold-spec.cjs --kind <kind> --id <id> --title <title> 
 
 ### Required Arguments
 
-| Argument | Description |
-|----------|-------------|
-| `--kind` | Spec 種類: vision / domain / screen / feature |
-| `--id` | Spec ID (e.g., S-VISION-001) |
-| `--title` | Spec タイトル |
+| Argument  | Description                                   |
+| --------- | --------------------------------------------- |
+| `--kind`  | Spec 種類: vision / domain / screen / feature |
+| `--id`    | Spec ID (e.g., S-VISION-001)                  |
+| `--title` | Spec タイトル                                 |
 
 ### Optional Arguments
 
-| Argument | Description |
-|----------|-------------|
+| Argument   | Description                       |
+| ---------- | --------------------------------- |
 | `--vision` | Vision ID (domain/feature 作成時) |
-| `--domain` | Domain ID (feature 作成時) |
+| `--domain` | Domain ID (feature 作成時)        |
 
 ### Examples
 
@@ -167,12 +167,12 @@ node .specify/scripts/scaffold-spec.cjs --kind feature --id S-INVENTORY-001 --ti
 
 ### Output Paths
 
-| Kind | Output Path |
-|------|-------------|
-| vision | `.specify/specs/vision/spec.md` |
-| domain | `.specify/specs/domain/spec.md` |
-| screen | `.specify/specs/screen/spec.md` |
-| feature | `.specify/specs/<id>/spec.md` |
+| Kind    | Output Path                     |
+| ------- | ------------------------------- |
+| vision  | `.specify/specs/vision/spec.md` |
+| domain  | `.specify/specs/domain/spec.md` |
+| screen  | `.specify/specs/screen/spec.md` |
+| feature | `.specify/specs/<id>/spec.md`   |
 
 ---
 
@@ -188,30 +188,30 @@ node .specify/scripts/spec-lint.cjs [options]
 
 ### Options
 
-| Option | Description |
-|--------|-------------|
-| `--json` | JSON 形式で出力 |
-| `--verbose` | 詳細表示 |
+| Option      | Description     |
+| ----------- | --------------- |
+| `--json`    | JSON 形式で出力 |
+| `--verbose` | 詳細表示        |
 
 ### Checks
 
-| Check | Description |
-|-------|-------------|
-| Vision/Domain/Screen/Feature 存在 | 4層構造の整合性 |
-| M-*/API-* 参照 | 未定義の参照がないか |
-| SCR-* 参照 | 未定義の Screen 参照がないか |
-| Feature Index | Domain に Feature が登録されているか |
-| Screen Index | Screen Spec に Screen が登録されているか |
-| Plan/Tasks 存在 | 実装中の Spec に plan/tasks があるか |
-| ID 重複 | 同一 ID の重複がないか |
-| Domain freshness | Feature が Domain より古くないか |
+| Check                             | Description                              |
+| --------------------------------- | ---------------------------------------- |
+| Vision/Domain/Screen/Feature 存在 | 4層構造の整合性                          |
+| M-_/API-_ 参照                    | 未定義の参照がないか                     |
+| SCR-\* 参照                       | 未定義の Screen 参照がないか             |
+| Feature Index                     | Domain に Feature が登録されているか     |
+| Screen Index                      | Screen Spec に Screen が登録されているか |
+| Plan/Tasks 存在                   | 実装中の Spec に plan/tasks があるか     |
+| ID 重複                           | 同一 ID の重複がないか                   |
+| Domain freshness                  | Feature が Domain より古くないか         |
 
 ### Exit Codes
 
 | Code | Description |
-|------|-------------|
-| 0 | 問題なし |
-| 1 | エラーあり |
+| ---- | ----------- |
+| 0    | 問題なし    |
+| 1    | エラーあり  |
 
 ### Example Output
 
@@ -247,11 +247,11 @@ node .specify/scripts/branch.cjs --type <type> --slug <slug> --issue <num>
 
 ### Arguments
 
-| Argument | Description | Values |
-|----------|-------------|--------|
-| `--type` | Branch type | feature / fix / spec-change / spec |
-| `--slug` | Short name | e.g., inventory, auth |
-| `--issue` | Issue 番号 | number |
+| Argument  | Description | Values                             |
+| --------- | ----------- | ---------------------------------- |
+| `--type`  | Branch type | feature / fix / spec-change / spec |
+| `--slug`  | Short name  | e.g., inventory, auth              |
+| `--issue` | Issue 番号  | number                             |
 
 ### Examples
 
@@ -268,12 +268,12 @@ node .specify/scripts/branch.cjs --type spec-change --slug product-field --issue
 
 ### Output Branch Names
 
-| Type | Pattern |
-|------|---------|
-| feature | `feature/<issue>-<slug>` |
-| fix | `fix/<issue>-<slug>` |
+| Type        | Pattern                      |
+| ----------- | ---------------------------- |
+| feature     | `feature/<issue>-<slug>`     |
+| fix         | `fix/<issue>-<slug>`         |
 | spec-change | `spec-change/<issue>-<slug>` |
-| spec | `spec/<issue>-<slug>` |
+| spec        | `spec/<issue>-<slug>`        |
 
 ---
 
@@ -289,8 +289,8 @@ node .specify/scripts/pr.cjs [options]
 
 ### Options
 
-| Option | Description |
-|--------|-------------|
+| Option    | Description         |
+| --------- | ------------------- |
 | `--draft` | Draft PR として作成 |
 
 ### Flow
@@ -314,21 +314,21 @@ node .specify/scripts/spec-metrics.cjs [options]
 
 ### Options
 
-| Option | Description |
-|--------|-------------|
-| `--json` | JSON 形式で出力 |
-| `--verbose` | 詳細表示 |
+| Option      | Description     |
+| ----------- | --------------- |
+| `--json`    | JSON 形式で出力 |
+| `--verbose` | 詳細表示        |
 
 ### Metrics
 
-| Category | Metrics |
-|----------|---------|
-| Vision | Count, Last modified |
-| Domain | Count, Masters, APIs, Last modified |
-| Features | Total, By status, With plan, With tasks |
-| Coverage | Total UCs, FRs, SCs |
+| Category  | Metrics                                          |
+| --------- | ------------------------------------------------ |
+| Vision    | Count, Last modified                             |
+| Domain    | Count, Masters, APIs, Last modified              |
+| Features  | Total, By status, With plan, With tasks          |
+| Coverage  | Total UCs, FRs, SCs                              |
 | Staleness | Outdated features, Specs without UCs, Old drafts |
-| Health | Score (0-100), Issues |
+| Health    | Score (0-100), Issues                            |
 
 ### Example Output
 
@@ -381,12 +381,12 @@ node .specify/scripts/reset-input.cjs <type>
 
 ### Arguments
 
-| Argument | Description |
-|----------|-------------|
-| `vision` | Vision 用入力ファイルをリセット |
-| `add` | 機能追加用入力ファイルをリセット |
-| `fix` | バグ修正用入力ファイルをリセット |
-| `all` | 全入力ファイルをリセット |
+| Argument | Description                      |
+| -------- | -------------------------------- |
+| `vision` | Vision 用入力ファイルをリセット  |
+| `add`    | 機能追加用入力ファイルをリセット |
+| `fix`    | バグ修正用入力ファイルをリセット |
+| `all`    | 全入力ファイルをリセット         |
 
 ### Examples
 

@@ -14,74 +14,78 @@ handoffs:
 ## Purpose
 
 Step 4 of the 6-step workflow. Implements tasks from the plan while:
+
 - Adhering strictly to the spec
 - Writing tests first or alongside code
 - Requesting human permission when spec feedback is needed
 
 ## Steps
 
-1) **Verify context**:
-   - Confirm current branch is Issue-linked (feature/*, fix/*)
+1. **Verify context**:
+   - Confirm current branch is Issue-linked (feature/_, fix/_)
    - Read: spec, plan, tasks from the feature directory
-   - Ensure Spec IDs (S-*, UC-*, FR-*) are clear
+   - Ensure Spec IDs (S-_, UC-_, FR-\*) are clear
 
-2) **Load tasks**:
+2. **Load tasks**:
    - Parse tasks.md for pending tasks
    - Present task list and confirm implementation order
 
-3) **For each task**:
+3. **For each task**:
 
    **Update task progress**:
+
    ```bash
    node .specify/scripts/state.cjs branch --set-task-progress <completed>/<total>
    ```
 
    a) **Read task requirements**:
-      - Identify related UC/FR/SC IDs
-      - Understand acceptance criteria
+   - Identify related UC/FR/SC IDs
+   - Understand acceptance criteria
 
    b) **Write tests first** (fail-first when possible):
-      - Create test file with spec annotations:
-        ```typescript
-        /**
-         * @spec S-XXX-001
-         * @uc UC-001
-         */
-        ```
-      - Tests should fail initially (red phase)
+   - Create test file with spec annotations:
+     ```typescript
+     /**
+      * @spec S-XXX-001
+      * @uc UC-001
+      */
+     ```
+   - Tests should fail initially (red phase)
 
    c) **Implement code**:
-      - Small, focused changes
-      - Reference spec IDs in comments where helpful
-      - Follow existing code patterns (use Serena to explore)
+   - Small, focused changes
+   - Reference spec IDs in comments where helpful
+   - Follow existing code patterns (use Serena to explore)
 
    d) **Run tests**:
-      - All tests should pass (green phase)
-      - If test fails, classify:
-        - Spec bug → Need feedback
-        - Test bug → Fix test
-        - Implementation bug → Fix code
-        - Environment bug → Fix config
+   - All tests should pass (green phase)
+   - If test fails, classify:
+     - Spec bug → Need feedback
+     - Test bug → Fix test
+     - Implementation bug → Fix code
+     - Environment bug → Fix config
 
    e) **Check for feedback needs**:
-      - Did you discover a technical constraint not in spec?
-      - Did you find an ambiguity that needed a decision?
-      - Did you deviate from spec for a valid reason?
+   - Did you discover a technical constraint not in spec?
+   - Did you find an ambiguity that needed a decision?
+   - Did you deviate from spec for a valid reason?
 
-      **If YES to any**:
-      - **STOP and ask human for permission**:
-        ```
-        I discovered something that may need to be recorded in the spec:
-        - Type: [constraint/discovery/decision/deviation]
-        - Description: [what was found]
-        - Affected: [UC-XXX, FR-XXX]
+   **If YES to any**:
+   - **STOP and ask human for permission**:
 
-        Should I record this feedback to the spec? [Yes/No]
-        ```
-      - If human approves → Run `/speckit.feedback` with the details
-      - If human declines → Continue without recording
+     ```
+     I discovered something that may need to be recorded in the spec:
+     - Type: [constraint/discovery/decision/deviation]
+     - Description: [what was found]
+     - Affected: [UC-XXX, FR-XXX]
 
-4) **After all tasks**:
+     Should I record this feedback to the spec? [Yes/No]
+     ```
+
+   - If human approves → Run `/speckit.feedback` with the details
+   - If human declines → Continue without recording
+
+4. **After all tasks**:
    - Run full test suite
    - Run spec-lint: `node .specify/scripts/spec-lint.cjs`
    - Summarize:
@@ -90,7 +94,7 @@ Step 4 of the 6-step workflow. Implements tasks from the plan while:
      - Feedback recorded (if any)
      - Any remaining issues
 
-5) **Recommend next step**:
+5. **Recommend next step**:
    - If all tasks done and tests pass → Suggest `/speckit.pr`
    - If tasks remain → Continue with next task
    - If blocked → Suggest `/speckit.clarify`

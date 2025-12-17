@@ -8,8 +8,8 @@ module.exports = {
       comment: "循環依存はメンテナンス性を著しく低下させます",
       from: {},
       to: {
-        circular: true
-      }
+        circular: true,
+      },
     },
     // 孤立ファイル（どこからも参照されていない）を警告
     {
@@ -20,13 +20,13 @@ module.exports = {
         orphan: true,
         pathNot: [
           "(^|/)\\.[^/]+\\.(js|cjs|mjs|ts|json)$", // 設定ファイル
-          "\\.d\\.ts$",                             // 型定義ファイル
-          "(^|/)index\\.(ts|js)$",                  // インデックスファイル
-          "^src/main\\.(ts|tsx)$",                  // エントリーポイント
-          "^src/App\\.(ts|tsx)$"                    // Appコンポーネント
-        ]
+          "\\.d\\.ts$", // 型定義ファイル
+          "(^|/)index\\.(ts|js)$", // インデックスファイル
+          "^src/main\\.(ts|tsx)$", // エントリーポイント
+          "^src/App\\.(ts|tsx)$", // Appコンポーネント
+        ],
       },
-      to: {}
+      to: {},
     },
     // 非推奨パッケージへの依存を禁止
     {
@@ -35,8 +35,8 @@ module.exports = {
       comment: "非推奨のnpmパッケージは使用しないでください",
       from: {},
       to: {
-        dependencyTypes: ["deprecated"]
-      }
+        dependencyTypes: ["deprecated"],
+      },
     },
     // devDependencies を本番コードで使用することを禁止
     {
@@ -44,11 +44,11 @@ module.exports = {
       severity: "error",
       comment: "devDependencies は本番コードで使用できません",
       from: {
-        path: "^src/"
+        path: "^src/",
       },
       to: {
-        dependencyTypes: ["npm-dev"]
-      }
+        dependencyTypes: ["npm-dev"],
+      },
     },
     // UI層（components）から直接データ層（db/api）へのアクセスを禁止
     {
@@ -56,11 +56,11 @@ module.exports = {
       severity: "error",
       comment: "UIコンポーネントはサービス/フック経由でデータにアクセスしてください",
       from: {
-        path: "^src/components/"
+        path: "^src/components/",
       },
       to: {
-        path: "^src/(db|api|repositories)/"
-      }
+        path: "^src/(db|api|repositories)/",
+      },
     },
     // テストコードを本番コードでインポートすることを禁止
     {
@@ -69,32 +69,32 @@ module.exports = {
       comment: "テストコードを本番コードからインポートしないでください",
       from: {
         path: "^src/",
-        pathNot: "\\.(test|spec)\\.(ts|tsx|js|jsx)$"
+        pathNot: "\\.(test|spec)\\.(ts|tsx|js|jsx)$",
       },
       to: {
-        path: "\\.(test|spec)\\.(ts|tsx|js|jsx)$"
-      }
-    }
+        path: "\\.(test|spec)\\.(ts|tsx|js|jsx)$",
+      },
+    },
   ],
   options: {
     doNotFollow: {
-      path: "node_modules"
+      path: "node_modules",
     },
     tsPreCompilationDeps: true,
     tsConfig: {
-      fileName: "tsconfig.json"
+      fileName: "tsconfig.json",
     },
     enhancedResolveOptions: {
       exportsFields: ["exports"],
-      conditionNames: ["import", "require", "node", "default"]
+      conditionNames: ["import", "require", "node", "default"],
     },
     reporterOptions: {
       dot: {
-        collapsePattern: "node_modules/(@[^/]+/[^/]+|[^/]+)"
+        collapsePattern: "node_modules/(@[^/]+/[^/]+|[^/]+)",
       },
       text: {
-        highlightFocused: true
-      }
-    }
-  }
+        highlightFocused: true,
+      },
+    },
+  },
 };

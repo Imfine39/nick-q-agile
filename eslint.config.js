@@ -14,8 +14,9 @@ export default tseslint.config(
       ".specify/**",
       "*.config.js",
       "*.config.cjs",
-      "*.config.mjs"
-    ]
+      "*.config.mjs",
+      ".dependency-cruiser.cjs",
+    ],
   },
   {
     files: ["**/*.{ts,tsx,js,jsx}"],
@@ -25,8 +26,8 @@ export default tseslint.config(
         "error",
         {
           argsIgnorePattern: "^_",
-          varsIgnorePattern: "^_"
-        }
+          varsIgnorePattern: "^_",
+        },
       ],
       "@typescript-eslint/no-explicit-any": "warn",
       "@typescript-eslint/explicit-function-return-type": "off",
@@ -45,11 +46,8 @@ export default tseslint.config(
       // 複雑度制限
       complexity: ["warn", 15],
       "max-depth": ["warn", 4],
-      "max-lines-per-function": [
-        "warn",
-        { max: 100, skipBlankLines: true, skipComments: true }
-      ],
-      "max-params": ["warn", 4]
-    }
+      "max-lines-per-function": ["warn", { max: 100, skipBlankLines: true, skipComments: true }],
+      "max-params": ["warn", 4],
+    },
   }
 );

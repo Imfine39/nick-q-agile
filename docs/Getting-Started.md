@@ -8,12 +8,12 @@ SSD-Template を使い始めるためのガイドです。
 
 以下のツールが必要です：
 
-| Tool | Purpose | Installation |
-|------|---------|--------------|
-| **Git** | バージョン管理 | [git-scm.com](https://git-scm.com/) |
-| **Node.js** | スクリプト実行 | [nodejs.org](https://nodejs.org/) (LTS推奨) |
-| **GitHub CLI** | Issue/PR 操作 | [cli.github.com](https://cli.github.com/) |
-| **AI Assistant** | 開発支援 | Claude Code, Cursor, etc. |
+| Tool             | Purpose        | Installation                                |
+| ---------------- | -------------- | ------------------------------------------- |
+| **Git**          | バージョン管理 | [git-scm.com](https://git-scm.com/)         |
+| **Node.js**      | スクリプト実行 | [nodejs.org](https://nodejs.org/) (LTS推奨) |
+| **GitHub CLI**   | Issue/PR 操作  | [cli.github.com](https://cli.github.com/)   |
+| **AI Assistant** | 開発支援       | Claude Code, Cursor, etc.                   |
 
 ### GitHub CLI のセットアップ
 
@@ -26,11 +26,11 @@ gh auth login
 
 Claude Code を使用する場合、以下の MCP サーバーを推奨します：
 
-| MCP | Purpose |
-|-----|---------|
-| **serena** | プロジェクト構造・ファイル操作 |
-| **context7** | ライブラリ/フレームワークのドキュメント検索 | 
-| **playwright** | ブラウザ自動化・E2E テスト |
+| MCP            | Purpose                                     |
+| -------------- | ------------------------------------------- |
+| **serena**     | プロジェクト構造・ファイル操作              |
+| **context7**   | ライブラリ/フレームワークのドキュメント検索 |
+| **playwright** | ブラウザ自動化・E2E テスト                  |
 
 ```bash
 # Claude Code での MCP サーバー追加
@@ -181,18 +181,23 @@ AI が Issue を作成し、Feature Spec の作成を開始します。
 ## First Steps
 
 1. **Constitution を読む**
+
    ```
    .specify/memory/constitution.md
    ```
+
    プロジェクトの原則と規約を理解します。
 
 2. **CLAUDE.md を確認**
+
    ```
    CLAUDE.md
    ```
+
    AI エージェントの行動指針を確認します。
 
 3. **状態を初期化**
+
    ```bash
    node .specify/scripts/state.cjs init
    ```

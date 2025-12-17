@@ -25,8 +25,7 @@ specification. This command provides a structured way to record:
 
 ## Steps
 
-1) **Identify the feedback type** from `$ARGUMENTS`:
-
+1. **Identify the feedback type** from `$ARGUMENTS`:
    - `constraint` - Technical limitation that affects the spec
    - `discovery` - New requirement or behavior discovered
    - `clarification` - Ambiguity that was resolved during implementation
@@ -34,14 +33,13 @@ specification. This command provides a structured way to record:
    - `deviation` - Intentional deviation from spec (with justification)
    - `screen` - UI/UX feedback that affects Screen Spec (layout, navigation, usability)
 
-2) **Locate the relevant spec**:
-
+2. **Locate the relevant spec**:
    - Find the spec being implemented (from branch name or context)
    - Read the current spec content
    - Identify the affected sections (UC, FR, SC, etc.)
    - For `screen` type: Also check Screen Spec (`.specify/specs/screen/spec.md`)
 
-3) **Record the feedback**:
+3. **Record the feedback**:
 
    For each feedback item, capture:
    - Type (from step 1)
@@ -50,9 +48,9 @@ specification. This command provides a structured way to record:
    - Impact on the spec
    - Proposed resolution (if any)
 
-4) **Update the spec**:
-
+4. **Update the spec**:
    - Add entry to "## 17. Changelog" section:
+
      ```
      | [DATE] | [Type] | [Description] | #[Issue] |
      ```
@@ -67,14 +65,12 @@ specification. This command provides a structured way to record:
        - [Deviation, reason, and approval status]
      ```
 
-5) **Assess severity**:
-
+5. **Assess severity**:
    - **Minor** (no spec change needed): Just document in Implementation Notes.
    - **Moderate** (spec clarification needed): Update affected UC/FR/SC.
    - **Major** (spec change needed): Create Issue, follow spec change workflow.
 
-6) **If major change needed**:
-
+6. **If major change needed**:
    - Do NOT modify UC/FR/SC directly.
    - Create an Issue with label `spec-change`.
    - Reference the affected spec IDs.
@@ -95,6 +91,7 @@ specification. This command provides a structured way to record:
 Input: `constraint: API rate limiting prevents batch updates larger than 100 items`
 
 Output:
+
 - Implementation Notes updated with constraint
 - Changelog: `| 2025-01-15 | Clarified | Added batch size limit to FR-003 | #45 |`
 - If this changes behavior: Issue created for spec update
@@ -104,6 +101,7 @@ Output:
 Input: `discovery: Users expect confirmation dialog before delete, not in spec`
 
 Output:
+
 - Implementation Notes: "Discovered requirement: delete confirmation needed"
 - Issue created: "Spec addition: S-ORDERS-001 - Add delete confirmation (UC-003)"
 - Spec not modified until Issue is reviewed
@@ -113,6 +111,7 @@ Output:
 Input: `decision: Using optimistic locking for concurrent edits (spec silent on this)`
 
 Output:
+
 - Implementation Notes: "Design decision: optimistic locking for concurrency"
 - Changelog: `| 2025-01-15 | Clarified | Documented concurrency strategy | - |`
 - No Issue needed (spec was silent, implementation made reasonable choice)
@@ -122,16 +121,18 @@ Output:
 Input: `screen: SCR-003 のフィルターパネルはモバイルでは使いづらい、アコーディオン形式に変更推奨`
 
 Output:
+
 - Feature Spec Implementation Notes: "UI feedback: filter panel needs mobile-friendly design"
 - Screen Spec Changelog: `| 2025-01-15 | Feedback | SCR-003 filter panel mobile improvement needed | #48 |`
 - If layout change required: Issue created for Screen Spec update via `/speckit.change`
-- Affected SCR-*: SCR-003
+- Affected SCR-\*: SCR-003
 
 ### Example 5: Screen Discovery
 
 Input: `screen: 実装中に確認ダイアログが必要と判明、Screen Spec に未定義`
 
 Output:
+
 - Feature Spec Section 8.3: New modal component needed
 - Issue created: "Screen addition: SCR-CONFIRM-MODAL - Delete confirmation dialog"
 - Screen Spec updated via `/speckit.change`

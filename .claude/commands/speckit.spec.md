@@ -20,6 +20,7 @@ $ARGUMENTS
 ## Purpose
 
 Create or update a Spec. This is a **base command** that can be:
+
 - Called by entry points (`/speckit.add`, `/speckit.fix`, `/speckit.issue`)
 - Called directly to create/update a spec manually
 
@@ -33,16 +34,19 @@ Create or update a Spec. This is a **base command** that can be:
 Use scaffold script for initial creation:
 
 **Vision:**
+
 ```bash
 node .specify/scripts/scaffold-spec.cjs --kind vision --id S-VISION-001 --title "Project Vision"
 ```
 
 **Domain:**
+
 ```bash
 node .specify/scripts/scaffold-spec.cjs --kind domain --id S-DOMAIN-001 --title "System Domain" --vision S-VISION-001
 ```
 
 **Feature:**
+
 ```bash
 node .specify/scripts/scaffold-spec.cjs --kind feature --id S-FEATURE-001 --title "Feature Title" --domain S-DOMAIN-001
 ```
@@ -53,21 +57,21 @@ Generate detailed spec content from description.
 
 ## Steps
 
-1) **Parse input**:
+1. **Parse input**:
    - Extract feature/bug description from `$ARGUMENTS`
    - If empty, ask for description
 
-2) **Identify elements**:
+2. **Identify elements**:
    - Actors and their goals
    - Actions and workflows
    - Data entities (reference Overview masters by ID)
    - Constraints and business rules
    - Mark unclear items as `[NEEDS CLARIFICATION]`
 
-3) **Fill spec sections**:
+3. **Fill spec sections**:
    - Purpose and Scope
    - Actors and Context
-   - Domain Model (reference Domain IDs: M-*, API-*)
+   - Domain Model (reference Domain IDs: M-_, API-_)
    - User Stories (UC-XXX)
    - Functional Requirements (FR-XXX)
    - Success Criteria (SC-XXX)
@@ -75,14 +79,15 @@ Generate detailed spec content from description.
    - Non-Functional Requirements
    - Traceability (link to Domain)
 
-4) **Save spec**:
+4. **Save spec**:
    - Write to `.specify/specs/<id>/spec.md`
    - For Feature: auto-update Domain's Feature index table
 
-5) **Run lint**:
+5. **Run lint**:
    - Execute: `node .specify/scripts/spec-lint.cjs`
 
-6) **Summary & Clarify 推奨**:
+6. **Summary & Clarify 推奨**:
+
    ```
    === Spec 作成完了 ===
 

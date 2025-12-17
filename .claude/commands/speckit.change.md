@@ -23,22 +23,24 @@ Change existing definitions in Vision Spec, Domain Spec, or Screen Spec.
 This command handles **modifications to existing items**, not additions.
 
 **Use this when:**
-- Modifying existing M-* (field changes, constraint changes)
-- Modifying existing API-* (request/response shape changes)
-- Modifying existing BR-*/VR-* (business rule changes)
-- Modifying existing SCR-* (screen layout, navigation, component changes)
+
+- Modifying existing M-\* (field changes, constraint changes)
+- Modifying existing API-\* (request/response shape changes)
+- Modifying existing BR-_/VR-_ (business rule changes)
+- Modifying existing SCR-\* (screen layout, navigation, component changes)
 - Modifying Vision Spec (purpose, journey, scope changes)
 
 **NOT needed for (Case 2 - handle in Feature Spec creation or `/speckit.design`):**
-- Adding new M-*
-- Adding new API-*
-- Adding new BR-*/VR-*
-- Adding new SCR-* (use `/speckit.design` for new screens)
+
+- Adding new M-\*
+- Adding new API-\*
+- Adding new BR-_/VR-_
+- Adding new SCR-\* (use `/speckit.design` for new screens)
 
 ## Triggers
 
 1. User explicitly calls `/speckit.change`
-2. Feature Spec creation detects need to modify existing M-*/API-*/BR-* (Case 3)
+2. Feature Spec creation detects need to modify existing M-_/API-_/BR-\* (Case 3)
 3. `/speckit.feedback` determines Spec change is required
 4. Implementation reveals spec inconsistency
 
@@ -64,21 +66,22 @@ This command handles **modifications to existing items**, not additions.
 
 ### Step 1: Identify Change Target
 
-1) **Parse change description**:
+1. **Parse change description**:
    - Extract from `$ARGUMENTS`
    - If empty, ask: "何を変更しますか？（例: M-USER の email を必須化）"
 
-2) **Determine target Spec**:
+2. **Determine target Spec**:
    - Vision Spec (`.specify/specs/vision/spec.md`)
    - Domain Spec (`.specify/specs/domain/spec.md`)
    - Screen Spec (`.specify/specs/screen/spec.md`)
 
-3) **Identify specific item**:
-   - For Domain: M-*, API-*, BR-*, VR-*
-   - For Screen: SCR-* (layout, navigation, components)
+3. **Identify specific item**:
+   - For Domain: M-_, API-_, BR-_, VR-_
+   - For Screen: SCR-\* (layout, navigation, components)
    - For Vision: Purpose, Journey, Scope section
 
-4) **Describe the change**:
+4. **Describe the change**:
+
    ```
    === 変更内容 ===
 
@@ -89,7 +92,8 @@ This command handles **modifications to existing items**, not additions.
 
 ### Step 2: Impact Analysis
 
-5) **Search for references**:
+5. **Search for references**:
+
    ```bash
    # Find Features referencing the changed item (Domain)
    grep -r "M-USER" .specify/specs/*/spec.md --include="spec.md"
@@ -98,14 +102,15 @@ This command handles **modifications to existing items**, not additions.
    grep -r "SCR-001" .specify/specs/*/spec.md --include="spec.md"
    ```
 
-6) **Analyze each Feature**:
+6. **Analyze each Feature**:
    - Check if the changed part is actually used
    - Determine impact level:
      - **No Impact**: References item but not the changed part
      - **Spec Update**: Feature Spec needs update
      - **Code Fix**: Implementation already done, code needs fix
 
-7) **Display impact analysis**:
+7. **Display impact analysis**:
+
    ```
    === 影響分析: M-USER 変更 ===
 
@@ -136,17 +141,18 @@ This command handles **modifications to existing items**, not additions.
 
 ### Step 3: Determine Issue Requirement
 
-8) **Check if Issue is needed**:
+8. **Check if Issue is needed**:
    - Impact Feature count = 0 → Issue 不要、直接 PR
    - Impact Feature count >= 1 → Issue 必須
 
-9) **If Issue not needed**:
+9. **If Issue not needed**:
    - Skip to Step 5 (Spec Change)
    - Create PR directly after change
 
 ### Step 4: Create Issues (Sub-issue Structure)
 
-10) **Create parent Issue**:
+10. **Create parent Issue**:
+
     ```bash
     gh issue create \
       --title "[Spec Change] M-USER: email を必須化" \
@@ -167,7 +173,8 @@ This command handles **modifications to existing items**, not additions.
       --label spec-change
     ```
 
-11) **Create child Issue for Spec updates**:
+11. **Create child Issue for Spec updates**:
+
     ```bash
     gh issue create \
       --title "[Spec] M-USER 変更: Domain + Feature Spec 更新" \
@@ -184,7 +191,8 @@ This command handles **modifications to existing items**, not additions.
       --label spec-change
     ```
 
-12) **Create child Issues for implementation fixes** (for each completed/implementing Feature):
+12. **Create child Issues for implementation fixes** (for each completed/implementing Feature):
+
     ```bash
     gh issue create \
       --title "[Fix] S-AUTH-001: M-USER email 必須化対応" \
@@ -205,33 +213,36 @@ This command handles **modifications to existing items**, not additions.
 
 ### Step 5: Create Branch and Change Spec
 
-13) **Create branch**:
+13. **Create branch**:
+
     ```bash
     node .specify/scripts/branch.cjs --type spec --slug <slug> --issue <spec-issue-num>
     ```
 
-14) **Update Vision or Domain Spec**:
+14. **Update Vision or Domain Spec**:
     - Make the specified change
     - Update related sections
     - Add Changelog entry
 
-15) **Update affected Feature Specs**:
+15. **Update affected Feature Specs**:
     - Update Domain Dependencies section
     - Update affected FR/UC
     - Add Changelog entry noting the change
 
-16) **曖昧点の検出**:
+16. **曖昧点の検出**:
     - If change introduces ambiguity, mark as `[NEEDS CLARIFICATION]`
     - 推奨: `/speckit.clarify` で曖昧点を解消
 
 ### Step 6: Lint and Review
 
-17) **Run lint**:
+17. **Run lint**:
+
     ```bash
     node .specify/scripts/spec-lint.cjs
     ```
 
-18) **Show summary**:
+18. **Show summary**:
+
     ```
     === Spec Change 完了 ===
 
@@ -254,7 +265,8 @@ This command handles **modifications to existing items**, not additions.
 
 ### Step 7: Create PR
 
-19) **Create PR**:
+19. **Create PR**:
+
     ```bash
     gh pr create \
       --title "[Spec] M-USER: email 必須化 - Spec 更新" \
@@ -331,6 +343,7 @@ AI: # Resume the suspended branch
 ```
 
 **State management commands for suspension**:
+
 ```bash
 # Check for suspended work before starting
 node .specify/scripts/state.cjs query --suspended

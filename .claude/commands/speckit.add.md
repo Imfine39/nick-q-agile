@@ -78,6 +78,7 @@ Use the Read tool to read: .specify/input/add.md
    - → Step 1.3 で入力ファイルの記入を促す
 
 **入力ファイルが「記入済み」かの判定:**
+
 - 「機能名」が空でない
 - 「期待する動作」に1つ以上の項目がある
 - → 両方満たせば「記入済み」と判定
@@ -107,14 +108,14 @@ Option B: チャットで情報を提供
 
 入力から以下を抽出:
 
-| 項目 | 抽出先 |
-|------|--------|
-| 機能名 | Feature Spec タイトル, Issue タイトル |
-| 解決したい課題 | Section 1 (Purpose) |
-| 誰が使うか | Section 3 (Actors) |
-| 期待する動作 | Section 4-5 (User Stories, Functional Requirements) |
-| 関連する既存機能 | Section 2 (Domain Dependencies) |
-| 制約 | Section 8 (Non-Functional Requirements) |
+| 項目             | 抽出先                                              |
+| ---------------- | --------------------------------------------------- |
+| 機能名           | Feature Spec タイトル, Issue タイトル               |
+| 解決したい課題   | Section 1 (Purpose)                                 |
+| 誰が使うか       | Section 3 (Actors)                                  |
+| 期待する動作     | Section 4-5 (User Stories, Functional Requirements) |
+| 関連する既存機能 | Section 2 (Domain Dependencies)                     |
+| 制約             | Section 8 (Non-Functional Requirements)             |
 
 ---
 
@@ -123,8 +124,8 @@ Option B: チャットで情報を提供
 1. **Check Domain Spec exists and is clarified**:
    - Look for Domain spec in `.specify/specs/domain/` (or legacy `.specify/specs/overview/`)
    - If not found: "Domain Spec が見つかりません。先に `/speckit.design` を実行してください"
-   - Check Domain has M-* and API-* definitions (not just placeholders)
-   - If Domain is scaffold or missing M-*/API-*:
+   - Check Domain has M-_ and API-_ definitions (not just placeholders)
+   - If Domain is scaffold or missing M-_/API-_:
      "Domain Spec がまだ精密化されていません。先に `/speckit.design` を完了してください"
 
 2. **Check Screen Spec exists (optional but recommended)**:
@@ -162,7 +163,7 @@ node .specify/scripts/branch.cjs --type feature --slug <slug> --issue <num>
 ### Step 6: Create Feature Spec
 
 - Scaffold: `node .specify/scripts/scaffold-spec.cjs --kind feature --id S-XXX-001 --title "..." --domain S-DOMAIN-001`
-- Fill sections: Purpose, Actors, Domain Model (M-*, API-*), UC, FR, SC, Edge Cases, NFR
+- Fill sections: Purpose, Actors, Domain Model (M-_, API-_), UC, FR, SC, Edge Cases, NFR
 - Reference analyzed code patterns and constraints
 - Mark unclear items as `[NEEDS CLARIFICATION]`
 
@@ -173,6 +174,7 @@ node .specify/scripts/branch.cjs --type feature --slug <slug> --issue <num>
 **Screen Spec が存在する場合、Feature Spec 作成前に Screen Spec を更新する。**
 
 1. **Show Screen Index**:
+
    ```
    === Screen Index ===
 
@@ -194,10 +196,11 @@ node .specify/scripts/branch.cjs --type feature --slug <slug> --issue <num>
    - 新規画面が必要 → Step 5 へ
 
 3. **Reference existing screens**:
-   - Feature Spec Section 8.1 に SCR-* 参照を追加
+   - Feature Spec Section 8.1 に SCR-\* 参照を追加
    - 変更なしの場合はそのまま Feature Spec 作成へ
 
 4. **Update Screen Spec for modifications** (Spec-First):
+
    ```
    === Screen Spec 更新（Spec-First） ===
 
@@ -211,9 +214,11 @@ node .specify/scripts/branch.cjs --type feature --slug <slug> --issue <num>
 
    更新しますか？ [yes/no]
    ```
+
    - Screen Spec 更新後、Feature Spec 作成を続行
 
 5. **Add new screens to Screen Spec** (Spec-First):
+
    ```
    === 新規画面追加（Spec-First） ===
 
@@ -227,30 +232,33 @@ node .specify/scripts/branch.cjs --type feature --slug <slug> --issue <num>
 
    更新しますか？ [yes/no]
    ```
+
    - Screen Spec 更新後、Feature Spec 作成を続行
 
 6. **Update Feature Spec Section 8**:
-   - Section 8.1: 関連する SCR-* を参照
+   - Section 8.1: 関連する SCR-\* を参照
    - Section 8.3: Screen Spec への参照を記録（変更内容は Screen Spec に記載済み）
 
 ---
 
-### Step 7: Check M-*/API-* Requirements
+### Step 7: Check M-_/API-_ Requirements
 
-Identify all M-*, API-*, BR-* that this Feature needs and classify:
+Identify all M-_, API-_, BR-\* that this Feature needs and classify:
 
-| Case | Situation | Action |
-|------|-----------|--------|
-| Case 1 | Existing M-*/API-* is sufficient | Add reference to Feature Spec |
-| Case 2 | New M-*/API-*/BR-* needed | Add to Domain Spec, continue |
-| Case 3 | Existing M-*/API-*/BR-* needs modification | Trigger `/speckit.change` |
+| Case   | Situation                                   | Action                        |
+| ------ | ------------------------------------------- | ----------------------------- |
+| Case 1 | Existing M-_/API-_ is sufficient            | Add reference to Feature Spec |
+| Case 2 | New M-_/API-_/BR-\* needed                  | Add to Domain Spec, continue  |
+| Case 3 | Existing M-_/API-_/BR-\* needs modification | Trigger `/speckit.change`     |
 
 **Case 2 handling**:
+
 - Add new definitions to Domain Spec
 - Update correspondence table
 - Continue with Feature Spec creation
 
 **Case 3 handling**:
+
 - Stop Feature Spec creation
 - Prompt: "既存の [M-xxx] の変更が必要です。`/speckit.change` を実行しますか？"
 - After change merged, resume with `/speckit.issue`
@@ -260,6 +268,7 @@ Identify all M-*, API-*, BR-* that this Feature needs and classify:
 ### Step 8: Update Domain Spec Feature Index
 
 Open `.specify/specs/domain/spec.md` and add entry in Section 8 (Feature Index):
+
 ```markdown
 | S-XXX-001 | [Feature Title] | `.specify/specs/s-xxx-001/` | Draft | [M-*, API-*] |
 ```
@@ -271,7 +280,8 @@ Open `.specify/specs/domain/spec.md` and add entry in Section 8 (Feature Index):
 ```bash
 node .specify/scripts/spec-lint.cjs
 ```
-- Check Feature correctly references Domain M-*/API-*
+
+- Check Feature correctly references Domain M-_/API-_
 - Check Feature Index entry exists
 
 ---
@@ -281,6 +291,7 @@ node .specify/scripts/spec-lint.cjs
 入力ファイル（`.specify/input/add.md`）から入力があった場合:
 
 1. **Spec の末尾に「Original Input」セクションを追加**:
+
    ```markdown
    ---
 
@@ -420,3 +431,4 @@ AI: `.specify/input/add.md` を読み込みます...
     - **期待する動作**: [未入力]
 
     上記を教えてください。
+```

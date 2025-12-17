@@ -9,11 +9,13 @@
 ### GitHub CLI が認証されていない
 
 **症状:**
+
 ```
 gh: error: authentication required
 ```
 
 **解決:**
+
 ```bash
 gh auth login
 ```
@@ -21,11 +23,13 @@ gh auth login
 ### state.js がエラーを出す
 
 **症状:**
+
 ```
 Error: Cannot find module ...
 ```
 
 **解決:**
+
 ```bash
 # Node.js がインストールされているか確認
 node --version
@@ -44,13 +48,16 @@ node .specify/scripts/state.cjs init
 ### `/speckit.vision` で Vision Spec が作成されない
 
 **症状:**
+
 - コマンドが実行されるが spec.md が作成されない
 
 **原因:**
+
 - `.specify/specs/vision/` ディレクトリが存在しない
 - scaffold-spec.js のパスが間違っている
 
 **解決:**
+
 ```bash
 # 手動でディレクトリ作成
 mkdir -p .specify/specs/vision
@@ -64,11 +71,13 @@ node .specify/scripts/scaffold-spec.cjs --kind vision --id S-VISION-001 --title 
 ### `/speckit.design` が Feature Issue を作成できない
 
 **症状:**
+
 ```
 gh: error: HTTP 401: Bad credentials
 ```
 
 **解決:**
+
 ```bash
 # GitHub CLI の認証状態を確認
 gh auth status
@@ -85,13 +94,16 @@ gh repo view
 ### `/speckit.issue` で Issue が表示されない
 
 **症状:**
+
 - Issue 一覧が空
 
 **原因:**
+
 - Issue に `feature` ラベルがない
 - Issue がクローズされている
 
 **解決:**
+
 ```bash
 # 全 Issue を確認
 gh issue list --state all
@@ -107,9 +119,11 @@ gh issue edit <num> --add-label feature --add-label backlog
 ### Branch 状態が更新されない
 
 **症状:**
+
 - `state.js query --branch` が古い情報を返す
 
 **解決:**
+
 ```bash
 # 現在のブランチを確認
 git branch --show-current
@@ -126,9 +140,11 @@ cat .specify/state/branch-state.json
 ### 中断したブランチが見つからない
 
 **症状:**
+
 - `state.js query --suspended` が空
 
 **解決:**
+
 ```bash
 # 全状態を確認
 node .specify/scripts/state.cjs query --all
@@ -144,15 +160,18 @@ cat .specify/state/branch-state.json | jq '.branches | to_entries[] | select(.va
 ### spec-lint.js が Feature を検出しない
 
 **症状:**
+
 ```
 Features: 0 found
 ```
 
 **原因:**
+
 - spec.md ファイルの `Spec Type: Feature` が正しく設定されていない
 - ファイル名が `spec.md` でない
 
 **解決:**
+
 ```bash
 # Spec ファイルの先頭を確認
 head -10 .specify/specs/<feature-id>/spec.md
@@ -166,14 +185,17 @@ grep "Spec Type:" .specify/specs/*/spec.md
 ### Domain freshness 警告が出る
 
 **症状:**
+
 ```
 ⚠ S-XXX-001: 7+ days older than Domain
 ```
 
 **原因:**
+
 - Domain Spec が更新された後、Feature Spec が更新されていない
 
 **解決:**
+
 1. Feature Spec を確認し、Domain 変更が影響するか確認
 2. 影響がある場合: Feature Spec を更新
 3. 影響がない場合: Feature Spec の Changelog にメモを追加（最終更新日が更新される）
@@ -185,11 +207,13 @@ grep "Spec Type:" .specify/specs/*/spec.md
 ### ブランチ作成に失敗する
 
 **症状:**
+
 ```
 fatal: A branch named 'feature/123-xxx' already exists
 ```
 
 **解決:**
+
 ```bash
 # 既存ブランチを確認
 git branch -a | grep 123
@@ -206,15 +230,18 @@ node .specify/scripts/branch.cjs --type feature --slug xxx-v2 --issue 123
 ### PR 作成に失敗する
 
 **症状:**
+
 ```
 gh: error: pull request create failed: ...
 ```
 
 **原因:**
+
 - リモートにブランチがプッシュされていない
 - ベースブランチが存在しない
 
 **解決:**
+
 ```bash
 # ブランチをプッシュ
 git push -u origin $(git branch --show-current)
@@ -230,9 +257,11 @@ gh pr create --title "Title" --body "Description"
 ### Clarify が終わらない
 
 **症状:**
+
 - `[NEEDS CLARIFICATION]` が残り続ける
 
 **解決:**
+
 1. Spec ファイルを開いて `[NEEDS CLARIFICATION]` を検索
 2. 手動で該当箇所を埋める
 3. `/speckit.clarify` を再実行
@@ -247,9 +276,11 @@ grep -rn "NEEDS CLARIFICATION" .specify/specs/
 ### Clarify の回答が Spec に反映されない
 
 **症状:**
+
 - 回答したが Spec が更新されていない
 
 **解決:**
+
 1. Spec ファイルを直接確認
 2. AI に明示的に更新を依頼
 3. 手動で更新
@@ -261,9 +292,11 @@ grep -rn "NEEDS CLARIFICATION" .specify/specs/
 ### spec-metrics.js が遅い
 
 **症状:**
+
 - メトリクス収集に時間がかかる
 
 **解決:**
+
 - Spec ファイル数が多い場合は正常
 - `.specify/specs/` 以下に不要なファイルがないか確認
 

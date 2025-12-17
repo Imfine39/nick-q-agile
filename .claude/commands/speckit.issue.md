@@ -23,7 +23,8 @@ Lists Issues → User selects → Creates Branch → Creates Feature Spec. Clari
 **Next steps:** `/speckit.clarify` で曖昧点を解消 → `/speckit.plan` で実装計画
 
 **Prerequisites:**
-- Domain spec must exist and be sufficiently clarified (M-*, API-* defined)
+
+- Domain spec must exist and be sufficiently clarified (M-_, API-_ defined)
 - If Domain is still a scaffold, prompt user to run `/speckit.design` first
 
 ## Critical Instructions
@@ -49,10 +50,12 @@ Lists Issues → User selects → Creates Branch → Creates Feature Spec. Clari
 
 ### Step 1: Check Prerequisites
 
-1) **Check repo state** (warning-based):
+1. **Check repo state** (warning-based):
+
    ```bash
    node .specify/scripts/state.cjs query --repo
    ```
+
    - Check Domain status
    - If status is not "approved" or "clarified":
      ```
@@ -62,10 +65,11 @@ Lists Issues → User selects → Creates Branch → Creates Feature Spec. Clari
      ```
    - Human can choose to proceed
 
-2) **Verify Domain Spec exists and is clarified**:
+2. **Verify Domain Spec exists and is clarified**:
    - Check `.specify/specs/domain/spec.md` exists (or legacy `.specify/specs/overview/spec.md`)
-   - Check Domain has M-* and API-* definitions (not just placeholders)
-   - If Domain is scaffold or missing M-*/API-*:
+   - Check Domain has M-_ and API-_ definitions (not just placeholders)
+   - If Domain is scaffold or missing M-_/API-_:
+
      ```
      Domain Spec がまだ精密化されていません。
      Feature 開発を始める前に `/speckit.design` で Domain を完成させてください。
@@ -76,7 +80,7 @@ Lists Issues → User selects → Creates Branch → Creates Feature Spec. Clari
      - ビジネスルール
      ```
 
-3) **Check Screen Spec exists (optional but recommended)**:
+3. **Check Screen Spec exists (optional but recommended)**:
    - Check `.specify/specs/screen/spec.md` exists
    - If not found: Warning only (続行可能)
      ```
@@ -84,16 +88,18 @@ Lists Issues → User selects → Creates Branch → Creates Feature Spec. Clari
      `/speckit.design` で Screen + Domain Spec を同時に作成することを推奨します。
      続行しますか？ (y/N)
      ```
-   - If found: Extract Screen Index (SCR-*) for later use in Step 6.7
+   - If found: Extract Screen Index (SCR-\*) for later use in Step 6.7
 
 ### Step 2: Fetch and Display Issues
 
-3) **Fetch open issues**:
+3. **Fetch open issues**:
+
    ```bash
    gh issue list --state open --limit 30 --json number,title,labels,body
    ```
 
-4) **Categorize and display**:
+4. **Categorize and display**:
+
    ```
    === Open Issues ===
 
@@ -115,74 +121,78 @@ Lists Issues → User selects → Creates Branch → Creates Feature Spec. Clari
 
 ### Step 3: Validate Selection
 
-5) **Validate selection**:
+5. **Validate selection**:
    - If `in-progress`: Warn "既に作業中です。続行しますか？"
    - If closed: Warn "この Issue は閉じられています"
 
-6) **Determine workflow type**:
+6. **Determine workflow type**:
    - Labels `bug`, `fix`, `defect` → Bug fix workflow
    - Labels `feature`, `enhancement` → Feature workflow
    - If unclear, analyze title/body or ask human
 
 ### Step 4: Setup Branch
 
-7) **Update Issue label**:
+7. **Update Issue label**:
+
    ```bash
    gh issue edit <num> --remove-label backlog --add-label in-progress
    ```
 
-8) **Create branch**:
+8. **Create branch**:
    - Feature: `node .specify/scripts/branch.cjs --type feature --slug <slug> --issue <num>`
    - Bug fix: `node .specify/scripts/branch.cjs --type fix --slug <slug> --issue <num>`
    - Note: branch.js automatically updates branch-state.json
 
 ### Step 5: Analyze Codebase
 
-9) **Analyze codebase** (context collection):
+9. **Analyze codebase** (context collection):
    - Use Serena to explore existing code structure
    - Identify related components, patterns, dependencies
    - Use context7 for library documentation if needed
 
 ### Step 6: Create Feature Spec
 
-10) **Read Domain spec**:
-   - Extract defined M-* (master data)
-   - Extract defined API-* (API contracts)
-   - Extract business rules and constraints
+10. **Read Domain spec**:
 
-10) **Scaffold Feature spec**:
+- Extract defined M-\* (master data)
+- Extract defined API-\* (API contracts)
+- Extract business rules and constraints
+
+10. **Scaffold Feature spec**:
+
     ```bash
     node .specify/scripts/scaffold-spec.cjs --kind feature --id S-XXX-001 --title "..." --domain S-DOMAIN-001
     ```
 
-11) **Fill Feature spec sections**:
+11. **Fill Feature spec sections**:
     - **Section 1 (Purpose)**: Issue description から抽出
     - **Section 2 (Actors)**: Domain Spec から関連アクターを参照
-    - **Section 3 (Domain Dependencies)**: Domain Spec の M-*/API-* を参照
-      - 参照する M-* を明示: `Depends on: M-CLIENTS, M-PROJECTS`
-      - 参照する API-* を明示: `Uses: API-CLIENTS-LIST, API-PROJECTS-CREATE`
+    - **Section 3 (Domain Dependencies)**: Domain Spec の M-_/API-_ を参照
+      - 参照する M-\* を明示: `Depends on: M-CLIENTS, M-PROJECTS`
+      - 参照する API-\* を明示: `Uses: API-CLIENTS-LIST, API-PROJECTS-CREATE`
     - **Section 6 (Use Cases)**: Issue から UC を生成
       - UC-XXX-001 形式（XXX は Feature ID の一部）
     - **Section 7 (Functional Requirements)**: UC から FR を導出
     - Mark unclear items as `[NEEDS CLARIFICATION]`
 
-### Step 6.5: Check M-*/API-* Requirements (Case 2/3 Branching)
+### Step 6.5: Check M-_/API-_ Requirements (Case 2/3 Branching)
 
-12) **Identify required M-*/API-*/BR-***:
-    - List all M-*, API-*, BR-* that this Feature needs
+12. **Identify required M-_/API-_/BR-\***:
+    - List all M-_, API-_, BR-\* that this Feature needs
     - Compare against existing Domain Spec definitions
 
-13) **Classify each requirement**:
+13. **Classify each requirement**:
     | Case | Situation | Action |
     |------|-----------|--------|
-    | Case 1 | Existing M-*/API-* is sufficient | Add reference to Feature Spec |
-    | Case 2 | New M-*/API-*/BR-* needed | Add to Domain Spec during Feature Spec creation |
-    | Case 3 | Existing M-*/API-*/BR-* needs modification | Trigger `/speckit.change` |
+    | Case 1 | Existing M-_/API-_ is sufficient | Add reference to Feature Spec |
+    | Case 2 | New M-_/API-_/BR-_ needed | Add to Domain Spec during Feature Spec creation |
+    | Case 3 | Existing M-_/API-_/BR-_ needs modification | Trigger `/speckit.change` |
 
-14) **Handle Case 2 (New additions)**:
-    - Add new M-*/API-*/BR-* to Domain Spec
+14. **Handle Case 2 (New additions)**:
+    - Add new M-_/API-_/BR-\* to Domain Spec
     - Update Domain Spec's correspondence table
     - Continue with Feature Spec creation
+
     ```
     === Case 2: 新規定義の追加 ===
 
@@ -194,10 +204,11 @@ Lists Issues → User selects → Creates Branch → Creates Feature Spec. Clari
     Feature Spec の作成を続行します。
     ```
 
-15) **Handle Case 3 (Modifications needed)**:
+15. **Handle Case 3 (Modifications needed)**:
     - Stop Feature Spec creation
     - Prompt user to run `/speckit.change`
     - After change is merged, resume with `/speckit.issue`
+
     ```
     === Case 3: 既存定義の変更が必要 ===
 
@@ -212,7 +223,7 @@ Lists Issues → User selects → Creates Branch → Creates Feature Spec. Clari
 
 ### Step 6.6: Update Domain Spec Feature Index
 
-16) **Update Feature Index in Domain Spec**:
+16. **Update Feature Index in Domain Spec**:
     - Open `.specify/specs/domain/spec.md`
     - Add or update entry in Section 8 (Feature Index):
       ```markdown
@@ -224,7 +235,8 @@ Lists Issues → User selects → Creates Branch → Creates Feature Spec. Clari
 
 **Screen Spec が存在する場合、Feature Spec 作成前に Screen Spec を更新する。**
 
-17) **Show Screen Index**:
+17. **Show Screen Index**:
+
     ```
     === Screen Index ===
 
@@ -240,16 +252,17 @@ Lists Issues → User selects → Creates Branch → Creates Feature Spec. Clari
     関連する画面の番号を入力（複数可、例: 1,3）:
     ```
 
-18) **Check screen requirements**:
+18. **Check screen requirements**:
     - 既存画面のみ使用（変更なし） → Step 19 へ
     - 既存画面の変更が必要 → Step 20 へ
     - 新規画面が必要 → Step 21 へ
 
-19) **Reference existing screens**:
-    - Feature Spec Section 8.1 に SCR-* 参照を追加
+19. **Reference existing screens**:
+    - Feature Spec Section 8.1 に SCR-\* 参照を追加
     - 変更なしの場合は Step 22 へ
 
-20) **Update Screen Spec for modifications** (Spec-First):
+20. **Update Screen Spec for modifications** (Spec-First):
+
     ```
     === Screen Spec 更新（Spec-First） ===
 
@@ -264,9 +277,11 @@ Lists Issues → User selects → Creates Branch → Creates Feature Spec. Clari
 
     更新しますか？ [yes/no]
     ```
+
     - Screen Spec 更新後、Step 22 へ
 
-21) **Add new screens to Screen Spec** (Spec-First):
+21. **Add new screens to Screen Spec** (Spec-First):
+
     ```
     === 新規画面追加（Spec-First） ===
 
@@ -280,10 +295,11 @@ Lists Issues → User selects → Creates Branch → Creates Feature Spec. Clari
 
     更新しますか？ [yes/no]
     ```
+
     - Screen Spec 更新後、Step 22 へ
 
-22) **Update Feature Spec Section 8**:
-    - Section 8.1: 関連する SCR-* を参照
+22. **Update Feature Spec Section 8**:
+    - Section 8.1: 関連する SCR-\* を参照
     - Section 8.3: Screen Spec への参照を記録（変更内容は Screen Spec に記載済み）
     - Set "Related Screen: S-SCREEN-001" in header
 
@@ -291,17 +307,20 @@ Lists Issues → User selects → Creates Branch → Creates Feature Spec. Clari
 
 ### Step 7: Run Lint
 
-17) **Run lint**:
+17. **Run lint**:
+
     ```bash
     node .specify/scripts/spec-lint.cjs
     ```
-    - Check Feature correctly references Domain M-*/API-*
+
+    - Check Feature correctly references Domain M-_/API-_
     - Check UC IDs are unique
     - Check Feature Index entry exists
 
 ### Step 8: Summary & Clarify 推奨
 
-20) **Spec Summary 表示**:
+20. **Spec Summary 表示**:
+
     ```
     === Feature Spec 作成完了 ===
 
@@ -317,7 +336,8 @@ Lists Issues → User selects → Creates Branch → Creates Feature Spec. Clari
     - Screen Dependencies: [SCR-* のリスト]
     ```
 
-19) **曖昧点レポート**:
+21. **曖昧点レポート**:
+
     ```
     === 曖昧点 ===
 
@@ -330,7 +350,8 @@ Lists Issues → User selects → Creates Branch → Creates Feature Spec. Clari
     推奨: `/speckit.clarify` で曖昧点を解消してください。
     ```
 
-20) **次のステップ提示**:
+22. **次のステップ提示**:
+
     ```
     次のステップ:
 
@@ -342,12 +363,13 @@ Lists Issues → User selects → Creates Branch → Creates Feature Spec. Clari
 
 ### Step 9: Update State
 
-21) **Update branch state** (on approval):
+21. **Update branch state** (on approval):
+
     ```bash
     node .specify/scripts/state.cjs branch --set-spec-id S-XXX-001 --set-spec-path .specify/specs/s-xxx-001/spec.md --set-step spec_review
     ```
 
-21) **Update repo state** (if Case 2 occurred):
+22. **Update repo state** (if Case 2 occurred):
     ```bash
     # Add new definitions that were added during Feature Spec creation
     node .specify/scripts/state.cjs repo --add-master M-NEW-ENTITY --add-api API-NEW-ENDPOINT
@@ -358,7 +380,7 @@ Lists Issues → User selects → Creates Branch → Creates Feature Spec. Clari
 - Selected Issue number and type
 - Branch name
 - Spec path
-- Domain references (M-*, API-*)
+- Domain references (M-_, API-_)
 - Spec summary (UC/FR count)
 - 曖昧点レポート
 - Next step recommendation: `/speckit.clarify`
@@ -449,7 +471,7 @@ AI: Issue #2 "S-INVENTORY-001: 在庫一覧・検索" を選択しました
 
 ## Notes
 
-- **Domain 必須**: Feature spec は必ず Domain Spec の M-*/API-* を参照する
+- **Domain 必須**: Feature spec は必ず Domain Spec の M-_/API-_ を参照する
 - **Domain が未精密化の場合**: `/speckit.design` を促して中断する（Feature 作成を続行しない）
 - **Bug fix の場合**: 既存 Feature spec の Changelog セクションを更新
-- **新しい M-*/API-* が必要な場合**: Domain Spec を先に更新するよう促す
+- **新しい M-_/API-_ が必要な場合**: Domain Spec を先に更新するよう促す

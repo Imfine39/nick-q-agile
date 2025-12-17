@@ -16,15 +16,18 @@ Claude Code を活用して最高品質のコードを生成・維持するた�
 # CLAUDE.md の例
 
 ## コーディング規約
+
 - TypeScript strict mode 必須
 - 関数は 50 行以内
 - 必ず JSDoc コメントを記述
 
 ## テスト方針
+
 - 単体テストカバレッジ 80% 以上
 - E2E テストは主要フローのみ
 
 ## 禁止事項
+
 - any 型の使用禁止
 - console.log のコミット禁止
 ```
@@ -56,12 +59,12 @@ Claude Code を活用して最高品質のコードを生成・維持するた�
 
 ### 2.1 静的解析ツール
 
-| ツール | 用途 | Claude Code との連携 |
-|--------|------|---------------------|
-| **ESLint** | JavaScript/TypeScript リンター | 編集後の自動実行 |
-| **Prettier** | コードフォーマッター | 保存時自動フォーマット |
-| **TypeScript** | 型チェック | strict mode で型安全性確保 |
-| **Biome** | 高速な Lint + Format | ESLint/Prettier の代替 |
+| ツール         | 用途                           | Claude Code との連携       |
+| -------------- | ------------------------------ | -------------------------- |
+| **ESLint**     | JavaScript/TypeScript リンター | 編集後の自動実行           |
+| **Prettier**   | コードフォーマッター           | 保存時自動フォーマット     |
+| **TypeScript** | 型チェック                     | strict mode で型安全性確保 |
+| **Biome**      | 高速な Lint + Format           | ESLint/Prettier の代替     |
 
 ```bash
 # 推奨設定例
@@ -70,24 +73,24 @@ npm install -D eslint prettier typescript @typescript-eslint/eslint-plugin
 
 ### 2.2 テストツール
 
-| ツール | 用途 | 特徴 |
-|--------|------|------|
-| **Vitest** | 単体テスト | 高速、ESM ネイティブ |
-| **Jest** | 単体テスト | 豊富なエコシステム |
-| **Playwright** | E2E テスト | クロスブラウザ対応 |
+| ツール              | 用途                 | 特徴                 |
+| ------------------- | -------------------- | -------------------- |
+| **Vitest**          | 単体テスト           | 高速、ESM ネイティブ |
+| **Jest**            | 単体テスト           | 豊富なエコシステム   |
+| **Playwright**      | E2E テスト           | クロスブラウザ対応   |
 | **Testing Library** | コンポーネントテスト | ユーザー視点のテスト |
 
 ### 2.3 MCP (Model Context Protocol) サーバー
 
 Claude Code の能力を拡張する MCP サーバー群:
 
-| サーバー | 機能 |
-|----------|------|
-| **serena** | プロジェクト構造解析、シンボリック編集 |
-| **context7** | ライブラリドキュメント検索 |
-| **playwright** | ブラウザ自動化、スクリーンショット |
-| **github** | GitHub API 連携 |
-| **filesystem** | ファイルシステム操作 |
+| サーバー       | 機能                                   |
+| -------------- | -------------------------------------- |
+| **serena**     | プロジェクト構造解析、シンボリック編集 |
+| **context7**   | ライブラリドキュメント検索             |
+| **playwright** | ブラウザ自動化、スクリーンショット     |
+| **github**     | GitHub API 連携                        |
+| **filesystem** | ファイルシステム操作                   |
 
 ---
 
@@ -172,11 +175,11 @@ gh pr view 123 --json body,diff | claude "このPRをレビューしてくださ
 
 ### 5.1 依存関係の管理
 
-| ツール | 用途 |
-|--------|------|
-| **madge** | 循環依存の検出 |
-| **dependency-cruiser** | 依存関係ルールの強制 |
-| **knip** | 未使用コード・依存の検出 |
+| ツール                 | 用途                     |
+| ---------------------- | ------------------------ |
+| **madge**              | 循環依存の検出           |
+| **dependency-cruiser** | 依存関係ルールの強制     |
+| **knip**               | 未使用コード・依存の検出 |
 
 ```bash
 # 循環依存チェック
@@ -239,6 +242,7 @@ npx gitleaks detect
 ### 7.2 OWASP Top 10 への対応
 
 Claude Code は以下を自動的に考慮:
+
 - SQL インジェクション防止
 - XSS 対策
 - CSRF 対策
