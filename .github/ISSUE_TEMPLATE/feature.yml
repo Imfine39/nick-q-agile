@@ -23,4 +23,4 @@ body:
     attributes:
       label: 備考
       description: 関連Spec/UC IDがあれば記載（空でも可）
-      placeholder: S-OVERVIEW-001 / UC-XXX / API-XXX など
+      placeholder: S-XXX-001 / UC-XXX / API-XXX / SCR-XXX など

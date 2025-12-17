@@ -21,4 +21,5 @@ body:
     id: notes
     attributes:
       label: 備考
-      description: 関連する Spec/UC/環境などがあれば（空でも可）
+      description: 関連する Spec/UC/画面などがあれば（空でも可）
+      placeholder: S-XXX / UC-XXX / SCR-XXX など

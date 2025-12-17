@@ -14,7 +14,7 @@ Node.js スクリプトのリファレンスです。
 | `branch.js`        | ブランチ作成                 |
 | `pr.js`            | PR 作成                      |
 | `spec-metrics.js`  | メトリクス収集               |
-| `reset-input.js`   | Quick Input ファイルリセット |
+| `reset-input.cjs`  | Quick Input ファイルリセット |
 
 **Location:** `.specify/scripts/`
 
@@ -369,9 +369,9 @@ HEALTH
 
 ---
 
-## reset-input.js
+## reset-input.cjs
 
-**Purpose:** Quick Input ファイルをテンプレートにリセット
+**Purpose:** Quick Input ファイルをテンプレートにリセット（統合版 Vision テンプレート対応）
 
 ### Usage
 
@@ -381,12 +381,12 @@ node .specify/scripts/reset-input.cjs <type>
 
 ### Arguments
 
-| Argument | Description                      |
-| -------- | -------------------------------- |
-| `vision` | Vision 用入力ファイルをリセット  |
-| `add`    | 機能追加用入力ファイルをリセット |
-| `fix`    | バグ修正用入力ファイルをリセット |
-| `all`    | 全入力ファイルをリセット         |
+| Argument | Description                                                           |
+| -------- | --------------------------------------------------------------------- |
+| `vision` | Vision 用入力ファイルをリセット（統合版: ビジョン + 画面 + デザイン） |
+| `add`    | 機能追加用入力ファイルをリセット                                      |
+| `fix`    | バグ修正用入力ファイルをリセット                                      |
+| `all`    | 全入力ファイルをリセット                                              |
 
 ### Examples
 

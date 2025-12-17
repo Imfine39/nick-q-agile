@@ -21,9 +21,9 @@ const INPUT_DIR = path.join(REPO_ROOT, '.specify/input');
 
 const INPUT_TYPES = {
   vision: {
-    template: 'quickinput-vision.md',
+    template: 'quickinput-vision-unified.md',
     input: 'vision.md',
-    description: 'Vision Spec の入力'
+    description: 'Vision Spec の入力（統合版: ビジョン + 画面イメージ + デザイン希望）'
   },
   add: {
     template: 'quickinput-add.md',
@@ -34,29 +34,22 @@ const INPUT_TYPES = {
     template: 'quickinput-fix.md',
     input: 'fix.md',
     description: 'Bug Fix の入力'
-  },
-  screen: {
-    template: 'quickinput-screen.md',
-    input: 'screen.md',
-    description: 'Screen Spec の入力（画面設計）'
   }
 };
 
 function showHelp() {
-  console.log('Usage: node .specify/scripts/reset-input.js <type>');
+  console.log('Usage: node .specify/scripts/reset-input.cjs <type>');
   console.log('');
   console.log('Types:');
-  console.log('  vision  - Reset vision input file');
+  console.log('  vision  - Reset vision input file (unified: vision + screen hints + design)');
   console.log('  add     - Reset add (feature) input file');
   console.log('  fix     - Reset fix (bug) input file');
-  console.log('  screen  - Reset screen (UI design) input file');
   console.log('  all     - Reset all input files');
   console.log('  --list  - Show available input types');
   console.log('');
   console.log('Examples:');
-  console.log('  node .specify/scripts/reset-input.js vision');
-  console.log('  node .specify/scripts/reset-input.js screen');
-  console.log('  node .specify/scripts/reset-input.js all');
+  console.log('  node .specify/scripts/reset-input.cjs vision');
+  console.log('  node .specify/scripts/reset-input.cjs all');
 }
 
 function listTypes() {
@@ -74,7 +67,7 @@ function resetInput(type) {
   const info = INPUT_TYPES[type];
   if (!info) {
     console.error(`ERROR: Unknown input type '${type}'`);
-    console.error('Valid types: vision, add, fix, screen, all');
+    console.error('Valid types: vision, add, fix, all');
     process.exit(1);
   }
 

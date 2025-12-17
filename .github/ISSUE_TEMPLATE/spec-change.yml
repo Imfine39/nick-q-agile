@@ -13,6 +13,6 @@ body:
   - type: textarea
     id: scope
     attributes:
-      label: 関連する Spec/UC/マスター/API
+      label: 関連する Spec/UC/マスター/API/画面
       description: 分かれば記載（空でも可）
-      placeholder: S-XXX / UC-XXX / M-XXX / API-XXX
+      placeholder: S-XXX / UC-XXX / M-XXX / API-XXX / SCR-XXX
