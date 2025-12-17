@@ -149,7 +149,7 @@ Human: PR レビュー・マージ → 次の Feature へ
 
 ## State Transitions
 
-各フェーズで repo-state.cjson が更新されます。
+各フェーズで repo-state.json が更新されます。
 
 | Phase            | phase value    | Vision status | Domain status |
 | ---------------- | -------------- | ------------- | ------------- |

@@ -193,8 +193,8 @@ ID は以下で参照され、追跡可能性を確保します：
 
 ```
 .specify/state/
-├── repo-state.cjson      # プロジェクト全体の状態
-└── branch-state.cjson    # ブランチごとの状態
+├── repo-state.json      # プロジェクト全体の状態
+└── branch-state.json    # ブランチごとの状態
 ```
 
 ### Repo State

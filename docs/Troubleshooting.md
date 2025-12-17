@@ -132,7 +132,7 @@ git branch --show-current
 node .specify/scripts/state.cjs branch --set-step implement
 
 # 状態ファイルを確認
-cat .specify/state/branch-state.cjson
+cat .specify/state/branch-state.json
 ```
 
 ---
@@ -149,8 +149,8 @@ cat .specify/state/branch-state.cjson
 # 全状態を確認
 node .specify/scripts/state.cjs query --all
 
-# branch-state.cjson を直接確認
-cat .specify/state/branch-state.cjson | jq '.branches | to_entries[] | select(.value.suspended)'
+# branch-state.json を直接確認
+cat .specify/state/branch-state.json | jq '.branches | to_entries[] | select(.value.suspended)'
 ```
 
 ---
@@ -323,7 +323,7 @@ node .specify/scripts/state.cjs init
 
 ```bash
 # バックアップがある場合
-cp .specify/state/repo-state.cjson.bak .specify/state/repo-state.cjson
+cp .specify/state/repo-state.json.bak .specify/state/repo-state.json
 
 # バックアップがない場合、初期化して再構築
 node .specify/scripts/state.cjs init
@@ -347,8 +347,8 @@ node .specify/scripts/state.cjs repo --set-domain-status approved
 git log --oneline -10
 
 # 状態ファイル
-cat .specify/state/repo-state.cjson
-cat .specify/state/branch-state.cjson
+cat .specify/state/repo-state.json
+cat .specify/state/branch-state.json
 ```
 
 ### 追加リソース

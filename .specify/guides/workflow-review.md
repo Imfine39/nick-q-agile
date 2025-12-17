@@ -32,7 +32,7 @@
 |-------------|-----------|
 | constitution.md | Draft, In Review, Approved, Implementing, Completed, Deprecated, Superseded |
 | screen-spec-template.md | Planned, Implemented |
-| repo-state.cjson | none, scaffold, draft, clarified, approved |
+| repo-state.json | none, scaffold, draft, clarified, approved |
 
 **影響**:
 - spec-lint.cjs は constitution.md の Status をチェック
@@ -91,7 +91,7 @@
 
 ---
 
-### 1.6 repo-state.cjson に Screen Spec が含まれていない
+### 1.6 repo-state.json に Screen Spec が含まれていない
 
 **問題**: Vision と Domain の状態は追跡されるが、Screen Spec の状態は追跡されていない
 
@@ -284,7 +284,7 @@ Section 2 に追加:
 
 ---
 
-### 2.6 [中] repo-state.cjson の Screen Spec 追加
+### 2.6 [中] repo-state.json の Screen Spec 追加
 
 state.cjs を更新して Screen Spec 状態を追跡:
 
@@ -369,7 +369,7 @@ Foundation は、他のすべての Feature が依存する基盤機能です。
 | 高 | 2.3 | Tasks Template 更新 | tasks-template.md | **完了** |
 | 中 | 2.4 | Feature Spec Template 更新 | feature-spec-template.md | **完了** |
 | 中 | 2.5 | Error Recovery Guide 更新 | error-recovery.md | **完了** |
-| 中 | 2.6 | state.cjs / repo-state.cjson 更新 | スクリプト | **完了** |
+| 中 | 2.6 | state.cjs / repo-state.json 更新 | スクリプト | **完了** |
 | 低 | 2.7 | Plan Template 更新 | plan-template.md | **完了** |
 | 低 | 2.8 | spec-lint.cjs 改善 | スクリプト | **完了** |
 | 低 | 2.9 | Foundation Guide 作成 | 新規ファイル | **完了** |

@@ -367,13 +367,13 @@ git push
 
 プロジェクトとブランチの状態を追跡するための 2 層構造:
 
-### Repo State (`.specify/state/repo-state.cjson`)
+### Repo State (`.specify/state/repo-state.json`)
 
 - Vision/Domain Spec の完成度（none/scaffold/draft/clarified/approved）
 - プロジェクトフェーズ（initialization/vision/design/foundation/development）
 - Feature 進捗カウント
 
-### Branch State (`.specify/state/branch-state.cjson`)
+### Branch State (`.specify/state/branch-state.json`)
 
 - ブランチごとの作業ステップ（spec/plan/tasks/implement/pr）
 - タスク進捗（completed/total）
