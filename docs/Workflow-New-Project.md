@@ -7,11 +7,9 @@
 ## Overview
 
 ```
-Phase 1: Vision     /speckit.vision     目的・ジャーニー定義
+Phase 1: Vision     /speckit.vision     目的・ジャーニー・Screen Hints
     ↓
-Phase 2: Design     /speckit.design     Feature提案・Domain設計
-    ↓
-Phase 2.5: Screen   /speckit.screen     画面設計（任意だが推奨）
+Phase 2: Design     /speckit.design     Screen + Domain Spec 同時作成
     ↓
 Phase 3: Foundation /speckit.issue      基盤実装
     ↓
@@ -23,7 +21,7 @@ Phase 4: Features   /speckit.issue      各Feature実装（繰り返し）
 ## Phase 1: Vision Spec
 
 ### 目的
-プロジェクトの「なぜ」を明確にします。
+プロジェクトの「なぜ」を明確にし、画面イメージも収集します。
 
 ### コマンド
 ```
@@ -32,9 +30,12 @@ Phase 4: Features   /speckit.issue      各Feature実装（繰り返し）
 
 ### AI の動作
 
-1. **入力読み込み**: `.specify/input/vision.md` から読み込み（Quick Input）
+1. **入力読み込み**: `.specify/input/vision.md` から読み込み（統合 Quick Input）
+   - Part A: ビジョン（必須）
+   - Part B: 画面イメージ（推奨）
+   - Part C: デザイン希望（任意）
 2. **Vision Spec 作成**: scaffold-spec.js で作成
-3. **セクション記入**: Purpose, Users, Journeys, Scope, Constraints, Risks
+3. **セクション記入**: Purpose, Users, Journeys, Scope, **Screen Hints**, Constraints, Risks
 4. **サマリー表示 & 曖昧点レポート**
 5. **→ `/speckit.clarify` で曖昧点を 4 問ずつバッチ解消（別コマンド）**
 
@@ -42,14 +43,14 @@ Phase 4: Features   /speckit.issue      各Feature実装（繰り返し）
 - [ ] Vision Spec をレビュー・承認
 
 ### 出力
-- `.specify/specs/vision/spec.md`
+- `.specify/specs/vision/spec.md`（Screen Hints セクション含む）
 
 ---
 
-## Phase 2: Domain Spec + Feature Proposal
+## Phase 2: Screen + Domain Spec 同時作成
 
 ### 目的
-技術設計と Feature の洗い出しを行います。
+画面設計と技術設計を同時に行い、ID の相互参照を可能にします。
 
 ### コマンド
 ```
@@ -59,52 +60,33 @@ Phase 4: Features   /speckit.issue      各Feature実装（繰り返し）
 ### AI の動作
 
 1. **Vision 確認**: 読み込み、未承認なら警告
-2. **Feature 提案**: 3-7個の Feature を提案
-3. **Feature Issues 作成**: 人間が選択した Feature の Issue を作成
-4. **Domain Spec 作成**: M-*, API-*, ルールを定義
-5. **Clarify ループ**: Domain の詳細を確認
-6. **Foundation Issue 作成**: S-FOUNDATION-001
-7. **サマリー表示**
+2. **Screen Hints 確認**: Vision Spec の Section 5 から画面情報を取得
+   - 空の場合は入力を促す
+3. **Feature 提案**: 3-7個の Feature を提案（画面情報と連携）
+4. **Feature Issues 作成**: 人間が選択した Feature の Issue を作成
+5. **SCR-* ID 割り当て**: 画面リストから ID を割り当て
+6. **M-*/API-* 導出**: 画面要素から必要なマスタ/API を導出
+7. **Screen + Domain Spec 同時作成**:
+   - Screen Spec: 画面一覧、遷移図、M-*/API-* 対応表
+   - Domain Spec: M-*, API-*（各定義に "Used by screens" を記載）
+8. **Foundation Issue 作成**: S-FOUNDATION-001
+9. **サマリー表示 & 曖昧点レポート**
 
 ### Human Checkpoint
 - [ ] Feature 選択を確認
-- [ ] Domain Spec をレビュー・承認
+- [ ] Screen + Domain Spec をレビュー・承認
 
 ### 出力
 - Feature Issues (GitHub)
-- `.specify/specs/domain/spec.md`
+- `.specify/specs/screen/spec.md`（M-*/API-* 対応表付き）
+- `.specify/specs/domain/spec.md`（Screen 参照付き）
 - Foundation Issue
 
----
-
-## Phase 2.5: Screen Spec (Optional but Recommended)
-
-### 目的
-画面構成と遷移を設計します。
-
-### コマンド
-```
-/speckit.screen
-```
-
-### AI の動作
-
-1. **入力読み込み**: `.specify/input/screen.md` から読み込み（Quick Input）
-2. **Screen Spec 作成**: 画面一覧、遷移図、ワイヤーフレーム
-3. **曖昧点レポート表示**
-4. **→ `/speckit.clarify` で曖昧点を解消（別コマンド）**
-
-### Human Checkpoint
-- [ ] Screen Spec をレビュー・承認
-
-### 出力
-- `.specify/specs/screen/spec.md`
-
-### Note
-Screen Spec は任意ですが、以下の理由で推奨されます：
-- Feature Spec 作成時に画面参照（SCR-*）が使える
-- Spec-First アプローチで画面の一貫性を保てる
-- デザイナーとの認識共有が容易
+### Screen ↔ Domain 対応
+同時作成により、以下の整合性が保証されます：
+- Screen Index に `APIs`, `Masters` 列
+- M-* 定義に `Used by screens: SCR-XXX`
+- API-* 定義に `Used by screens: SCR-XXX`
 
 ---
 

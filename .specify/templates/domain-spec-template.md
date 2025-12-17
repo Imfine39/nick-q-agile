@@ -6,6 +6,7 @@ Created: [DATE]
 Status: [Draft | In Review | Approved | Implementing | Completed]
 Author: [OWNER]
 Related Vision: S-VISION-001
+Related Screen: S-SCREEN-001
 
 ---
 
@@ -15,8 +16,10 @@ Related Vision: S-VISION-001
 
 Brief description of the technical domain this spec covers.
 Reference the Vision Spec for business context and user journeys.
+Reference the Screen Spec for UI context and screen definitions.
 
 - Vision Spec: `.specify/specs/vision/spec.md`
+- Screen Spec: `.specify/specs/screen/spec.md`
 - Domain boundaries:
 - Core concepts:
 
@@ -55,6 +58,8 @@ Feature specs MUST reference these by ID, not redefine them.
 
 **Purpose:** [Why this master exists]
 
+**Used by screens:** SCR-XXX, SCR-YYY
+
 **Fields:**
 
 | Field | Type | Required | Description |
@@ -74,6 +79,8 @@ Feature specs MUST reference these by ID, not redefine them.
 ### M-[NAME]-002: [Entity Name]
 
 **Purpose:** [Why this master exists]
+
+**Used by screens:** SCR-XXX, SCR-YYY
 
 **Fields:**
 
@@ -97,6 +104,8 @@ Feature specs MUST reference these by ID when using them.
 ### API-[RESOURCE]-[ACTION]-001: [API Name]
 
 **Purpose:** [What this API does]
+
+**Used by screens:** SCR-XXX (どの画面でこの API を使うか)
 
 **Endpoint:**
 ```
@@ -139,6 +148,8 @@ Feature specs MUST reference these by ID when using them.
 ### API-[RESOURCE]-[ACTION]-002: [API Name]
 
 **Purpose:** [What this API does]
+
+**Used by screens:** SCR-XXX
 
 **Endpoint:**
 ```

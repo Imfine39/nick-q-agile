@@ -78,26 +78,22 @@
 ### 新規プロジェクト立ち上げフロー
 
 ```
-Phase 1: /speckit.vision
-  → .specify/input/vision.md に入力（Quick Input）
-  → Vision Spec 作成（目的、ジャーニー、スコープ）
+Phase 1: /speckit.vision (統合 Quick Input)
+  → .specify/input/vision.md に入力（Part A: ビジョン、Part B: 画面、Part C: デザイン）
+  → Vision Spec 作成（目的、ジャーニー、スコープ、Screen Hints）
   → /speckit.clarify で曖昧点解消（4問ずつバッチ質問）
   → 人間: Vision をレビュー・承認
 
-Phase 2: /speckit.design
+Phase 2: /speckit.design (Screen + Domain 同時作成)
+  → Vision Spec の Screen Hints を使用（空なら入力を促す）
   → Feature 候補提案 → 人間が採用を選択
   → Feature Issues 一括作成
-  → Domain Spec 作成（M-*/API-*、ビジネスルール）
+  → **Screen Spec と Domain Spec を同時作成**（ID 相互参照を保証）
+    - Screen Index に M-*/API-* 対応を記載
+    - M-*/API-* 定義に "Used by screens: SCR-*" を記載
   → /speckit.clarify で曖昧点解消
   → Foundation Issue (S-FOUNDATION-001) 自動作成
-  → 人間: Domain Spec をレビュー・承認
-
-Phase 2.5: /speckit.screen (任意だが推奨)
-  → .specify/input/screen.md に入力（Quick Input）
-  → 参考画像の分析（スクショがあれば）
-  → Screen Spec 作成（画面一覧、遷移図、ワイヤーフレーム）
-  → /speckit.clarify で曖昧点解消
-  → 人間: Screen Spec をレビュー・承認
+  → 人間: Screen + Domain Spec をレビュー・承認
 
 Phase 3: /speckit.issue (Foundation Issue を選択)
   → S-FOUNDATION-001 を選択
@@ -139,12 +135,11 @@ Phase 5以降: Feature 開発（繰り返し）
 
 ### コマンド一覧
 
-**プロジェクト初期化 (3個)**
+**プロジェクト初期化 (2個)**
 | コマンド | 用途 |
 |---------|------|
-| `/speckit.vision` | Vision Spec 作成（目的 + ジャーニー） |
-| `/speckit.design` | Feature 提案 + Domain Spec 作成（M-*/API-*） + Foundation Issue |
-| `/speckit.screen` | Screen Spec 作成（画面一覧 + 遷移図 + ワイヤーフレーム） |
+| `/speckit.vision` | Vision Spec 作成（目的 + ジャーニー + Screen Hints）- 統合 Quick Input 対応 |
+| `/speckit.design` | **Screen + Domain Spec 同時作成** + Feature Issues + Foundation Issue |
 
 **開発エントリーポイント (5個)**
 | コマンド | 用途 |
@@ -178,14 +173,26 @@ Phase 5以降: Feature 開発（繰り返し）
 ## 4. Spec ドキュメント構成
 
 ### 4層構造
-- **Vision Spec** (`.specify/specs/vision/`): プロジェクトの目的、ユーザージャーニー、スコープ
-- **Domain Spec** (`.specify/specs/domain/`): 共有マスタ (`M-*`)、共有 API (`API-*`)、ビジネスルール、Feature Index
-- **Screen Spec** (`.specify/specs/screen/`): 画面一覧、画面遷移図、ワイヤーフレーム、Screen ↔ Feature ↔ API ↔ Master 対応
+- **Vision Spec** (`.specify/specs/vision/`): プロジェクトの目的、ユーザージャーニー、スコープ、**Screen Hints**
+- **Screen Spec** (`.specify/specs/screen/`): 画面一覧、画面遷移図、ワイヤーフレーム、**Screen Index (M-*/API-* 対応表)**
+- **Domain Spec** (`.specify/specs/domain/`): 共有マスタ (`M-*`)、共有 API (`API-*`)、ビジネスルール、Feature Index、**Used by screens 参照**
 - **Feature Spec** (`.specify/specs/<feature-id>/`): 個別機能の詳細仕様。Domain/Screen を参照するのみ、マスタ/API/画面を再定義しない。
 
 ```
-Vision (WHY) → Domain (WHAT technically) → Screen (WHAT users see) → Feature (HOW)
+Vision (WHY + Screen Hints)
+    ↓
+/speckit.design で同時作成（ID 相互参照を保証）
+    ↓
+Screen (WHAT users see) ←→ Domain (WHAT technically)
+    ↓
+Feature (HOW)
 ```
+
+**Screen ↔ Domain 対応ルール:**
+- Screen Index に `APIs`, `Masters` 列を含める
+- M-* 定義に `Used by screens: SCR-XXX, SCR-YYY` を記載
+- API-* 定義に `Used by screens: SCR-XXX` を記載
+- `/speckit.lint` で整合性チェック
 
 ### Screen Spec と Spec-First アプローチ
 
@@ -237,25 +244,38 @@ node .specify/scripts/scaffold-spec.js --kind feature --id S-XXX-001 --title "..
 ```
 .specify/
 ├── templates/           # ベーステンプレート（読み取り専用）
-│   ├── quickinput-vision.md
+│   ├── quickinput-vision-unified.md  # 統合版（Vision + Screen + Design）
 │   ├── quickinput-add.md
-│   ├── quickinput-fix.md
-│   └── quickinput-screen.md
+│   └── quickinput-fix.md
 │
 ├── input/               # ユーザー入力用（編集対象）
-│   ├── vision.md
+│   ├── vision.md        # 統合 Quick Input（Part A + B + C）
 │   ├── add.md
-│   ├── fix.md
-│   └── screen.md
+│   └── fix.md
 │
 └── scripts/
     └── reset-input.js   # 入力ファイルリセット
 ```
 
+**統合 Quick Input（vision.md）の構造:**
+```
+Part A: ビジョン（必須）
+  - プロジェクト名、課題、ユーザー、やりたいこと、やらないこと、制約
+
+Part B: 画面イメージ（任意だが推奨）
+  - 主要画面リスト、画面遷移、各画面の主な要素
+  → Vision Spec の Screen Hints セクションに保存
+  → /speckit.design で Screen + Domain 作成時に使用
+
+Part C: デザイン希望（任意）
+  - デザインスタイル、レスポンシブ対応、参考画像
+```
+
 **使い方:**
-1. `.specify/input/<type>.md` を編集して情報を入力
-2. 対応するコマンド（`/speckit.vision`, `/speckit.add`, `/speckit.fix`, `/speckit.screen`）を実行
-3. 完了後、入力内容は Spec の「Original Input」セクションに記録され、入力ファイルは自動リセット
+1. `.specify/input/vision.md` を編集して情報を入力（Part A 必須、Part B/C 推奨）
+2. `/speckit.vision` を実行 → Vision Spec 作成（Screen Hints 含む）
+3. `/speckit.design` を実行 → Screen + Domain Spec 同時作成
+4. 完了後、入力内容は Spec の「Original Input」セクションに記録され、入力ファイルは自動リセット
 
 **fix の緊急対応:**
 ```bash
@@ -266,7 +286,6 @@ node .specify/scripts/scaffold-spec.js --kind feature --id S-XXX-001 --title "..
 **リセットスクリプト:**
 ```bash
 node .specify/scripts/reset-input.js vision   # vision のみリセット
-node .specify/scripts/reset-input.js screen   # screen のみリセット
 node .specify/scripts/reset-input.js all      # 全てリセット
 ```
 

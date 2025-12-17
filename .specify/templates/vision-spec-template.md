@@ -118,28 +118,58 @@ Items that may be considered for future phases:
 
 ---
 
-## 5. Constraints and Assumptions
+## 5. Screen Hints
 
-### 5.1 Business Constraints
+> **Note**: This section captures screen-level information from the unified Quick Input.
+> These hints are used by `/speckit.design` to create Screen Spec and Domain Spec simultaneously.
+> If empty, `/speckit.design` will prompt for screen information.
+
+### 5.1 Screen List (Provisional)
+
+User-provided screen list. Final SCR-* IDs will be assigned in Screen Spec.
+
+| # | Screen Name | Purpose | Key Elements |
+|---|-------------|---------|--------------|
+| 1 | [画面名] | [目的] | [主な要素] |
+| 2 | [画面名] | [目的] | [主な要素] |
+
+### 5.2 Screen Transitions (Provisional)
+
+Known navigation flows between screens.
+
+- [画面A] → [画面B]: [トリガー/条件]
+- [画面B] → [画面C]: [トリガー/条件]
+
+### 5.3 Design Preferences
+
+- **Style**: [モダン/シンプル/企業システム風 etc.]
+- **Responsive**: [PC のみ / PC + タブレット / フル対応]
+- **Reference Images**: [パスまたはURL]
+
+---
+
+## 6. Constraints and Assumptions
+
+### 6.1 Business Constraints
 
 - Timeline:
 - Budget:
 - Organizational:
 
-### 5.2 Technical Constraints
+### 6.2 Technical Constraints
 
 - Must integrate with:
 - Must comply with:
 - Platform/environment restrictions:
 
-### 5.3 Assumptions
+### 6.3 Assumptions
 
 - [Assumption 1]
 - [Assumption 2]
 
 ---
 
-## 6. Risks
+## 7. Risks
 
 | Risk | Impact | Likelihood | Mitigation |
 |------|--------|------------|------------|
@@ -148,7 +178,7 @@ Items that may be considered for future phases:
 
 ---
 
-## 7. Open Questions
+## 8. Open Questions
 
 Questions that need to be resolved before proceeding:
 
@@ -157,7 +187,7 @@ Questions that need to be resolved before proceeding:
 
 ---
 
-## 8. Clarifications
+## 9. Clarifications
 
 Record of clarification questions and answers during the vision refinement process.
 
@@ -167,14 +197,15 @@ Record of clarification questions and answers during the vision refinement proce
 
 ---
 
-## 9. Related Documents
+## 10. Related Documents
 
-- Domain Spec: `.specify/specs/domain/spec.md` (to be created)
-- Feature Specs: (to be created after Domain Spec)
+- Screen Spec: `.specify/specs/screen/spec.md` (to be created by /speckit.design)
+- Domain Spec: `.specify/specs/domain/spec.md` (to be created by /speckit.design)
+- Feature Specs: (to be created after Screen + Domain Specs)
 
 ---
 
-## 10. Original Input
+## 11. Original Input
 
 User-provided input that was used to generate this spec.
 This section preserves the original context for future reference.
@@ -185,7 +216,7 @@ This section preserves the original context for future reference.
 
 ---
 
-## 11. Changelog
+## 12. Changelog
 
 | Date | Change Type | Description | Author |
 |------|-------------|-------------|--------|

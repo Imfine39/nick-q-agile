@@ -120,18 +120,16 @@
 
 ### 1.8 Quick Input の design フェーズ対応
 
-**状況**: `/speckit.design` は Domain Spec を作成するが、対応する quickinput がない
+**状況**: `/speckit.design` は Screen + Domain Spec を同時に作成するが、対応する quickinput がない
 
 | コマンド | Quick Input |
 |---------|-------------|
-| /speckit.vision | quickinput-vision.md |
+| /speckit.vision | quickinput-vision.md（統合: Part A/B/C） |
 | /speckit.add | quickinput-add.md |
 | /speckit.fix | quickinput-fix.md |
-| /speckit.screen | quickinput-screen.md |
-| /speckit.design | なし |
+| /speckit.design | なし（Vision Spec の Screen Hints から取得） |
 
-**結論**: **Quick Input 不要**。`/speckit.design` は Vision Spec から Domain Spec を
-自動派生させるフェーズであり、追加の入力は不要。
+**結論**: **Quick Input 不要**。`/speckit.design` は Vision Spec の Screen Hints セクションから画面情報を取得し、Screen + Domain Spec を同時に作成する。追加の入力は不要。
 
 ---
 

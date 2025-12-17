@@ -29,11 +29,11 @@ This command handles **modifications to existing items**, not additions.
 - Modifying existing SCR-* (screen layout, navigation, component changes)
 - Modifying Vision Spec (purpose, journey, scope changes)
 
-**NOT needed for (Case 2 - handle in Feature Spec creation or `/speckit.screen`):**
+**NOT needed for (Case 2 - handle in Feature Spec creation or `/speckit.design`):**
 - Adding new M-*
 - Adding new API-*
 - Adding new BR-*/VR-*
-- Adding new SCR-* (use `/speckit.screen` instead)
+- Adding new SCR-* (use `/speckit.design` for new screens)
 
 ## Triggers
 
@@ -41,6 +41,24 @@ This command handles **modifications to existing items**, not additions.
 2. Feature Spec creation detects need to modify existing M-*/API-*/BR-* (Case 3)
 3. `/speckit.feedback` determines Spec change is required
 4. Implementation reveals spec inconsistency
+
+## Critical Instructions
+
+**IMPORTANT - MUST READ:**
+
+1. **DO NOT use Example content** - The Example section below is for reference ONLY. NEVER output example data (「M-USER」「email 必須化」「S-AUTH-001」etc.) as actual results.
+
+2. **MUST use tools** - You MUST actually:
+   - Use the **Read tool** to read Vision/Domain/Screen Spec
+   - Use the **Bash tool** to run grep, gh commands, and scripts
+   - Use the **Write/Edit tool** to update spec files
+
+3. **Real data only** - All output must come from:
+   - Actual Spec content
+   - User's $ARGUMENTS (change description)
+   - Actual impact analysis from grep results
+
+---
 
 ## Steps
 
@@ -325,6 +343,12 @@ node .specify/scripts/state.js resume --branch <branch> --step implement
 ```
 
 ## Example
+
+> ⚠️ **WARNING: REFERENCE ONLY**
+>
+> The following examples are for understanding the workflow ONLY.
+> **DO NOT copy or output these example values** (M-USER, email 必須化, S-AUTH-001, S-REGISTRATION-001, etc.).
+> Always use ACTUAL data from user input and Spec analysis.
 
 ```
 人間: /speckit.change M-USER の email を必須にしたい

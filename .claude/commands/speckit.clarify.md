@@ -39,11 +39,30 @@ Spec（Vision、Domain、または Feature）の曖昧な点を特定し、人�
 ## When to Use
 
 - `/speckit.vision` 後の Vision Spec 精密化
-- `/speckit.design` 後の Domain Spec 精密化
-- `/speckit.screen` 後の Screen Spec 精密化
+- `/speckit.design` 後の Screen + Domain Spec 精密化
 - `/speckit.add`, `/speckit.fix`, `/speckit.issue` での Feature Spec 作成後
 - Spec に `[NEEDS CLARIFICATION]` が残っている場合
 - 人間から「clarify して」と指示された場合
+
+---
+
+## Critical Instructions
+
+**IMPORTANT - MUST READ:**
+
+1. **DO NOT use Example content** - The Example section below is for reference ONLY. NEVER output example data (「SFA」「M-CLIENTS」「営業担当」etc.) as actual results.
+
+2. **MUST use tools** - You MUST actually:
+   - Use the **Read tool** to read the actual Spec file
+   - Use the **Write/Edit tool** to update the Spec with clarifications
+   - Use the **Bash tool** to run state update scripts
+
+3. **Real data only** - All output must come from:
+   - Actual Spec content (read from file)
+   - User's chat responses to your questions
+   - User's $ARGUMENTS
+
+4. **Generate questions from actual Spec** - Questions must be based on actual `[NEEDS CLARIFICATION]` markers and missing information in the real Spec, NOT from examples.
 
 ---
 
@@ -61,8 +80,7 @@ Spec（Vision、Domain、または Feature）の曖昧な点を特定し、人�
 
 4. Spec ファイルを読み込む。存在しなければ:
    - Vision: `/speckit.vision` を先に実行するよう指示
-   - Domain: `/speckit.design` を先に実行するよう指示
-   - Screen: `/speckit.screen` を先に実行するよう指示
+   - Domain/Screen: `/speckit.design` を先に実行するよう指示
    - Feature: `/speckit.issue` または `/speckit.add` を先に実行するよう指示
 
 5. Spec Type（Vision, Domain, Screen, or Feature）を判定し、対応するタクソノミーを選択
@@ -349,25 +367,15 @@ node .specify/scripts/state.js branch --set-step spec-clarified
 Vision が明確になりました。次は Domain Spec で技術的な詳細を定義します。
 ```
 
-**Domain Spec の場合:**
+**Domain/Screen Spec の場合:**
 ```
 次のステップ:
-1. [推奨] `/speckit.screen` - 画面設計（Screen Spec 作成）
-2. `/speckit.issue` - Foundation (S-FOUNDATION-001) から実装開始
-3. `/speckit.featureproposal` - 追加の Feature を提案
+1. [推奨] `/speckit.issue` - Foundation (S-FOUNDATION-001) から実装開始
+2. `/speckit.featureproposal` - 追加の Feature を提案
+3. `/speckit.add` - 新しい Feature を追加
 4. `/speckit.clarify` を再実行 - さらに詳細化したい場合
 
-Domain が明確になりました。次は Screen Spec で画面設計を行いましょう。
-```
-
-**Screen Spec の場合:**
-```
-次のステップ:
-1. [推奨] `/speckit.issue` - Feature 実装を開始
-2. `/speckit.add` - 新しい Feature を追加
-3. `/speckit.clarify` を再実行 - さらに詳細化したい場合
-
-Screen が明確になりました。Feature の実装を始めましょう。
+Domain/Screen が明確になりました。Feature の実装を始めましょう。
 ```
 
 **Feature Spec の場合:**
@@ -393,6 +401,12 @@ Feature Spec が明確になりました。人間のレビュー後、Plan を�
 ---
 
 ## Example: Domain Clarify Session (Batch)
+
+> ⚠️ **WARNING: REFERENCE ONLY**
+>
+> The following examples are for understanding the workflow ONLY.
+> **DO NOT copy or output these example values** (SFA, M-CLIENTS, 営業担当, マネージャー, etc.).
+> Always generate questions based on the ACTUAL Spec content you read.
 
 ```
 人間: /speckit.clarify
@@ -521,8 +535,7 @@ AI: 回答を記録しました:
 ## Notes
 
 - Vision clarify は `/speckit.vision` 後に実行（目的とジャーニーの明確化）
-- Domain clarify は `/speckit.design` 後に実行（M-*/API-*/BR-* の明確化）
-- Screen clarify は `/speckit.screen` 後に実行（SCR-*/レイアウト/遷移の明確化）
+- Domain/Screen clarify は `/speckit.design` 後に実行（M-*/API-*/BR-*/SCR-* の明確化）
 - Feature clarify は Domain/Screen が十分に定義されていることが前提
 - 人間が「後で」「スキップ」と言った場合は `[NEEDS CLARIFICATION]` を残し、Deferred としてレポート
 - 各セッションは独立（前回のセッションを自動継続しない）

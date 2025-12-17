@@ -24,15 +24,40 @@ $ARGUMENTS
 - Who will use it and what problems it solves
 - Main user journeys (high-level)
 - Project scope
+- **Screen Hints** (画面イメージ、デザイン希望 - `/speckit.design` で活用)
 
 **This command focuses on:** Spec 作成のみ。Clarify は別コマンドで実行。
 
 **Use this when:** Starting a new project, before any technical design.
-**Next steps:** `/speckit.clarify` で曖昧点を解消 → `/speckit.design` で技術設計
+**Next steps:** `/speckit.clarify` で曖昧点を解消 → `/speckit.design` で Screen + Domain 同時作成
+
+**Unified Quick Input:**
+入力ファイル `.specify/input/vision.md` は統合版で、以下の3パートを含む:
+- **Part A**: ビジョン（必須）- 基本情報、課題、ユーザー、やりたいこと
+- **Part B**: 画面イメージ（任意だが推奨）- 画面リスト、遷移、主な要素
+- **Part C**: デザイン希望（任意）- スタイル、レスポンシブ、参考画像
 
 ## Prerequisites
 
 - None (this is the starting point)
+
+---
+
+## Critical Instructions
+
+**IMPORTANT - MUST READ:**
+
+1. **DO NOT use Example content** - The Example section below is for reference ONLY. NEVER output example data (「社内在庫管理システム」「倉庫担当者」「経理担当者」etc.) as actual results.
+
+2. **MUST use tools** - You MUST actually:
+   - Use the **Read tool** to read `.specify/input/vision.md`
+   - Use the **Bash tool** to run scaffold scripts
+   - Use the **Write/Edit tool** to create/modify spec files
+
+3. **Real data only** - All output must come from:
+   - User's input file (`.specify/input/vision.md`)
+   - User's $ARGUMENTS
+   - User's chat responses
 
 ---
 
@@ -44,12 +69,13 @@ $ARGUMENTS
 
 #### 1.1 入力ファイルの読み込み
 
-**まず `.specify/input/vision.md` を読み込む。**
+**【必須】Read ツールで `.specify/input/vision.md` を読み込むこと。**
 
-```bash
-# 入力ファイルを読み込み
-cat .specify/input/vision.md
 ```
+Use the Read tool to read: .specify/input/vision.md
+```
+
+**DO NOT skip this step. DO NOT assume the file content.**
 
 #### 1.2 入力方式の判定
 
@@ -97,6 +123,8 @@ Option B: チャットで情報を提供
 
 ユーザーの入力（$ARGUMENTS または Quick Input 回答）から以下を抽出:
 
+**Part A (ビジョン) → Vision Spec メイン部分:**
+
 | 項目 | 抽出先 |
 |------|--------|
 | プロジェクト名 | Vision Spec タイトル |
@@ -104,7 +132,23 @@ Option B: チャットで情報を提供
 | ユーザー | Section 2 (Target Users) |
 | やりたいこと | Section 3 (User Journeys) の原材料 |
 | やらないこと | Section 4 (Scope - Out of Scope) |
-| 制約 | Section 5 (Constraints) |
+| 制約 | Section 6 (Constraints) |
+
+**Part B (画面イメージ) → Vision Spec Section 5 (Screen Hints):**
+
+| 項目 | 抽出先 |
+|------|--------|
+| 主要画面リスト | Section 5.1 (Screen List) |
+| 画面遷移 | Section 5.2 (Screen Transitions) |
+| 各画面の主な要素 | Section 5.1 (Key Elements 列) |
+
+**Part C (デザイン希望) → Vision Spec Section 5.3 (Design Preferences):**
+
+| 項目 | 抽出先 |
+|------|--------|
+| デザインスタイル | Section 5.3 Style |
+| レスポンシブ対応 | Section 5.3 Responsive |
+| 参考画像 | Section 5.3 Reference Images |
 
 ---
 
@@ -112,9 +156,13 @@ Option B: チャットで情報を提供
 
 #### 2.1 Scaffold 実行
 
+**【必須】Bash ツールで以下のコマンドを実行すること。**
+
 ```bash
 node .specify/scripts/scaffold-spec.js --kind vision --id S-VISION-001 --title "[プロジェクト名]"
 ```
+
+**[プロジェクト名] は Step 1 で取得したユーザー入力から取得すること。Example の値を使用しないこと。**
 
 #### 2.2 セクション埋め込み
 
@@ -139,10 +187,16 @@ Quick Input の内容を各セクションに展開:
 - Out-of-scope: 「やらないこと」から
 - Future considerations: 推定
 
-**Section 5 (Constraints):**
+**Section 5 (Screen Hints) - Part B/C から:**
+- Screen List: 「主要画面リスト」「各画面の主な要素」から
+- Screen Transitions: 「画面遷移」から
+- Design Preferences: 「デザインスタイル」「レスポンシブ」「参考画像」から
+- **空の場合**: テーブルを空のまま残す（`/speckit.design` で入力を促す）
+
+**Section 6 (Constraints):**
 - 「制約」から展開
 
-**Section 6 (Risks):**
+**Section 7 (Risks):**
 - 推定（`[NEEDS CLARIFICATION]` でマーク）
 
 #### 2.3 曖昧点のマーキング
@@ -178,6 +232,8 @@ Scope:
 - In: [主要な含まれるもの]
 - Out: [主要な除外されるもの]
 
+Screen Hints: [N] 画面定義済み / [空の場合: なし（/speckit.design で入力を促します）]
+
 Spec: .specify/specs/vision/spec.md
 ```
 
@@ -201,9 +257,11 @@ Spec: .specify/specs/vision/spec.md
 次のステップ:
 
 1. [推奨] `/speckit.clarify` - 曖昧点を解消（バッチ質問で効率的に）
-2. `/speckit.design` - 曖昧点を残したまま技術設計に進む（非推奨）
+2. `/speckit.design` - Screen Spec + Domain Spec を同時作成
 
 Clarify をスキップすると、後工程での手戻りリスクが高まります。
+
+Note: Screen Hints が入力されていない場合、/speckit.design で画面情報の入力を促します。
 ```
 
 ---
@@ -245,8 +303,11 @@ node .specify/scripts/state.js repo --set-vision-status draft --set-phase vision
 ## Output
 
 - Vision spec: `.specify/specs/vision/spec.md`
+  - Section 1-4: Core Vision (Purpose, Users, Journeys, Scope)
+  - Section 5: Screen Hints (画面情報、デザイン希望 - `/speckit.design` で使用)
+  - Section 6-12: Constraints, Risks, Open Questions, etc.
 - 曖昧点レポート
-- Next step recommendation: `/speckit.clarify`
+- Next step recommendation: `/speckit.clarify` → `/speckit.design`
 
 ---
 
@@ -259,6 +320,12 @@ node .specify/scripts/state.js repo --set-vision-status draft --set-phase vision
 ---
 
 ## Example
+
+> ⚠️ **WARNING: REFERENCE ONLY**
+>
+> The following examples are for understanding the workflow ONLY.
+> **DO NOT copy or output these example values** (社内在庫管理システム, 倉庫担当者, 経理担当者, etc.).
+> Always use ACTUAL user input from `.specify/input/vision.md` or $ARGUMENTS.
 
 ### Example A: 入力ファイルから読み込み
 

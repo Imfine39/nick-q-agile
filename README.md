@@ -10,7 +10,7 @@ AI コーディングアシスタント（Claude Code など）と人間の協�
 
 ## Features
 
-- **3層 Spec 構造** - Vision → Domain → Feature の階層的な仕様管理
+- **4層 Spec 構造** - Vision → Screen/Domain → Feature の階層的な仕様管理
 - **17+ コマンド** - `/speckit.*` による一貫したワークフロー
 - **Clarify ループ** - 曖昧さを排除する対話的な仕様策定
 - **状態管理** - プロジェクトとブランチの状態追跡
@@ -56,9 +56,8 @@ node .specify/scripts/state.js init
 ### Project Initialization
 | Command | Purpose |
 |---------|---------|
-| `/speckit.vision` | Vision Spec 作成（目的 + ジャーニー） |
-| `/speckit.design` | Feature 提案 + Domain Spec 作成 |
-| `/speckit.screen` | Screen Spec 作成（画面一覧 + 遷移図 + ワイヤーフレーム） |
+| `/speckit.vision` | Vision Spec 作成（目的 + ジャーニー + Screen Hints） |
+| `/speckit.design` | **Screen + Domain Spec 同時作成** + Feature Issues |
 
 ### Development Entry Points
 | Command | Purpose |
@@ -91,7 +90,7 @@ node .specify/scripts/state.js init
 
 ```
 New Project:
-  /speckit.vision → /speckit.design → /speckit.screen → /speckit.issue → plan → tasks → implement → pr
+  /speckit.vision → /speckit.design → /speckit.issue → plan → tasks → implement → pr
 
 Add Feature:
   /speckit.add → plan → tasks → implement → pr

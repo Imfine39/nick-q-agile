@@ -32,6 +32,26 @@ Propose additional Features based on user intent and create GitHub Issues.
 - Domain Spec should exist (warning if not)
 - Existing Feature Issues are checked to avoid duplication
 
+## Critical Instructions
+
+**IMPORTANT - MUST READ:**
+
+1. **DO NOT use Example content** - The Example section below is for reference ONLY. NEVER output example data (「レポート機能」「S-REPORTS-001」「在庫レポート」etc.) as actual results.
+
+2. **MUST use tools** - You MUST actually:
+   - Use the **Read tool** to read Domain Spec and Vision Spec
+   - Use the **Bash tool** to fetch existing Issues via gh command
+   - Use the **Bash tool** to create new Issues
+
+3. **Real data only** - All output must come from:
+   - Actual Domain/Vision Spec content
+   - User's $ARGUMENTS (feature hints)
+   - Actual existing Issues (fetched via gh command)
+
+4. **Generate proposals based on actual context** - Feature proposals must be based on actual Vision journeys and Domain definitions, NOT from examples.
+
+---
+
 ## Steps
 
 ### Step 1: Check Context
@@ -155,6 +175,12 @@ Propose additional Features based on user intent and create GitHub Issues.
 2. Select which Features to adopt
 
 ## Example
+
+> ⚠️ **WARNING: REFERENCE ONLY**
+>
+> The following examples are for understanding the workflow ONLY.
+> **DO NOT copy or output these example values** (レポート機能, S-REPORTS-001, 在庫レポート, M-PRODUCT, etc.).
+> Always generate proposals based on ACTUAL Domain Spec and user input.
 
 ```
 Human: /speckit.featureproposal レポート機能を追加したい

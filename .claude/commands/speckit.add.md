@@ -28,6 +28,24 @@ Creates Issue → Branch → Spec. Clarify は別コマンドで実行。
 **Use `/speckit.issue` instead when:** Issues already exist (from `/speckit.design` or human creation).
 **Next steps:** `/speckit.clarify` で曖昧点を解消 → `/speckit.plan` で実装計画
 
+## Critical Instructions
+
+**IMPORTANT - MUST READ:**
+
+1. **DO NOT use Example content** - The Example section below is for reference ONLY. NEVER output example data (「PDFエクスポート」「一覧画面からPDF出力」etc.) as actual results.
+
+2. **MUST use tools** - You MUST actually:
+   - Use the **Read tool** to read `.specify/input/add.md`
+   - Use the **Bash tool** to run gh commands and scaffold scripts
+   - Use the **Write/Edit tool** to create/modify spec files
+
+3. **Real data only** - All output must come from:
+   - User's input file (`.specify/input/add.md`)
+   - User's $ARGUMENTS
+   - User's chat responses
+
+---
+
 ## Steps
 
 ### Step 1: Quick Input Collection
@@ -36,12 +54,13 @@ Creates Issue → Branch → Spec. Clarify は別コマンドで実行。
 
 #### 1.1 入力ファイルの読み込み
 
-**まず `.specify/input/add.md` を読み込む。**
+**【必須】Read ツールで `.specify/input/add.md` を読み込むこと。**
 
-```bash
-# 入力ファイルを読み込み
-cat .specify/input/add.md
 ```
+Use the Read tool to read: .specify/input/add.md
+```
+
+**DO NOT skip this step. DO NOT assume the file content.**
 
 #### 1.2 入力方式の判定
 
@@ -111,7 +130,7 @@ Option B: チャットで情報を提供
 2. **Check Screen Spec exists (optional but recommended)**:
    - Look for Screen spec in `.specify/specs/screen/`
    - If not found: Warning only (続行可能)
-     "WARNING: Screen Spec が見つかりません。`/speckit.screen` で画面設計を先に行うことを推奨します。"
+     "WARNING: Screen Spec が見つかりません。`/speckit.design` で画面設計を含めて作成することを推奨します。"
    - If found: Extract Screen Index for Step 6.5
 
 ---
@@ -340,6 +359,12 @@ Clarify をスキップすると、実装中の手戻りリスクが高まりま
 4. → `/speckit.clarify` で曖昧点を解消
 
 ## Example
+
+> ⚠️ **WARNING: REFERENCE ONLY**
+>
+> The following examples are for understanding the workflow ONLY.
+> **DO NOT copy or output these example values** (PDFエクスポート, 一覧画面からPDF出力, etc.).
+> Always use ACTUAL user input from `.specify/input/add.md` or $ARGUMENTS.
 
 ### Example A: 入力ファイルから読み込み
 

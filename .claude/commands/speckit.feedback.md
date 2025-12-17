@@ -134,4 +134,4 @@ Input: `screen: 実装中に確認ダイアログが必要と判明、Screen Spe
 Output:
 - Feature Spec Section 8.3: New modal component needed
 - Issue created: "Screen addition: SCR-CONFIRM-MODAL - Delete confirmation dialog"
-- Screen Spec updated via `/speckit.screen` or `/speckit.change`
+- Screen Spec updated via `/speckit.change`

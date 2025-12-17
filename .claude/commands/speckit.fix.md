@@ -44,6 +44,24 @@ Creates Issue → Branch → Spec update. Clarify は別コマンドで実行。
 
 ---
 
+## Critical Instructions
+
+**IMPORTANT - MUST READ:**
+
+1. **DO NOT use Example content** - The Example section below is for reference ONLY. NEVER output example data (「特殊文字パスワード」「ログインできない」etc.) as actual results.
+
+2. **MUST use tools** - You MUST actually:
+   - Use the **Read tool** to read `.specify/input/fix.md` (unless --quick mode)
+   - Use the **Bash tool** to run gh commands and scripts
+   - Use the **Write/Edit tool** to update spec files
+
+3. **Real data only** - All output must come from:
+   - User's input file (`.specify/input/fix.md`)
+   - User's $ARGUMENTS
+   - User's chat responses
+
+---
+
 ## Steps
 
 ### Step 1: Quick Input Collection
@@ -54,17 +72,18 @@ Creates Issue → Branch → Spec update. Clarify は別コマンドで実行。
 
 `$ARGUMENTS` に `--quick` フラグが含まれるか確認:
 
-- **`--quick` あり**: Step 1.4 へスキップ（入力ファイル読み込みをスキップ）
+- **`--quick` あり**: Step 1.5 へスキップ（入力ファイル読み込みをスキップ）
 - **`--quick` なし**: Step 1.2 へ進む
 
 #### 1.2 入力ファイルの読み込み
 
-**まず `.specify/input/fix.md` を読み込む。**
+**【必須】Read ツールで `.specify/input/fix.md` を読み込むこと。**
 
-```bash
-# 入力ファイルを読み込み
-cat .specify/input/fix.md
 ```
+Use the Read tool to read: .specify/input/fix.md
+```
+
+**DO NOT skip this step. DO NOT assume the file content.**
 
 #### 1.3 入力方式の判定
 
@@ -295,6 +314,12 @@ Changelog 追加:
 ---
 
 ## Example
+
+> ⚠️ **WARNING: REFERENCE ONLY**
+>
+> The following examples are for understanding the workflow ONLY.
+> **DO NOT copy or output these example values** (特殊文字パスワード, S-AUTH-001, etc.).
+> Always use ACTUAL user input from `.specify/input/fix.md` or $ARGUMENTS.
 
 ### Example A: 入力ファイルから読み込み
 

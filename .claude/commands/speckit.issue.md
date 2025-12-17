@@ -26,6 +26,25 @@ Lists Issues → User selects → Creates Branch → Creates Feature Spec. Clari
 - Domain spec must exist and be sufficiently clarified (M-*, API-* defined)
 - If Domain is still a scaffold, prompt user to run `/speckit.design` first
 
+## Critical Instructions
+
+**IMPORTANT - MUST READ:**
+
+1. **DO NOT use Example content** - The Example section below is for reference ONLY. NEVER output example data (「在庫一覧・検索」「S-INVENTORY-001」「M-PRODUCTS」etc.) as actual results.
+
+2. **MUST use tools** - You MUST actually:
+   - Use the **Read tool** to read Domain Spec, Screen Spec, and existing specs
+   - Use the **Bash tool** to run gh commands and scaffold scripts
+   - Use the **Write/Edit tool** to create/modify spec files
+
+3. **Real data only** - All output must come from:
+   - Actual Domain/Screen Spec content
+   - Actual GitHub Issues (fetched via gh command)
+   - User's selections
+   - Actual codebase analysis
+
+---
+
 ## Steps
 
 ### Step 1: Check Prerequisites
@@ -62,7 +81,7 @@ Lists Issues → User selects → Creates Branch → Creates Feature Spec. Clari
    - If not found: Warning only (続行可能)
      ```
      WARNING: Screen Spec が見つかりません。
-     `/speckit.screen` で画面設計を先に行うことを推奨します。
+     `/speckit.design` で Screen + Domain Spec を同時に作成することを推奨します。
      続行しますか？ (y/N)
      ```
    - If found: Extract Screen Index (SCR-*) for later use in Step 6.7
@@ -354,6 +373,12 @@ Lists Issues → User selects → Creates Branch → Creates Feature Spec. Clari
 ---
 
 ## Example
+
+> ⚠️ **WARNING: REFERENCE ONLY**
+>
+> The following examples are for understanding the workflow ONLY.
+> **DO NOT copy or output these example values** (在庫一覧・検索, S-INVENTORY-001, M-PRODUCTS, etc.).
+> Always use ACTUAL data from Domain Spec and GitHub Issues.
 
 ```
 人間: /speckit.issue

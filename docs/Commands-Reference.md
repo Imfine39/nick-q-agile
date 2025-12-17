@@ -8,7 +8,7 @@
 
 | Category | Commands |
 |----------|----------|
-| Project Initialization | vision, design, screen |
+| Project Initialization | vision, design |
 | Development Entry | issue, add, fix, featureproposal, change |
 | Development Flow | spec, plan, tasks, implement, pr |
 | Utilities | clarify, lint, analyze, checklist, feedback |
@@ -32,7 +32,13 @@
 ```
 
 **Creates:**
-- `.specify/specs/vision/spec.md`
+- `.specify/specs/vision/spec.md`（Screen Hints セクション含む）
+
+**Input:**
+統合 Quick Input（`.specify/input/vision.md`）:
+- Part A: ビジョン（必須）
+- Part B: 画面イメージ（推奨）→ Screen Hints に保存
+- Part C: デザイン希望（任意）
 
 **Next:** `/speckit.design`
 
@@ -40,7 +46,7 @@
 
 ### `/speckit.design`
 
-**Purpose:** Feature 提案 + Domain Spec 作成 + Foundation Issue 作成
+**Purpose:** **Screen + Domain Spec 同時作成** + Feature Issues + Foundation Issue
 
 **Prerequisites:** Vision Spec（警告のみ、続行可能）
 
@@ -51,37 +57,22 @@
 
 **Creates:**
 - Feature Issues (GitHub)
-- `.specify/specs/domain/spec.md`
+- `.specify/specs/screen/spec.md`（M-*/API-* 対応表付き）
+- `.specify/specs/domain/spec.md`（Screen 参照付き）
 - Foundation Issue
 
-**Next:** `/speckit.screen` (optional) or `/speckit.issue` (Foundation)
+**Flow:**
+1. Vision Spec の Screen Hints から画面情報を取得
+2. 空の場合は画面情報の入力を促す
+3. Feature 提案 → 人間が採用を選択
+4. SCR-* ID 割り当て、M-*/API-* 導出
+5. Screen Spec + Domain Spec を同時作成
+6. 対応表を両 Spec に記載
 
----
-
-### `/speckit.screen`
-
-**Purpose:** Screen Spec 作成（画面設計）
-
-**Prerequisites:** Domain Spec（推奨）
-
-**Usage:**
-```
-/speckit.screen
-```
-
-**Creates:**
-- `.specify/specs/screen/spec.md`
-
-**Contains:**
-- 画面一覧（Screen Index）
-- 画面遷移図（Mermaid）
-- 各画面のワイヤーフレーム
-- 共通コンポーネント
-- デザイントークン
-
-**Note:**
-- Screen Spec は任意ですが、Spec-First アプローチのために推奨
-- Feature Spec 作成前に画面を定義することで一貫性を保てる
+**Screen ↔ Domain 対応:**
+- Screen Index に `APIs`, `Masters` 列
+- M-* 定義に `Used by screens: SCR-XXX`
+- API-* 定義に `Used by screens: SCR-XXX`
 
 **Next:** `/speckit.issue` (Foundation)
 
@@ -408,16 +399,15 @@ node .specify/scripts/spec-lint.js
 
 ```
 New Project:
-  /speckit.vision → /speckit.design → /speckit.screen (optional) → /speckit.issue → ...
+  /speckit.vision → /speckit.design → /speckit.issue → /speckit.plan → /speckit.tasks → /speckit.implement → /speckit.pr
 
 Add Feature:
   /speckit.add → /speckit.plan → /speckit.tasks → /speckit.implement → /speckit.pr
-  (Note: Screen Spec updated before Feature Spec if UI changes)
 
 Fix Bug:
   /speckit.fix → /speckit.plan (optional) → /speckit.implement → /speckit.pr
 
-Domain Change:
+Domain/Screen Change:
   /speckit.change → /speckit.plan → /speckit.implement → /speckit.pr
 ```
 

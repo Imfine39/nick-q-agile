@@ -386,7 +386,6 @@ node .specify/scripts/reset-input.js <type>
 | `vision` | Vision 用入力ファイルをリセット |
 | `add` | 機能追加用入力ファイルをリセット |
 | `fix` | バグ修正用入力ファイルをリセット |
-| `screen` | Screen 用入力ファイルをリセット |
 | `all` | 全入力ファイルをリセット |
 
 ### Examples
@@ -395,16 +394,13 @@ node .specify/scripts/reset-input.js <type>
 # Vision 入力ファイルをリセット
 node .specify/scripts/reset-input.js vision
 
-# Screen 入力ファイルをリセット
-node .specify/scripts/reset-input.js screen
-
 # 全入力ファイルをリセット
 node .specify/scripts/reset-input.js all
 ```
 
 ### Notes
 
-- `/speckit.vision`, `/speckit.add`, `/speckit.fix`, `/speckit.screen` 完了後、入力ファイルは自動リセットされる
+- `/speckit.vision`, `/speckit.add`, `/speckit.fix` 完了後、入力ファイルは自動リセットされる
 - 手動リセットが必要な場合にこのスクリプトを使用
 - テンプレートは `.specify/templates/quickinput-*.md` から読み込まれる
 

@@ -1,18 +1,21 @@
 {
   "permissions": {
     "allow": [
+      "Bash",
+      "Edit",
+      "Write",
+      "Read",
+      "Glob",
+      "Grep",
       "WebSearch",
-      "WebFetch(domain:www.anthropic.com)",
-      "mcp__serena__list_dir",
-      "Bash(npm run lint:*)",
-      "Bash(npm run typecheck:*)",
-      "Bash(npm run deps:*)",
-      "Bash(npm run unused:*)",
-      "Bash(npm run quality:*)",
-      "Bash(npm run format:*)",
-      "mcp__context7__resolve-library-id",
-      "mcp__context7__get-library-docs",
-      "Bash(claude update)"
+      "WebFetch",
+      "mcp__serena__*",
+      "mcp__context7__*"
+    ],
+    "deny": [
+      "Bash(rm -rf:*)",
+      "Bash(sudo:*)",
+      "Bash(git push --force:*)"
     ]
   },
   "enableAllProjectMcpServers": true,
