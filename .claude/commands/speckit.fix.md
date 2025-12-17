@@ -225,6 +225,35 @@ If bug fix reveals incorrect M-_/API-_/BR-_/SCR-_ definition:
 
 ---
 
+### Step 7.5: Update Cross-Reference Matrix (if screen/API changes)
+
+**Screen や API の変更がある場合、Matrix を更新する。**
+
+1. **Check if Matrix update is needed**:
+   - Screen layout/navigation changes → Update `screens` in Matrix
+   - New API required → Add to `apis` and `permissions`
+   - Existing API changes → Update `permissions` if role access changes
+
+2. **If updates needed, read `.specify/matrix/cross-reference.json`**
+
+3. **Update affected entries**:
+   ```json
+   "screens": {
+     "SCR-XXX": {
+       "name": "...",
+       "masters": ["M-XXX"],
+       "apis": ["API-XXX-LIST", "API-NEW-ENDPOINT"]  // Updated
+     }
+   }
+   ```
+
+4. **Regenerate Matrix view**:
+   ```bash
+   node .specify/scripts/generate-matrix-view.cjs
+   ```
+
+---
+
 ### Step 8: Run Lint
 
 ```bash

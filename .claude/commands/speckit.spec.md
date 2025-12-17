@@ -19,10 +19,20 @@ $ARGUMENTS
 
 ## Purpose
 
-Create or update a Spec. This is a **base command** that can be:
+Create or update a Spec. This is a **base command** (internal/advanced use).
 
-- Called by entry points (`/speckit.add`, `/speckit.fix`, `/speckit.issue`)
-- Called directly to create/update a spec manually
+> **Note:** 通常は `/speckit.vision`, `/speckit.add`, `/speckit.fix`, `/speckit.issue` を使用してください。
+> このコマンドは内部使用または上級者向けです。
+
+**When to use this command:**
+- 他のコマンドから呼び出される内部処理として
+- Spec を手動で作成/更新する必要がある上級ユーザー向け
+
+**Recommended alternatives:**
+- 新規プロジェクト → `/speckit.vision` → `/speckit.design`
+- 新機能追加 → `/speckit.add`
+- バグ修正 → `/speckit.fix`
+- 既存 Issue から開始 → `/speckit.issue`
 
 **This command focuses on:** Spec 作成のみ。Clarify は `/speckit.clarify` で実行。
 **Next steps:** `/speckit.clarify` で曖昧点を解消 → `/speckit.plan` で実装計画

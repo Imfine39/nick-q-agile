@@ -427,6 +427,156 @@ if (domainSpecs.length > 0) {
 }
 
 // ============================================================================
+// Cross-Reference Matrix Validation
+// ============================================================================
+
+const matrixRoot = path.join(root, '.specify', 'matrix');
+const matrixPath = path.join(matrixRoot, 'cross-reference.json');
+
+// Also check for matrix in specs directory (legacy location)
+const matrixPathAlt = path.join(specsRoot, 'matrix', 'cross-reference.json');
+
+function loadMatrix() {
+  if (fs.existsSync(matrixPath)) return JSON.parse(fs.readFileSync(matrixPath, 'utf8'));
+  if (fs.existsSync(matrixPathAlt)) return JSON.parse(fs.readFileSync(matrixPathAlt, 'utf8'));
+  return null;
+}
+
+const matrix = loadMatrix();
+
+if (matrix) {
+  console.log('Found cross-reference.json, validating matrix consistency...\n');
+
+  // Collect all defined entities from specs
+  const definedMasters = domainMasters;
+  const definedApis = domainApis;
+  const definedScreens = screenDefinitions;
+  const definedFeatures = new Set(featureSpecs.flatMap((s) => s.specIds));
+
+  // Validate screens in matrix
+  if (matrix.screens) {
+    for (const [scrId, scrData] of Object.entries(matrix.screens)) {
+      const scrIdUpper = scrId.toUpperCase();
+
+      // Check screen ID exists in Screen spec
+      if (screenSpecs.length > 0 && !definedScreens.has(scrIdUpper)) {
+        errors.push(`Matrix references undefined screen "${scrId}" - add to Screen spec first`);
+      }
+
+      // Check masters referenced by screen exist in Domain spec
+      if (scrData.masters) {
+        for (const m of scrData.masters) {
+          if (!definedMasters.has(m.toUpperCase())) {
+            errors.push(`Matrix screen "${scrId}" references undefined master "${m}" - add to Domain spec first`);
+          }
+        }
+      }
+
+      // Check APIs referenced by screen exist in Domain spec
+      if (scrData.apis) {
+        for (const a of scrData.apis) {
+          if (!definedApis.has(a.toUpperCase())) {
+            errors.push(`Matrix screen "${scrId}" references undefined API "${a}" - add to Domain spec first`);
+          }
+        }
+      }
+    }
+  }
+
+  // Validate features in matrix
+  if (matrix.features) {
+    for (const [featId, featData] of Object.entries(matrix.features)) {
+      const featIdUpper = featId.toUpperCase();
+
+      // Check feature ID exists as Feature spec
+      if (!definedFeatures.has(featIdUpper) && !domainFeatureRows.has(featIdUpper)) {
+        warnings.push(`Matrix references feature "${featId}" which has no spec file yet`);
+      }
+
+      // Check screens referenced by feature exist
+      if (featData.screens && screenSpecs.length > 0) {
+        for (const s of featData.screens) {
+          if (!definedScreens.has(s.toUpperCase())) {
+            errors.push(`Matrix feature "${featId}" references undefined screen "${s}" - add to Screen spec first`);
+          }
+        }
+      }
+
+      // Check masters referenced by feature exist
+      if (featData.masters) {
+        for (const m of featData.masters) {
+          if (!definedMasters.has(m.toUpperCase())) {
+            errors.push(`Matrix feature "${featId}" references undefined master "${m}" - add to Domain spec first`);
+          }
+        }
+      }
+
+      // Check APIs referenced by feature exist
+      if (featData.apis) {
+        for (const a of featData.apis) {
+          if (!definedApis.has(a.toUpperCase())) {
+            errors.push(`Matrix feature "${featId}" references undefined API "${a}" - add to Domain spec first`);
+          }
+        }
+      }
+    }
+  }
+
+  // Validate permissions reference existing APIs
+  if (matrix.permissions) {
+    for (const apiId of Object.keys(matrix.permissions)) {
+      if (!definedApis.has(apiId.toUpperCase())) {
+        errors.push(`Matrix permissions reference undefined API "${apiId}" - add to Domain spec first`);
+      }
+    }
+  }
+
+  // Warn about entities in specs not in matrix
+  const matrixScreenIds = new Set(Object.keys(matrix.screens || {}).map((s) => s.toUpperCase()));
+  const matrixMasters = new Set();
+  const matrixApis = new Set();
+
+  if (matrix.screens) {
+    for (const scrData of Object.values(matrix.screens)) {
+      (scrData.masters || []).forEach((m) => matrixMasters.add(m.toUpperCase()));
+      (scrData.apis || []).forEach((a) => matrixApis.add(a.toUpperCase()));
+    }
+  }
+  if (matrix.features) {
+    for (const featData of Object.values(matrix.features)) {
+      (featData.masters || []).forEach((m) => matrixMasters.add(m.toUpperCase()));
+      (featData.apis || []).forEach((a) => matrixApis.add(a.toUpperCase()));
+    }
+  }
+
+  // Screens in spec but not in matrix
+  for (const s of definedScreens) {
+    if (!matrixScreenIds.has(s)) {
+      warnings.push(`Screen "${s}" defined in Screen spec is not in cross-reference.json`);
+    }
+  }
+
+  // Masters in Domain but not referenced in matrix
+  for (const m of definedMasters) {
+    if (!matrixMasters.has(m)) {
+      warnings.push(`Master "${m}" defined in Domain spec is not referenced in cross-reference.json`);
+    }
+  }
+
+  // APIs in Domain but not referenced in matrix
+  for (const a of definedApis) {
+    if (!matrixApis.has(a)) {
+      warnings.push(`API "${a}" defined in Domain spec is not referenced in cross-reference.json`);
+    }
+  }
+} else {
+  // Matrix file not found - this is OK for projects that haven't adopted it yet
+  if (screenSpecs.length > 0 || domainSpecs.length > 0) {
+    warnings.push('No cross-reference.json found. Consider creating one for better traceability.');
+  }
+}
+
+// ============================================================================
 // Output Results
 // ============================================================================
 

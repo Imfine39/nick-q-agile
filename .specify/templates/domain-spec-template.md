@@ -54,11 +54,12 @@ Reference from Vision Spec, with technical details added.
 Define shared data models that are used across multiple features.
 Feature specs MUST reference these by ID, not redefine them.
 
+> **Note:** Screen ↔ Master ↔ API mappings are managed in `../matrix/cross-reference.json`.
+> Run `node .specify/scripts/generate-matrix-view.cjs` to regenerate the view.
+
 ### M-[NAME]-001: [Entity Name]
 
 **Purpose:** [Why this master exists]
-
-**Used by screens:** SCR-XXX, SCR-YYY
 
 **Fields:**
 
@@ -80,8 +81,6 @@ Feature specs MUST reference these by ID, not redefine them.
 
 **Purpose:** [Why this master exists]
 
-**Used by screens:** SCR-XXX, SCR-YYY
-
 **Fields:**
 
 | Field | Type | Required | Description |
@@ -101,11 +100,11 @@ Feature specs MUST reference these by ID, not redefine them.
 Define shared API contracts that are used across multiple features.
 Feature specs MUST reference these by ID when using them.
 
+> **Note:** Screen ↔ API mappings and permissions are managed in `../matrix/cross-reference.json`.
+
 ### API-[RESOURCE]-[ACTION]-001: [API Name]
 
 **Purpose:** [What this API does]
-
-**Used by screens:** SCR-XXX (どの画面でこの API を使うか)
 
 **Endpoint:**
 ```
@@ -148,8 +147,6 @@ Feature specs MUST reference these by ID when using them.
 ### API-[RESOURCE]-[ACTION]-002: [API Name]
 
 **Purpose:** [What this API does]
-
-**Used by screens:** SCR-XXX
 
 **Endpoint:**
 ```

@@ -24,6 +24,22 @@ PR作成前の「安心確認」として、実装が Spec/Domain の要件を�
 - Domain の NFR (Non-Functional Requirements) に違反していないか
 - 他の Feature との依存関係に問題がないか
 
+### 2.5. Screen との整合性
+
+- Feature Spec で参照している SCR-\* が Screen Spec に定義されているか
+- 実装した画面コンポーネントが Screen Spec のワイヤーフレームに準拠しているか
+- Screen Spec の Status が適切か（Planned → 実装済みなら Implemented に更新必要）
+- 画面遷移が Screen Spec の遷移図に従っているか
+
+### 2.6. Cross-Reference Matrix との整合性
+
+Matrix が存在する場合（`.specify/matrix/cross-reference.json`）:
+
+- Feature が Matrix に登録されているか
+- Matrix 内の screens/masters/apis 参照が正しいか
+- 新規追加した M-\*/API-\*/SCR-\* が Matrix に反映されているか
+- Permissions が正しく設定されているか（ロールベースアクセス）
+
 ### 3. コードベース分析
 
 - 新規追加コードが既存パターンに従っているか
@@ -40,7 +56,8 @@ PR作成前の「安心確認」として、実装が Spec/Domain の要件を�
 ## Steps
 
 1. **Load context**:
-   - Feature Spec + Domain Spec
+   - Feature Spec + Domain Spec + Screen Spec
+   - Cross-Reference Matrix（存在する場合）
    - Plan + Tasks
    - 実装済みコード
    - テストコード
@@ -53,6 +70,8 @@ PR作成前の「安心確認」として、実装が Spec/Domain の要件を�
 3. **Cross-reference analysis**:
    - Spec の各 UC/FR/SC と実装を照合
    - Domain のマスタ/API定義と実際の使用を照合
+   - Screen Spec の SCR-\* 参照と画面実装を照合
+   - Matrix の対応関係と実装を照合
    - Plan の設計方針と実装を照合
 
 4. **Generate report**:
@@ -122,6 +141,15 @@ AI: Feature S-AUTH-001 の分析を開始します...
     ✅ Domain整合性:
       - M-USER, M-SESSION: 正しく参照
       - API-AUTH-LOGIN, API-AUTH-LOGOUT: 正しく参照
+
+    ✅ Screen整合性:
+      - SCR-001 (ログイン画面): 実装済み → src/pages/Login.tsx
+      - SCR-002 (ダッシュボード): 実装済み → src/pages/Dashboard.tsx
+      - ⚠️ Screen Spec Status 更新推奨: SCR-001, SCR-002 を Implemented に
+
+    ✅ Matrix整合性:
+      - Feature S-AUTH-001: Matrix に登録済み
+      - screens/masters/apis 参照: 正しい
 
     📊 カバレッジ:
       - UC: 2/2 (100%)

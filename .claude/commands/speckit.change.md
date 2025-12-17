@@ -229,19 +229,54 @@ This command handles **modifications to existing items**, not additions.
     - Update affected FR/UC
     - Add Changelog entry noting the change
 
-16. **曖昧点の検出**:
+### Step 5.5: Update Cross-Reference Matrix
+
+16. **Check if Matrix update is needed**:
+
+    Matrix が存在する場合（`.specify/matrix/cross-reference.json`）、以下を確認:
+
+    | 変更種別 | Matrix 更新内容 |
+    |---------|----------------|
+    | M-\* 変更 | `masters` の参照整合性を確認 |
+    | API-\* 変更 | `apis` の参照整合性を確認、`permissions` 更新 |
+    | SCR-\* 変更 | `screens` のエントリ更新（masters/apis 参照変更時） |
+    | 新規 ID 追加 | 該当カテゴリに新エントリ追加 |
+
+17. **Update Matrix** (if needed):
+
+    ```bash
+    # Matrix を更新
+    # 例: Screen に新しい API 参照を追加
+    {
+      "screens": {
+        "SCR-003": {
+          "name": "在庫一覧",
+          "masters": ["M-PRODUCT", "M-WAREHOUSE"],
+          "apis": ["API-INVENTORY-LIST", "API-INVENTORY-FILTER"]  // 変更
+        }
+      }
+    }
+    ```
+
+18. **Regenerate Matrix view**:
+
+    ```bash
+    node .specify/scripts/generate-matrix-view.cjs
+    ```
+
+19. **曖昧点の検出**:
     - If change introduces ambiguity, mark as `[NEEDS CLARIFICATION]`
     - 推奨: `/speckit.clarify` で曖昧点を解消
 
 ### Step 6: Lint and Review
 
-17. **Run lint**:
+20. **Run lint**:
 
     ```bash
     node .specify/scripts/spec-lint.cjs
     ```
 
-18. **Show summary**:
+21. **Show summary**:
 
     ```
     === Spec Change 完了 ===
@@ -258,6 +293,9 @@ This command handles **modifications to existing items**, not additions.
     - .specify/specs/s-auth-001/spec.md
     - .specify/specs/s-registration-001/spec.md
 
+    Matrix 更新:
+    - cross-reference.json: 該当なし / 更新済み
+
     次のステップ:
     1. PR を作成してレビューを受ける
     2. マージ後、#22, #23 の実装修正に取り掛かる
@@ -265,7 +303,7 @@ This command handles **modifications to existing items**, not additions.
 
 ### Step 7: Create PR
 
-19. **Create PR**:
+22. **Create PR**:
 
     ```bash
     gh pr create \
@@ -294,6 +332,7 @@ This command handles **modifications to existing items**, not additions.
 - Child Issue numbers
 - Branch name
 - Changed Spec files
+- Matrix update status (該当なし / 更新済み)
 - PR (if created)
 - Next steps for implementation fixes
 
@@ -433,6 +472,7 @@ AI: PR #30 を作成しました。
 - 変更の規模に関わらず、影響 Feature があれば必ず Issue を作成
 - Spec 更新は一括 PR、実装修正は Feature ごとの PR
 - Sub-issue 構造で全体の進捗を追跡可能
+- **Matrix 更新**: M-\*/API-\*/SCR-\* の変更時は Matrix の整合性を確認し、必要に応じて更新
 
 ### Screen Spec 変更の影響分析例
 

@@ -83,18 +83,19 @@
 
 ```
 Phase 1: /speckit.vision (統合 Quick Input)
-  → .specify/input/vision-input.md に入力（Part A: ビジョン、Part B: 画面、Part C: デザイン）
+  → .specify/input/vision-input.md に入力（Part A: ビジョン、Part B: 画面、Part C: デザイン、Part D: ビジネスルール）
   → Vision Spec 作成（目的、ジャーニー、スコープ、Screen Hints）
   → /speckit.clarify で曖昧点解消（4問ずつバッチ質問）
   → 人間: Vision をレビュー・承認
 
-Phase 2: /speckit.design (Screen + Domain 同時作成)
+Phase 2: /speckit.design (Screen + Domain + Matrix 同時作成)
   → Vision Spec の Screen Hints を使用（空なら入力を促す）
   → Feature 候補提案 → 人間が採用を選択
   → Feature Issues 一括作成
-  → **Screen Spec と Domain Spec を同時作成**（ID 相互参照を保証）
-    - Screen Index に M-*/API-* 対応を記載
-    - M-*/API-* 定義に "Used by screens: SCR-*" を記載
+  → **Screen Spec + Domain Spec + Cross-Reference Matrix を同時作成**
+    - Screen Index に画面一覧と Journey 参照
+    - Domain Spec に M-*/API-* 定義
+    - Matrix (cross-reference.json) で全対応関係を一元管理
   → /speckit.clarify で曖昧点解消
   → Foundation Issue (S-FOUNDATION-001) 自動作成
   → 人間: Screen + Domain Spec をレビュー・承認
@@ -142,8 +143,8 @@ Phase 5以降: Feature 開発（繰り返し）
 **プロジェクト初期化 (2個)**
 | コマンド | 用途 |
 |---------|------|
-| `/speckit.vision` | Vision Spec 作成（目的 + ジャーニー + Screen Hints）- 統合 Quick Input 対応 |
-| `/speckit.design` | **Screen + Domain Spec 同時作成** + Feature Issues + Foundation Issue |
+| `/speckit.vision` | Vision Spec 作成（目的 + ジャーニー + Screen Hints + ビジネスルール）- 統合 Quick Input 対応 |
+| `/speckit.design` | **Screen + Domain + Matrix 同時作成** + Feature Issues + Foundation Issue |
 
 **開発エントリーポイント (5個)**
 | コマンド | 用途 |
@@ -154,10 +155,9 @@ Phase 5以降: Feature 開発（繰り返し）
 | `/speckit.featureproposal` | 追加 Feature を AI に提案させる |
 | `/speckit.change` | Vision/Domain/Screen Spec 変更 |
 
-**開発フローコマンド (5個)**
+**開発フローコマンド (4個)**
 | コマンド | 用途 |
 |---------|------|
-| `/speckit.spec` | Spec 作成/更新 |
 | `/speckit.plan` | Plan 作成（人間確認で停止） |
 | `/speckit.tasks` | Tasks 作成 |
 | `/speckit.implement` | 実装 |
@@ -170,7 +170,12 @@ Phase 5以降: Feature 開発（繰り返し）
 | `/speckit.feedback` | Spec へのフィードバック記録 |
 | `/speckit.clarify` | 要件の曖昧点を 4 問ずつバッチ質問 → 即時 Spec 更新 |
 | `/speckit.checklist` | 要件品質チェックリスト生成（Unit Tests for English） |
-| `/speckit.lint` | Spec 整合性チェック |
+| `/speckit.lint` | Spec 整合性チェック（Matrix 検証含む） |
+
+**内部コマンド (1個)**
+| コマンド | 用途 |
+|---------|------|
+| `/speckit.spec` | Spec 作成/更新（内部使用・上級者向け。通常は上記コマンドを使用） |
 
 ---
 
@@ -178,27 +183,44 @@ Phase 5以降: Feature 開発（繰り返し）
 
 ### 4層構造
 
-- **Vision Spec** (`.specify/specs/vision/`): プロジェクトの目的、ユーザージャーニー、スコープ、**Screen Hints**
-- **Screen Spec** (`.specify/specs/screen/`): 画面一覧、画面遷移図、ワイヤーフレーム、**Screen Index (M-_/API-_ 対応表)**
-- **Domain Spec** (`.specify/specs/domain/`): 共有マスタ (`M-*`)、共有 API (`API-*`)、ビジネスルール、Feature Index、**Used by screens 参照**
+- **Vision Spec** (`.specify/specs/vision/`): プロジェクトの目的、ユーザージャーニー、スコープ、**Screen Hints**、ビジネスルール初期案
+- **Screen Spec** (`.specify/specs/screen/`): 画面一覧、画面遷移図、ワイヤーフレーム
+- **Domain Spec** (`.specify/specs/domain/`): 共有マスタ (`M-*`)、共有 API (`API-*`)、ビジネスルール、Feature Index
 - **Feature Spec** (`.specify/specs/<feature-id>/`): 個別機能の詳細仕様。Domain/Screen を参照するのみ、マスタ/API/画面を再定義しない。
 
 ```
 Vision (WHY + Screen Hints)
     ↓
-/speckit.design で同時作成（ID 相互参照を保証）
+/speckit.design で同時作成
     ↓
-Screen (WHAT users see) ←→ Domain (WHAT technically)
-    ↓
-Feature (HOW)
+Screen ─┬─ Domain
+        ↓
+      Matrix (cross-reference.json) で一元管理
+        ↓
+      Feature (HOW)
 ```
 
-**Screen ↔ Domain 対応ルール:**
+### Cross-Reference Matrix
 
-- Screen Index に `APIs`, `Masters` 列を含める
-- M-\* 定義に `Used by screens: SCR-XXX, SCR-YYY` を記載
-- API-\* 定義に `Used by screens: SCR-XXX` を記載
-- `/speckit.lint` で整合性チェック
+**Screen ↔ Domain ↔ Feature の対応関係を一元管理するシステム。**
+
+**ファイル構成:**
+```
+.specify/matrix/
+├── cross-reference.json  # 機械可読な対応関係（Single Source of Truth）
+└── cross-reference.md    # 人間可読なビュー（自動生成）
+```
+
+**Matrix が管理する情報:**
+- Screen → M-*/API-* マッピング（各画面が使用するデータとAPI）
+- Feature → SCR-*/M-*/API-* マッピング（各機能の依存関係）
+- Permissions（各APIのロール別アクセス権限）
+
+**運用ルール:**
+- `/speckit.design` で初期作成
+- Feature 追加時は Matrix も更新（`/speckit.add`, `/speckit.issue`）
+- `node .specify/scripts/generate-matrix-view.cjs` で MD ビュー再生成
+- `/speckit.lint` で整合性チェック（Matrix ↔ Spec の不一致を検出）
 
 ### Screen Spec と Spec-First アプローチ
 
@@ -255,21 +277,21 @@ node .specify/scripts/scaffold-spec.cjs --kind feature --id S-XXX-001 --title ".
 
 ```
 .specify/
-├── templates/           # ベーステンプレート（読み取り専用）
-│   ├── vision-input.md  # 統合版（Vision + Screen + Design）
+├── templates/              # ベーステンプレート（読み取り専用）
+│   ├── vision-input.md     # 統合版（Vision + Screen + Design + Business Rules）
 │   ├── add-input.md
 │   └── fix-input.md
 │
-├── input/               # ユーザー入力用（編集対象）
-│   ├── vision.md        # 統合 Quick Input（Part A + B + C）
-│   ├── add.md
-│   └── fix.md
+├── input/                  # ユーザー入力用（編集対象）
+│   ├── vision-input.md     # 統合 Quick Input（Part A + B + C + D）
+│   ├── add-input.md
+│   └── fix-input.md
 │
 └── scripts/
-    └── reset-input.cjs   # 入力ファイルリセット
+    └── reset-input.cjs     # 入力ファイルリセット
 ```
 
-**統合 Quick Input（vision.md）の構造:**
+**統合 Quick Input（vision-input.md）の構造:**
 
 ```
 Part A: ビジョン（必須）
@@ -282,13 +304,17 @@ Part B: 画面イメージ（任意だが推奨）
 
 Part C: デザイン希望（任意）
   - デザインスタイル、レスポンシブ対応、参考画像
+
+Part D: ビジネスルール（任意だが推奨）
+  - 業務ルール、バリデーションルール、計算ルール
+  → Domain Spec の Business Rules セクションに反映
 ```
 
 **使い方:**
 
-1. `.specify/input/vision-input.md` を編集して情報を入力（Part A 必須、Part B/C 推奨）
+1. `.specify/input/vision-input.md` を編集して情報を入力（Part A 必須、Part B/C/D 推奨）
 2. `/speckit.vision` を実行 → Vision Spec 作成（Screen Hints 含む）
-3. `/speckit.design` を実行 → Screen + Domain Spec 同時作成
+3. `/speckit.design` を実行 → Screen + Domain + Matrix 同時作成
 4. 完了後、入力内容は Spec の「Original Input」セクションに記録され、入力ファイルは自動リセット
 
 **fix の緊急対応:**
@@ -440,7 +466,8 @@ Feature Spec 作成時（/speckit.issue, /speckit.add）に必要な M-_/API-_ �
 
 ## 11. 補助ツールとガイド
 
-- **整合性チェック**: `/speckit.lint` または `node .specify/scripts/spec-lint.cjs`
+- **整合性チェック**: `/speckit.lint` または `node .specify/scripts/spec-lint.cjs`（Matrix 検証含む）
+- **Matrix ビュー生成**: `node .specify/scripts/generate-matrix-view.cjs`（cross-reference.md 自動生成）
 - **実装分析**: `/speckit.analyze` で PR 前の安心確認
 - **プロジェクト健全性**: `node .specify/scripts/spec-metrics.cjs` でスコアと問題点を確認
 - **状態確認**: `node .specify/scripts/state.cjs query --all` で全状態確認

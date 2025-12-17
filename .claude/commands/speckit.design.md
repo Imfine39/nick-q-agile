@@ -236,13 +236,15 @@ Screen 情報がありません。
 
 12. **Screen Spec sections を埋める**:
     - **Section 1** (Screen Overview): Purpose, Design Principles
-    - **Section 2** (Screen Index): 全画面一覧 + M-_/API-_ 対応表
+    - **Section 2** (Screen Index): 全画面一覧（簡略化版）
 
-      | Screen ID | Name           | Journey | Feature ID      | APIs           | Masters           | Status  |
-      | --------- | -------------- | ------- | --------------- | -------------- | ----------------- | ------- |
-      | SCR-001   | ログイン       | -       | S-AUTH-001      | API-AUTH-\*    | M-USER            | Planned |
-      | SCR-002   | ダッシュボード | J-1     | S-DASHBOARD-001 | API-SUMMARY-\* | M-LEAD, M-PROJECT | Planned |
-      | ...       | ...            | ...     | ...             | ...            | ...               | ...     |
+      | Screen ID | Name           | Journey | Status  |
+      | --------- | -------------- | ------- | ------- |
+      | SCR-001   | ログイン       | -       | Planned |
+      | SCR-002   | ダッシュボード | J-1     | Planned |
+      | ...       | ...            | ...     | ...     |
+
+      > **Note:** Screen ↔ Feature ↔ API ↔ Master の詳細は `cross-reference.json` で管理
 
     - **Section 3** (Screen Transition): Mermaid diagram + Transition Matrix
     - **Section 4** (Screen Details): 各画面の詳細（Purpose, Actions, Layout Overview）
@@ -254,46 +256,79 @@ Screen 情報がありません。
 13. **Domain Spec sections を埋める**:
     - **Section 1** (Domain Overview): System context, boundaries
     - **Section 2** (Actors): Roles and permissions
-    - **Section 3** (Master Data - M-_)\*\*: 各 M-_ に **Used by screens** を追加
+    - **Section 3** (Master Data - M-\*): 各 Master の定義
 
       ```markdown
       ### M-LEAD
 
       **Purpose:** リード案件情報
-      **Used by screens:** SCR-002, SCR-003, SCR-004
       **Fields:** ...
       ```
 
-    - **Section 4** (API Contracts - API-_)\*\*: 各 API-_ に **Used by screens** を追加
+      > **Note:** Screen ↔ Master mappings は `cross-reference.json` で管理
+
+    - **Section 4** (API Contracts - API-\*): 各 API の定義
 
       ```markdown
       ### API-LEAD-LIST
 
       **Purpose:** リード案件一覧取得
-      **Used by screens:** SCR-003 (リード案件一覧)
       **Endpoint:** GET /api/v1/leads
       ...
       ```
 
-    - **Section 5** (Business Rules): BR-_, VR-_, CR-\*
+      > **Note:** Screen ↔ API mappings と permissions は `cross-reference.json` で管理
+
+    - **Section 5** (Business Rules): BR-\*, VR-\*, CR-\*
     - **Section 6** (NFR): Performance, security, reliability
     - **Section 7** (Technology Decisions): Stack, dependencies
     - **Section 8** (Feature Index): Populate from created Feature Issues
 
     Mark unclear items as `[NEEDS CLARIFICATION]`
 
+#### 4.6 Cross-Reference Matrix の作成
+
+14. **Create `.specify/matrix/cross-reference.json`**:
+
+    ```json
+    {
+      "$schema": "../templates/cross-reference-schema.json",
+      "version": "1.0",
+      "projectName": "[PROJECT_NAME]",
+      "updated": "[DATE]",
+      "screens": {
+        "SCR-001": { "name": "ログイン", "masters": ["M-USER"], "apis": ["API-AUTH-LOGIN"] },
+        "SCR-002": { "name": "ダッシュボード", "masters": ["M-LEAD", "M-PROJECT"], "apis": ["API-DASHBOARD-GET"] }
+      },
+      "features": {
+        "S-FOUNDATION-001": { "title": "基盤構築", "screens": ["SCR-001"], "masters": ["M-USER"], "apis": ["API-AUTH-LOGIN"], "rules": [] }
+      },
+      "permissions": {
+        "API-AUTH-LOGIN": ["*"],
+        "API-DASHBOARD-GET": ["consultant", "manager", "admin"]
+      }
+    }
+    ```
+
+15. **Generate Matrix view**:
+    ```bash
+    node .specify/scripts/generate-matrix-view.cjs
+    ```
+    - Creates `.specify/matrix/cross-reference.md` (human-readable view)
+
 ### Step 5: Cross-Reference Verification
 
-14. **Screen ↔ Domain 整合性チェック**:
-    - [ ] 全 SCR-_ が少なくとも 1 つの M-_ を参照
-    - [ ] 全 M-_ が少なくとも 1 つの SCR-_ から参照
-    - [ ] Screen Spec の対応表と Domain Spec の参照が一致
-    - [ ] 孤立した API-\* がない（どの画面からも使われない API）
+16. **Cross-Reference Matrix 整合性チェック**:
+    - [ ] 全 SCR-\* が Matrix の screens に定義されている
+    - [ ] 全 M-\* が Matrix の screens/features から参照されている
+    - [ ] 全 API-\* が Matrix の screens/features/permissions から参照されている
+    - [ ] 孤立した定義がない
 
-15. **Run lint**:
+17. **Run lint** (includes Matrix validation):
     ```bash
     node .specify/scripts/spec-lint.cjs
     ```
+    - Screen/Domain/Matrix の整合性を自動検証
 
 ### Step 6: Create Foundation Issue
 
@@ -324,10 +359,10 @@ Screen 情報がありません。
 
 ### Step 7: Design Summary & Clarify 推奨
 
-17. **Show summary**:
+19. **Show summary**:
 
     ```
-    === Design 完了（Screen + Domain 同時作成）===
+    === Design 完了（Screen + Domain + Matrix 同時作成）===
 
     Feature Issues 作成:
     - #2 [feature][backlog] S-FOUNDATION-001: 基盤構築
@@ -337,18 +372,23 @@ Screen 情報がありません。
     Screen Spec:
     - 画面数: [N] 画面 (SCR-001 〜 SCR-XXX)
     - 遷移定義: 完了
-    - M-*/API-* 対応: 完了
 
     Domain Spec:
     - Master Data: M-XXX, M-YYY, ...
     - API Contracts: API-XXX-*, API-YYY-*, ...
-    - Screen 参照: 全 M-*/API-* に SCR-* 参照あり
     - Business Rules: [Count]
     - Feature Index: [Count] features
 
-    Specs:
+    Cross-Reference Matrix:
+    - Screen → M-*/API-* mappings: 完了
+    - Feature → SCR-*/M-*/API-* mappings: 完了
+    - Permissions: [Count] APIs
+
+    Files:
     - .specify/specs/screen/spec.md
     - .specify/specs/domain/spec.md
+    - .specify/matrix/cross-reference.json
+    - .specify/matrix/cross-reference.md (auto-generated)
     ```
 
 18. **曖昧点レポート**:
@@ -395,8 +435,10 @@ Screen 情報がありません。
 ## Output
 
 - Feature Issues (numbers and titles)
-- **Screen spec: `.specify/specs/screen/spec.md`** (NEW)
+- **Screen spec: `.specify/specs/screen/spec.md`**
 - Domain spec: `.specify/specs/domain/spec.md`
+- **Cross-Reference Matrix: `.specify/matrix/cross-reference.json`** (NEW)
+- Cross-Reference View: `.specify/matrix/cross-reference.md` (auto-generated)
 - 曖昧点レポート
 - Foundation Issue number
 - Next step recommendation: `/speckit.clarify`

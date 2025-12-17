@@ -136,3 +136,36 @@ Output:
 - Feature Spec Section 8.3: New modal component needed
 - Issue created: "Screen addition: SCR-CONFIRM-MODAL - Delete confirmation dialog"
 - Screen Spec updated via `/speckit.change`
+- **Matrix update**: New screen added to `cross-reference.json`
+
+---
+
+## Cross-Reference Matrix Update
+
+**`screen` タイプのフィードバックで Matrix 更新が必要な場合:**
+
+1. **新規画面追加の場合**:
+   - Screen Spec に SCR-* を追加
+   - Matrix の `screens` に新エントリを追加
+   ```json
+   "screens": {
+     "SCR-NEW": {
+       "name": "[画面名]",
+       "masters": ["M-XXX"],
+       "apis": ["API-XXX"]
+     }
+   }
+   ```
+
+2. **既存画面の API/Master 変更の場合**:
+   - Matrix の該当 `screens` エントリを更新
+
+3. **Feature との関連更新**:
+   - Matrix の `features` の該当エントリに新規 SCR-* を追加
+
+4. **Regenerate Matrix view**:
+   ```bash
+   node .specify/scripts/generate-matrix-view.cjs
+   ```
+
+**Note:** Screen フィードバックが Major 変更（新規画面追加等）の場合は `/speckit.change` を経由するため、Matrix 更新もその中で行われる。

@@ -18,7 +18,9 @@ Related Domain: S-DOMAIN-001
 
 - 全画面の一覧と目的
 - 画面遷移フロー
-- 画面 ↔ Feature ↔ API ↔ Master の対応関係
+- 各画面の詳細レイアウト
+
+**Note:** 画面 ↔ Feature ↔ API ↔ Master の対応関係は `../matrix/cross-reference.json` で一元管理。
 
 ### 1.2 Design Principles
 
@@ -29,12 +31,15 @@ Related Domain: S-DOMAIN-001
 
 ## 2. Screen Index
 
-全画面の一覧。Feature、API、Master との対応を管理。
+全画面の一覧。
 
-| Screen ID | Name | Journey | Feature ID | APIs | Masters | Status |
-|-----------|------|---------|------------|------|---------|--------|
-| SCR-001 | [画面名] | J-1 | S-XXX-001 | API-XXX-* | M-XXX | Planned |
-| SCR-002 | [画面名] | J-1,J-2 | S-YYY-001 | API-YYY-* | M-YYY | Planned |
+> **Note:** Screen ↔ Feature ↔ API ↔ Master の詳細マッピングは `../matrix/cross-reference.json` で一元管理。
+> `node .specify/scripts/generate-matrix-view.cjs` で可視化。
+
+| Screen ID | Name | Journey | Status |
+|-----------|------|---------|--------|
+| SCR-001 | [画面名] | J-1 | Planned |
+| SCR-002 | [画面名] | J-1,J-2 | Planned |
 
 **Status values:**
 - `Planned` - 仕様定義済み、未実装
@@ -100,12 +105,7 @@ stateDiagram-v2
 - [主要アクション 1]
 - [主要アクション 2]
 
-**Related Elements:**
-| Type | ID | Usage |
-|------|-----|-------|
-| Feature | S-XXX-001 | [この Feature で実装] |
-| API | API-XXX-ACTION | [このAPIを呼び出し] |
-| Master | M-XXX | [このデータを表示/編集] |
+**Domain References:** See `../matrix/cross-reference.json` for API/Master mappings.
 
 **Layout Overview:**
 ```
@@ -150,12 +150,7 @@ stateDiagram-v2
 **Primary Actions:**
 - [主要アクション]
 
-**Related Elements:**
-| Type | ID | Usage |
-|------|-----|-------|
-| Feature | S-XXX-001 | [説明] |
-| API | API-XXX-ACTION | [説明] |
-| Master | M-XXX | [説明] |
+**Domain References:** See `../matrix/cross-reference.json` for API/Master mappings.
 
 **Layout Overview:**
 ```

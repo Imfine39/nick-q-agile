@@ -275,6 +275,40 @@ Open `.specify/specs/domain/spec.md` and add entry in Section 8 (Feature Index):
 
 ---
 
+### Step 8.5: Update Cross-Reference Matrix
+
+**Matrix が存在する場合、Feature を追加する。**
+
+1. **Read `.specify/matrix/cross-reference.json`**
+
+2. **Add Feature entry**:
+   ```json
+   "features": {
+     "S-XXX-001": {
+       "title": "[Feature Title]",
+       "screens": ["SCR-XXX", "SCR-YYY"],
+       "masters": ["M-XXX"],
+       "apis": ["API-XXX-LIST", "API-XXX-CREATE"],
+       "rules": ["BR-XXX"]
+     }
+   }
+   ```
+
+3. **Update Permissions** (if new APIs added):
+   ```json
+   "permissions": {
+     "API-XXX-LIST": ["role1", "role2"],
+     "API-XXX-CREATE": ["admin"]
+   }
+   ```
+
+4. **Regenerate Matrix view**:
+   ```bash
+   node .specify/scripts/generate-matrix-view.cjs
+   ```
+
+---
+
 ### Step 9: Run Lint
 
 ```bash

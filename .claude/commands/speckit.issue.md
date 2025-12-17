@@ -231,6 +231,38 @@ Lists Issues → User selects → Creates Branch → Creates Feature Spec. Clari
       ```
     - If entry already exists (from `/speckit.design`), update Status to current state
 
+### Step 6.6.5: Update Cross-Reference Matrix
+
+**Matrix が存在する場合、Feature を追加/更新する。**
+
+17. **Read `.specify/matrix/cross-reference.json`**
+
+18. **Add or update Feature entry**:
+    ```json
+    "features": {
+      "S-XXX-001": {
+        "title": "[Feature Title]",
+        "screens": ["SCR-XXX", "SCR-YYY"],
+        "masters": ["M-XXX"],
+        "apis": ["API-XXX-LIST", "API-XXX-CREATE"],
+        "rules": ["BR-XXX"]
+      }
+    }
+    ```
+
+19. **Update Permissions** (if new APIs added):
+    ```json
+    "permissions": {
+      "API-XXX-LIST": ["role1", "role2"],
+      "API-XXX-CREATE": ["admin"]
+    }
+    ```
+
+20. **Regenerate Matrix view**:
+    ```bash
+    node .specify/scripts/generate-matrix-view.cjs
+    ```
+
 ### Step 6.7: Update Screen Spec First (Spec-First)
 
 **Screen Spec が存在する場合、Feature Spec 作成前に Screen Spec を更新する。**
