@@ -4,7 +4,7 @@
 >
 > Generated: 2025-12-18
 > Source: `C:\Users\萓谷篤嗣\Desktop\ssd-template\.specify\specs\sample\matrix\cross-reference.json`
-> Regenerate: `node .specify/scripts/generate-matrix-view.cjs`
+> Regenerate: `node .claude/skills/spec-mesh/scripts/generate-matrix-view.cjs`
 
 ---
 

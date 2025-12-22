@@ -13,7 +13,7 @@ SSD-Template は、AI コーディングアシスタント（Claude Code など�
 | 初めての方           | [[Getting-Started]]      |
 | 新規プロジェクト開始 | [[Workflow-New-Project]] |
 | 機能追加・バグ修正   | [[Workflow-Add-Feature]] |
-| コマンド一覧         | [[Commands-Reference]]   |
+| ワークフロー一覧     | [[Commands-Reference]]   |
 
 ---
 
@@ -22,7 +22,7 @@ SSD-Template は、AI コーディングアシスタント（Claude Code など�
 SSD-Template は以下を提供します：
 
 1. **3層 Spec 構造** - Vision → Domain → Feature の階層的な仕様管理
-2. **17+ のコマンド** - `/speckit.*` による一貫したワークフロー
+2. **17+ のワークフロー** - `/spec-mesh *` による一貫したワークフロー
 3. **状態管理** - プロジェクトとブランチの状態追跡
 4. **Clarify ループ** - 曖昧さを排除する対話的な仕様策定
 
@@ -45,7 +45,7 @@ SSD-Template は以下を提供します：
 
 ### Reference
 
-- [[Commands-Reference]] - 全コマンドの詳細リファレンス
+- [[Commands-Reference]] - 全ワークフローの詳細リファレンス
 - [[Templates-Reference]] - Spec テンプレートの説明
 - [[Scripts-Reference]] - Node.js スクリプトの使用方法
 
@@ -57,7 +57,7 @@ SSD-Template は以下を提供します：
 
 ## Key Principles
 
-SSD-Template は [Engineering Constitution](.specify/memory/constitution.md) に基づいています：
+SSD-Template は [Engineering Constitution](.claude/skills/spec-mesh/constitution.md) に基づいています：
 
 1. **Spec-First** - すべての非トリビアルな変更は仕様から始まる
 2. **Traceability** - Issue → Spec → Plan → Tasks → Code → PR の追跡可能性
@@ -66,44 +66,44 @@ SSD-Template は [Engineering Constitution](.specify/memory/constitution.md) に
 
 ---
 
-## Command Categories
+## Workflow Categories
 
 ### Project Initialization (2)
 
-| Command           | Purpose                               |
-| ----------------- | ------------------------------------- |
-| `/speckit.vision` | Vision Spec 作成（目的 + ジャーニー） |
-| `/speckit.design` | Feature 提案 + Domain Spec 作成       |
+| Workflow            | Purpose                               |
+| ------------------- | ------------------------------------- |
+| `/spec-mesh vision` | Vision Spec 作成（目的 + ジャーニー） |
+| `/spec-mesh design` | Feature 提案 + Domain Spec 作成       |
 
 ### Development Entry Points (5)
 
-| Command                    | Purpose                      |
-| -------------------------- | ---------------------------- |
-| `/speckit.issue`           | 既存 Issue から開発開始      |
-| `/speckit.add`             | 新機能追加（Issue 自動作成） |
-| `/speckit.fix`             | バグ修正（Issue 自動作成）   |
-| `/speckit.featureproposal` | AI に Feature を提案させる   |
-| `/speckit.change`          | Vision/Domain Spec 変更      |
+| Workflow                     | Purpose                      |
+| ---------------------------- | ---------------------------- |
+| `/spec-mesh issue`           | 既存 Issue から開発開始      |
+| `/spec-mesh add`             | 新機能追加（Issue 自動作成） |
+| `/spec-mesh fix`             | バグ修正（Issue 自動作成）   |
+| `/spec-mesh featureproposal` | AI に Feature を提案させる   |
+| `/spec-mesh change`          | Vision/Domain Spec 変更      |
 
 ### Development Flow (5)
 
-| Command              | Purpose        |
-| -------------------- | -------------- |
-| `/speckit.spec`      | Spec 作成/更新 |
-| `/speckit.plan`      | 実装計画作成   |
-| `/speckit.tasks`     | タスク分割     |
-| `/speckit.implement` | 実装           |
-| `/speckit.pr`        | PR 作成        |
+| Workflow               | Purpose        |
+| ---------------------- | -------------- |
+| `/spec-mesh spec`      | Spec 作成/更新 |
+| `/spec-mesh plan`      | 実装計画作成   |
+| `/spec-mesh tasks`     | タスク分割     |
+| `/spec-mesh implement` | 実装           |
+| `/spec-mesh pr`        | PR 作成        |
 
 ### Utilities (5)
 
-| Command              | Purpose                     |
-| -------------------- | --------------------------- |
-| `/speckit.clarify`   | 曖昧点の解消                |
-| `/speckit.lint`      | Spec 整合性チェック         |
-| `/speckit.analyze`   | 実装と Spec の整合性分析    |
-| `/speckit.checklist` | 品質チェックリスト生成      |
-| `/speckit.feedback`  | Spec へのフィードバック記録 |
+| Workflow               | Purpose                     |
+| ---------------------- | --------------------------- |
+| `/spec-mesh clarify`   | 曖昧点の解消                |
+| `/spec-mesh lint`      | Spec 整合性チェック         |
+| `/spec-mesh analyze`   | 実装と Spec の整合性分析    |
+| `/spec-mesh checklist` | 品質チェックリスト生成      |
+| `/spec-mesh feedback`  | Spec へのフィードバック記録 |
 
 ---
 
@@ -111,4 +111,4 @@ SSD-Template は [Engineering Constitution](.specify/memory/constitution.md) に
 
 - Framework Version: 1.0.0
 - Constitution Version: 1.5.0
-- Last Updated: 2025-12-12
+- Last Updated: 2025-12-22

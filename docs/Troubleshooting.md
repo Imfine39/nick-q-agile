@@ -38,14 +38,14 @@ node --version
 ls .specify/state/
 
 # 状態を初期化
-node .specify/scripts/state.cjs init
+node .claude/skills/spec-mesh/scripts/state.cjs init
 ```
 
 ---
 
 ## Command Issues
 
-### `/speckit.vision` で Vision Spec が作成されない
+### `/spec-mesh vision` で Vision Spec が作成されない
 
 **症状:**
 
@@ -53,22 +53,22 @@ node .specify/scripts/state.cjs init
 
 **原因:**
 
-- `.specify/specs/vision/` ディレクトリが存在しない
+- `.specify/specs/{project}/overview/vision/` ディレクトリが存在しない
 - scaffold-spec.cjs のパスが間違っている
 
 **解決:**
 
 ```bash
 # 手動でディレクトリ作成
-mkdir -p .specify/specs/vision
+mkdir -p .specify/specs/{project}/overview/vision
 
 # scaffold-spec.cjs を直接実行
-node .specify/scripts/scaffold-spec.cjs --kind vision --id S-VISION-001 --title "Project Name"
+node .claude/skills/spec-mesh/scripts/scaffold-spec.cjs --kind vision --id S-VISION-001 --title "Project Name"
 ```
 
 ---
 
-### `/speckit.design` が Feature Issue を作成できない
+### `/spec-mesh design` が Feature Issue を作成できない
 
 **症状:**
 
@@ -91,7 +91,7 @@ gh repo view
 
 ---
 
-### `/speckit.issue` で Issue が表示されない
+### `/spec-mesh issue` で Issue が表示されない
 
 **症状:**
 
@@ -129,7 +129,7 @@ gh issue edit <num> --add-label feature --add-label backlog
 git branch --show-current
 
 # 状態を手動更新
-node .specify/scripts/state.cjs branch --set-step implement
+node .claude/skills/spec-mesh/scripts/state.cjs branch --set-step implement
 
 # 状態ファイルを確認
 cat .specify/state/branch-state.json
@@ -147,7 +147,7 @@ cat .specify/state/branch-state.json
 
 ```bash
 # 全状態を確認
-node .specify/scripts/state.cjs query --all
+node .claude/skills/spec-mesh/scripts/state.cjs query --all
 
 # branch-state.json を直接確認
 cat .specify/state/branch-state.json | jq '.branches | to_entries[] | select(.value.suspended)'
@@ -174,10 +174,10 @@ Features: 0 found
 
 ```bash
 # Spec ファイルの先頭を確認
-head -10 .specify/specs/<feature-id>/spec.md
+head -10 .specify/specs/{project}/features/<feature-id>/spec.md
 
 # Spec Type が正しいか確認
-grep "Spec Type:" .specify/specs/*/spec.md
+grep "Spec Type:" .specify/specs/{project}/**/spec.md
 ```
 
 ---
@@ -222,7 +222,7 @@ git branch -a | grep 123
 git branch -d feature/123-xxx
 
 # または別の名前で作成
-node .specify/scripts/branch.cjs --type feature --slug xxx-v2 --issue 123
+node .claude/skills/spec-mesh/scripts/branch.cjs --type feature --slug xxx-v2 --issue 123
 ```
 
 ---
@@ -264,7 +264,7 @@ gh pr create --title "Title" --body "Description"
 
 1. Spec ファイルを開いて `[NEEDS CLARIFICATION]` を検索
 2. 手動で該当箇所を埋める
-3. `/speckit.clarify` を再実行
+3. `/spec-mesh clarify` を再実行
 
 ```bash
 # NEEDS CLARIFICATION を検索
@@ -311,7 +311,7 @@ grep -rn "NEEDS CLARIFICATION" .specify/specs/
 ```bash
 # 状態ファイルのみリセット
 rm .specify/state/*.json
-node .specify/scripts/state.cjs init
+node .claude/skills/spec-mesh/scripts/state.cjs init
 
 # 全 Spec を残して状態のみリセット
 # Spec は .specify/specs/ に残ります
@@ -326,14 +326,14 @@ node .specify/scripts/state.cjs init
 cp .specify/state/repo-state.json.bak .specify/state/repo-state.json
 
 # バックアップがない場合、初期化して再構築
-node .specify/scripts/state.cjs init
+node .claude/skills/spec-mesh/scripts/state.cjs init
 
 # 既存 Spec から状態を再構築
 # Vision があれば
-node .specify/scripts/state.cjs repo --set-vision-status approved
+node .claude/skills/spec-mesh/scripts/state.cjs repo --set-vision-status approved
 
 # Domain があれば
-node .specify/scripts/state.cjs repo --set-domain-status approved
+node .claude/skills/spec-mesh/scripts/state.cjs repo --set-domain-status approved
 ```
 
 ---
@@ -353,9 +353,9 @@ cat .specify/state/branch-state.json
 
 ### 追加リソース
 
-- `.specify/guides/error-recovery.md` - エラーリカバリーガイド
-- `.specify/guides/parallel-development.md` - 並行開発ガイド
-- `.specify/memory/constitution.md` - Engineering Constitution
+- `.claude/skills/spec-mesh/guides/error-recovery.md` - エラーリカバリーガイド
+- `.claude/skills/spec-mesh/guides/parallel-development.md` - 並行開発ガイド
+- `.claude/skills/spec-mesh/constitution.md` - Engineering Constitution
 
 ---
 

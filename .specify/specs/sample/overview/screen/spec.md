@@ -36,7 +36,7 @@ Related Domain: S-DOMAIN-001
 全画面の一覧。
 
 > **Note:** Screen ↔ Feature ↔ API ↔ Master の詳細マッピングは `../matrix/cross-reference.json` で一元管理。
-> `node .specify/scripts/generate-matrix-view.cjs` で可視化。
+> `node .claude/skills/spec-mesh/scripts/generate-matrix-view.cjs` で可視化。
 
 | Screen ID | Name | Journey | Status |
 |-----------|------|---------|--------|

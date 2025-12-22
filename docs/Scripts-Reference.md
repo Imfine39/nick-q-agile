@@ -15,8 +15,9 @@ Node.js スクリプトのリファレンスです。
 | `pr.cjs`            | PR 作成                      |
 | `spec-metrics.cjs`  | メトリクス収集               |
 | `reset-input.cjs`   | Quick Input ファイルリセット |
+| `preserve-input.cjs`| 入力ファイルを Spec に保存   |
 
-**Location:** `.specify/scripts/`
+**Location:** `.claude/skills/spec-mesh/scripts/`
 
 ---
 
@@ -28,22 +29,22 @@ Node.js スクリプトのリファレンスです。
 
 ```bash
 # 初期化
-node .specify/scripts/state.cjs init
+node .claude/skills/spec-mesh/scripts/state.cjs init
 
 # Repo 状態更新
-node .specify/scripts/state.cjs repo [options]
+node .claude/skills/spec-mesh/scripts/state.cjs repo [options]
 
 # Branch 状態更新
-node .specify/scripts/state.cjs branch [options]
+node .claude/skills/spec-mesh/scripts/state.cjs branch [options]
 
 # 中断
-node .specify/scripts/state.cjs suspend [options]
+node .claude/skills/spec-mesh/scripts/state.cjs suspend [options]
 
 # 再開
-node .specify/scripts/state.cjs resume [options]
+node .claude/skills/spec-mesh/scripts/state.cjs resume [options]
 
 # 状態照会
-node .specify/scripts/state.cjs query [options]
+node .claude/skills/spec-mesh/scripts/state.cjs query [options]
 ```
 
 ### Repo Options
@@ -107,19 +108,19 @@ node .specify/scripts/state.cjs query [options]
 
 ```bash
 # Repo 状態確認
-node .specify/scripts/state.cjs query --repo
+node .claude/skills/spec-mesh/scripts/state.cjs query --repo
 
 # Vision 承認済みに設定
-node .specify/scripts/state.cjs repo --set-vision-status approved --set-vision-clarify true
+node .claude/skills/spec-mesh/scripts/state.cjs repo --set-vision-status approved --set-vision-clarify true
 
 # Branch の step を更新
-node .specify/scripts/state.cjs branch --set-step implement
+node .claude/skills/spec-mesh/scripts/state.cjs branch --set-step implement
 
 # ブランチを中断
-node .specify/scripts/state.cjs suspend --reason "Domain change required" --related 123
+node .claude/skills/spec-mesh/scripts/state.cjs suspend --reason "Domain change required" --related 123
 
 # 中断中のブランチを確認
-node .specify/scripts/state.cjs query --suspended
+node .claude/skills/spec-mesh/scripts/state.cjs query --suspended
 ```
 
 ---
@@ -131,7 +132,7 @@ node .specify/scripts/state.cjs query --suspended
 ### Usage
 
 ```bash
-node .specify/scripts/scaffold-spec.cjs --kind <kind> --id <id> --title <title> [options]
+node .claude/skills/spec-mesh/scripts/scaffold-spec.cjs --kind <kind> --id <id> --title <title> [options]
 ```
 
 ### Required Arguments
@@ -153,26 +154,26 @@ node .specify/scripts/scaffold-spec.cjs --kind <kind> --id <id> --title <title> 
 
 ```bash
 # Vision Spec 作成
-node .specify/scripts/scaffold-spec.cjs --kind vision --id S-VISION-001 --title "在庫管理システム"
+node .claude/skills/spec-mesh/scripts/scaffold-spec.cjs --kind vision --id S-VISION-001 --title "在庫管理システム"
 
 # Domain Spec 作成
-node .specify/scripts/scaffold-spec.cjs --kind domain --id S-DOMAIN-001 --title "在庫管理 Domain" --vision S-VISION-001
+node .claude/skills/spec-mesh/scripts/scaffold-spec.cjs --kind domain --id S-DOMAIN-001 --title "在庫管理 Domain" --vision S-VISION-001
 
 # Screen Spec 作成
-node .specify/scripts/scaffold-spec.cjs --kind screen --id S-SCREEN-001 --title "在庫管理 Screens" --vision S-VISION-001 --domain S-DOMAIN-001
+node .claude/skills/spec-mesh/scripts/scaffold-spec.cjs --kind screen --id S-SCREEN-001 --title "在庫管理 Screens" --vision S-VISION-001 --domain S-DOMAIN-001
 
 # Feature Spec 作成
-node .specify/scripts/scaffold-spec.cjs --kind feature --id S-INVENTORY-001 --title "在庫一覧" --domain S-DOMAIN-001
+node .claude/skills/spec-mesh/scripts/scaffold-spec.cjs --kind feature --id S-INVENTORY-001 --title "在庫一覧" --domain S-DOMAIN-001
 ```
 
 ### Output Paths
 
-| Kind    | Output Path                     |
-| ------- | ------------------------------- |
-| vision  | `.specify/specs/vision/spec.md` |
-| domain  | `.specify/specs/domain/spec.md` |
-| screen  | `.specify/specs/screen/spec.md` |
-| feature | `.specify/specs/<id>/spec.md`   |
+| Kind    | Output Path                                            |
+| ------- | ------------------------------------------------------ |
+| vision  | `.specify/specs/{project}/overview/vision/spec.md`     |
+| domain  | `.specify/specs/{project}/overview/domain/spec.md`     |
+| screen  | `.specify/specs/{project}/overview/screen/spec.md`     |
+| feature | `.specify/specs/{project}/features/<id>/spec.md`       |
 
 ---
 
@@ -183,7 +184,7 @@ node .specify/scripts/scaffold-spec.cjs --kind feature --id S-INVENTORY-001 --ti
 ### Usage
 
 ```bash
-node .specify/scripts/spec-lint.cjs [options]
+node .claude/skills/spec-mesh/scripts/spec-lint.cjs [options]
 ```
 
 ### Options
@@ -218,10 +219,10 @@ node .specify/scripts/spec-lint.cjs [options]
 ```
 === Spec Lint Results ===
 
-Vision: .specify/specs/vision/spec.md
+Vision: .specify/specs/{project}/overview/vision/spec.md
   ✓ Valid structure
 
-Domain: .specify/specs/domain/spec.md
+Domain: .specify/specs/{project}/overview/domain/spec.md
   ✓ Valid structure
   ✓ 3 masters defined
   ✓ 5 APIs defined
@@ -242,7 +243,7 @@ Summary: 1 warning, 0 errors
 ### Usage
 
 ```bash
-node .specify/scripts/branch.cjs --type <type> --slug <slug> --issue <num>
+node .claude/skills/spec-mesh/scripts/branch.cjs --type <type> --slug <slug> --issue <num>
 ```
 
 ### Arguments
@@ -257,13 +258,13 @@ node .specify/scripts/branch.cjs --type <type> --slug <slug> --issue <num>
 
 ```bash
 # Feature ブランチ作成
-node .specify/scripts/branch.cjs --type feature --slug inventory --issue 12
+node .claude/skills/spec-mesh/scripts/branch.cjs --type feature --slug inventory --issue 12
 
 # Fix ブランチ作成
-node .specify/scripts/branch.cjs --type fix --slug login-error --issue 15
+node .claude/skills/spec-mesh/scripts/branch.cjs --type fix --slug login-error --issue 15
 
 # Spec 変更ブランチ作成
-node .specify/scripts/branch.cjs --type spec-change --slug product-field --issue 20
+node .claude/skills/spec-mesh/scripts/branch.cjs --type spec-change --slug product-field --issue 20
 ```
 
 ### Output Branch Names
@@ -284,21 +285,24 @@ node .specify/scripts/branch.cjs --type spec-change --slug product-field --issue
 ### Usage
 
 ```bash
-node .specify/scripts/pr.cjs [options]
+node .claude/skills/spec-mesh/scripts/pr.cjs --title "<title>" --body "<body>" [options]
 ```
 
 ### Options
 
-| Option    | Description         |
-| --------- | ------------------- |
-| `--draft` | Draft PR として作成 |
+| Option        | Description                              |
+| ------------- | ---------------------------------------- |
+| `--title`     | PR タイトル（必須）                      |
+| `--body`      | PR 本文                                  |
+| `--body-file` | PR 本文をファイルから読み込み            |
+| `--no-lint`   | spec-lint をスキップ                     |
+| `--test`      | PR 前にテストコマンドを実行              |
 
 ### Flow
 
-1. `spec-lint` 自動実行
-2. Branch 状態から Issue/Spec 情報取得
-3. PR テンプレート適用
-4. `gh pr create` 実行
+1. `spec-lint` 自動実行（`--no-lint` で無効化）
+2. テストコマンド実行（`--test` 指定時）
+3. `gh pr create` 実行
 
 ---
 
@@ -309,7 +313,7 @@ node .specify/scripts/pr.cjs [options]
 ### Usage
 
 ```bash
-node .specify/scripts/spec-metrics.cjs [options]
+node .claude/skills/spec-mesh/scripts/spec-metrics.cjs [options]
 ```
 
 ### Options
@@ -336,19 +340,19 @@ node .specify/scripts/spec-metrics.cjs [options]
 ============================================================
 SPECIFICATION METRICS
 ============================================================
-Generated: 2025-12-12T10:30:00.000Z
+Generated: 2025-12-22T10:30:00.000Z
 
 VISION
 ----------------------------------------
   Count: 1
-  Last modified: 2025-12-10
+  Last modified: 2025-12-20
 
 DOMAIN
 ----------------------------------------
   Count: 1
   Masters defined: 3
   APIs defined: 8
-  Last modified: 2025-12-11
+  Last modified: 2025-12-21
 
 FEATURES
 ----------------------------------------
@@ -376,7 +380,7 @@ HEALTH
 ### Usage
 
 ```bash
-node .specify/scripts/reset-input.cjs <type>
+node .claude/skills/spec-mesh/scripts/reset-input.cjs <type>
 ```
 
 ### Arguments
@@ -386,28 +390,66 @@ node .specify/scripts/reset-input.cjs <type>
 | `vision` | Vision 用入力ファイルをリセット（統合版: ビジョン + 画面 + デザイン） |
 | `add`    | 機能追加用入力ファイルをリセット                                      |
 | `fix`    | バグ修正用入力ファイルをリセット                                      |
+| `design` | Design 用入力ファイルをリセット                                       |
 | `all`    | 全入力ファイルをリセット                                              |
 
 ### Examples
 
 ```bash
 # Vision 入力ファイルをリセット
-node .specify/scripts/reset-input.cjs vision
+node .claude/skills/spec-mesh/scripts/reset-input.cjs vision
 
 # 全入力ファイルをリセット
-node .specify/scripts/reset-input.cjs all
+node .claude/skills/spec-mesh/scripts/reset-input.cjs all
 ```
 
 ### Notes
 
-- `/speckit.vision`, `/speckit.add`, `/speckit.fix` 完了後、入力ファイルは自動リセットされる
+- `/spec-mesh vision`, `/spec-mesh add`, `/spec-mesh fix` 完了後、入力ファイルは自動リセットされる
 - 手動リセットが必要な場合にこのスクリプトを使用
-- テンプレートは `.specify/templates/quickinput-*.md` から読み込まれる
+- テンプレートは `.claude/skills/spec-mesh/templates/quickinput-*.md` から読み込まれる
+
+---
+
+## preserve-input.cjs
+
+**Purpose:** 入力ファイルを Spec ディレクトリに保存
+
+### Usage
+
+```bash
+node .claude/skills/spec-mesh/scripts/preserve-input.cjs <type> --project <project>
+```
+
+### Arguments
+
+| Argument    | Description                |
+| ----------- | -------------------------- |
+| `vision`    | Vision 入力を保存          |
+| `add`       | Add 入力を保存             |
+| `fix`       | Fix 入力を保存             |
+| `design`    | Design 入力を保存          |
+| `--project` | プロジェクト名（必須）     |
+
+### Examples
+
+```bash
+# Vision 入力を sample プロジェクトに保存
+node .claude/skills/spec-mesh/scripts/preserve-input.cjs vision --project sample
+```
+
+### Output Paths
+
+| Type   | Output Path                                            |
+| ------ | ------------------------------------------------------ |
+| vision | `.specify/specs/{project}/overview/vision/input.md`    |
+| add    | `.specify/specs/{project}/features/<id>/input.md`      |
+| fix    | `.specify/specs/{project}/features/<id>/input.md`      |
 
 ---
 
 ## Related Pages
 
-- [[Commands-Reference]] - スクリプトを使用するコマンド
+- [[Commands-Reference]] - スクリプトを使用するワークフロー
 - [[Core-Concepts]] - 状態管理の詳細
 - [[Troubleshooting]] - スクリプトのトラブルシューティング

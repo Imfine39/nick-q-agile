@@ -63,7 +63,7 @@ Define shared data models that are used across multiple features.
 Feature specs MUST reference these by ID, not redefine them.
 
 > **Note:** Screen ↔ Master ↔ API mappings are managed in `../matrix/cross-reference.json`.
-> Run `node .specify/scripts/generate-matrix-view.cjs` to regenerate the view.
+> Run `node .claude/skills/spec-mesh/scripts/generate-matrix-view.cjs` to regenerate the view.
 
 ### M-USER-001: User
 

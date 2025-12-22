@@ -6,26 +6,26 @@
 
 ## Entry Points
 
-| Scenario                    | Command                    | Description                 |
-| --------------------------- | -------------------------- | --------------------------- |
-| 機能追加（自分で決定）      | `/speckit.add`             | Issue + Feature Spec を作成 |
-| 機能追加（AI に提案させる） | `/speckit.featureproposal` | AI が Feature を提案        |
-| 既存 Issue から開始         | `/speckit.issue`           | Issue を選択して開始        |
-| バグ修正                    | `/speckit.fix`             | Issue + 既存 Spec 更新      |
-| Domain 変更                 | `/speckit.change`          | Vision/Domain Spec を変更   |
+| Scenario                    | Workflow                     | Description                 |
+| --------------------------- | ---------------------------- | --------------------------- |
+| 機能追加（自分で決定）      | `/spec-mesh add`             | Issue + Feature Spec を作成 |
+| 機能追加（AI に提案させる） | `/spec-mesh featureproposal` | AI が Feature を提案        |
+| 既存 Issue から開始         | `/spec-mesh issue`           | Issue を選択して開始        |
+| バグ修正                    | `/spec-mesh fix`             | Issue + 既存 Spec 更新      |
+| Domain 変更                 | `/spec-mesh change`          | Vision/Domain Spec を変更   |
 
 ---
 
-## 1. Add Feature (`/speckit.add`)
+## 1. Add Feature (`/spec-mesh add`)
 
 ### 用途
 
 自分で決めた機能を追加したい場合。
 
-### コマンド
+### ワークフロー
 
 ```
-/speckit.add ユーザー認証機能を追加したい
+/spec-mesh add ユーザー認証機能を追加したい
 ```
 
 ### AI の動作
@@ -39,7 +39,7 @@
 2. **Branch 作成**
 
    ```bash
-   node .specify/scripts/branch.cjs --type feature --slug auth --issue <num>
+   node .claude/skills/spec-mesh/scripts/branch.cjs --type feature --slug auth --issue <num>
    ```
 
 3. **[Spec-First] Screen Spec 更新**（画面変更がある場合）
@@ -53,7 +53,7 @@
    - Case 1/2/3 判定（[[Core-Concepts]] 参照）
 
 5. **曖昧点レポート表示**
-   → `/speckit.clarify` で 4 問ずつバッチ解消（別コマンド）
+   → `/spec-mesh clarify` で 4 問ずつバッチ解消（別ワークフロー）
 
 6. **Domain Feature Index 更新**
 
@@ -64,21 +64,21 @@
 ### 次のステップ
 
 ```
-/speckit.plan → /speckit.tasks → /speckit.implement → /speckit.pr
+/spec-mesh plan → /spec-mesh tasks → /spec-mesh implement → /spec-mesh pr
 ```
 
 ---
 
-## 2. Feature Proposal (`/speckit.featureproposal`)
+## 2. Feature Proposal (`/spec-mesh featureproposal`)
 
 ### 用途
 
 AI に Feature 候補を提案させたい場合。
 
-### コマンド
+### ワークフロー
 
 ```
-/speckit.featureproposal レポート機能を追加したい
+/spec-mesh featureproposal レポート機能を追加したい
 ```
 
 ### AI の動作
@@ -107,21 +107,21 @@ AI に Feature 候補を提案させたい場合。
 ### 次のステップ
 
 ```
-/speckit.issue で作成された Issue を選択
+/spec-mesh issue で作成された Issue を選択
 ```
 
 ---
 
-## 3. Start from Issue (`/speckit.issue`)
+## 3. Start from Issue (`/spec-mesh issue`)
 
 ### 用途
 
 既存の Issue（他で作成されたもの）から開発を開始。
 
-### コマンド
+### ワークフロー
 
 ```
-/speckit.issue
+/spec-mesh issue
 ```
 
 ### AI の動作
@@ -141,28 +141,28 @@ AI に Feature 候補を提案させたい場合。
 
 3. **Feature Spec 作成**
    - Domain 参照チェック
-     → `/speckit.clarify` で曖昧点を解消（別コマンド）
+     → `/spec-mesh clarify` で曖昧点を解消（別ワークフロー）
 
 4. **Feature Index 更新**
 
 ### 次のステップ
 
 ```
-/speckit.plan → /speckit.tasks → /speckit.implement → /speckit.pr
+/spec-mesh plan → /spec-mesh tasks → /spec-mesh implement → /spec-mesh pr
 ```
 
 ---
 
-## 4. Fix Bug (`/speckit.fix`)
+## 4. Fix Bug (`/spec-mesh fix`)
 
 ### 用途
 
 バグを修正する場合。
 
-### コマンド
+### ワークフロー
 
 ```
-/speckit.fix ログイン時にエラーが発生する
+/spec-mesh fix ログイン時にエラーが発生する
 ```
 
 ### AI の動作
@@ -176,7 +176,7 @@ AI に Feature 候補を提案させたい場合。
 2. **Branch 作成**
 
    ```bash
-   node .specify/scripts/branch.cjs --type fix --slug login-error --issue <num>
+   node .claude/skills/spec-mesh/scripts/branch.cjs --type fix --slug login-error --issue <num>
    ```
 
 3. **既存 Spec 特定**
@@ -184,7 +184,7 @@ AI に Feature 候補を提案させたい場合。
    - Changelog セクションに記録
 
 4. **曖昧点レポート表示**
-   → `/speckit.clarify` で解消（別コマンド）
+   → `/spec-mesh clarify` で解消（別ワークフロー）
    - 再現手順
    - 期待される動作
    - 修正方針
@@ -192,12 +192,12 @@ AI に Feature 候補を提案させたい場合。
 ### 次のステップ
 
 ```
-/speckit.plan (オプション) → /speckit.implement → /speckit.pr
+/spec-mesh plan (オプション) → /spec-mesh implement → /spec-mesh pr
 ```
 
 ---
 
-## 5. Domain Change (`/speckit.change`)
+## 5. Domain Change (`/spec-mesh change`)
 
 ### 用途
 
@@ -209,10 +209,10 @@ Vision または Domain Spec の変更が必要な場合。
 - 既存 API-\* のインターフェース変更が必要
 - ビジネスルールの変更が必要
 
-### コマンド
+### ワークフロー
 
 ```
-/speckit.change M-PRODUCT に新しいフィールドを追加したい
+/spec-mesh change M-PRODUCT に新しいフィールドを追加したい
 ```
 
 ### AI の動作
@@ -220,7 +220,7 @@ Vision または Domain Spec の変更が必要な場合。
 1. **現在のブランチを suspend**（Feature 作業中の場合）
 
    ```bash
-   node .specify/scripts/state.cjs suspend --reason "Domain change required" --related <issue>
+   node .claude/skills/spec-mesh/scripts/state.cjs suspend --reason "Domain change required" --related <issue>
    ```
 
 2. **Spec 変更 Issue 作成**
@@ -232,19 +232,19 @@ Vision または Domain Spec の変更が必要な場合。
 3. **Spec 変更 Branch 作成**
 
    ```bash
-   node .specify/scripts/branch.cjs --type spec-change --slug product-field --issue <num>
+   node .claude/skills/spec-mesh/scripts/branch.cjs --type spec-change --slug product-field --issue <num>
    ```
 
 4. **Domain Spec 更新**
    - 影響分析（依存する Feature を特定）
-     → `/speckit.clarify` で曖昧点を解消（別コマンド）
+     → `/spec-mesh clarify` で曖昧点を解消（別ワークフロー）
    - Changelog 更新
 
 5. **PR 作成 & マージ**
 
 6. **元のブランチを resume**
    ```bash
-   node .specify/scripts/state.cjs resume
+   node .claude/skills/spec-mesh/scripts/state.cjs resume
    ```
 
 ---
@@ -254,39 +254,39 @@ Vision または Domain Spec の変更が必要な場合。
 Feature Spec 承認後の共通フロー：
 
 ```
-/speckit.plan
+/spec-mesh plan
     ↓
 Human: Plan レビュー・承認
     ↓
-/speckit.tasks
+/spec-mesh tasks
     ↓
-/speckit.implement
+/spec-mesh implement
     ↓
-/speckit.pr
+/spec-mesh pr
     ↓
 Human: PR レビュー・マージ
 ```
 
-### `/speckit.plan`
+### `/spec-mesh plan`
 
 - 技術選定
 - ディレクトリ構造
 - 実装方針
 - Constitution チェック
 
-### `/speckit.tasks`
+### `/spec-mesh tasks`
 
 - UC ベースでタスク分割
 - 各タスクに見積もり
 - 依存関係の整理
 
-### `/speckit.implement`
+### `/spec-mesh implement`
 
 - タスクを順番に実装
 - テスト作成
-- フィードバック記録（`/speckit.feedback`）
+- フィードバック記録（`/spec-mesh feedback`）
 
-### `/speckit.pr`
+### `/spec-mesh pr`
 
 - `spec-lint` 自動実行
 - Issue 自動リンク
@@ -299,7 +299,7 @@ PR マージ後に Screen Spec の Status を更新：
 ```bash
 # main ブランチに切り替え後
 # Screen Index / Modification Log の Status を Implemented に更新
-git add .specify/specs/screen/spec.md
+git add .specify/specs/{project}/overview/screen/spec.md
 git commit -m "chore: Update Screen Spec Status to Implemented"
 git push
 ```
@@ -310,11 +310,11 @@ git push
 
 Feature Spec 作成時の分岐：
 
-| Case       | Situation                   | Action                       |
-| ---------- | --------------------------- | ---------------------------- |
-| **Case 1** | 既存の M-_/API-_ で足りる   | 参照を追加して続行           |
-| **Case 2** | 新規 M-_/API-_ が必要       | Domain Spec に追加して続行   |
-| **Case 3** | 既存 M-_/API-_ の変更が必要 | `/speckit.change` で先に変更 |
+| Case       | Situation                   | Action                            |
+| ---------- | --------------------------- | --------------------------------- |
+| **Case 1** | 既存の M-_/API-_ で足りる   | 参照を追加して続行                |
+| **Case 2** | 新規 M-_/API-_ が必要       | Domain Spec に追加して続行        |
+| **Case 3** | 既存 M-_/API-_ の変更が必要 | `/spec-mesh change` で先に変更    |
 
 ### Case 3 の例
 
@@ -322,5 +322,5 @@ Feature Spec 作成時の分岐：
 Feature 作成中...
 AI: M-PRODUCT に新しいフィールドが必要です。
     既存の M-PRODUCT を変更する必要があります（Case 3）。
-    `/speckit.change` で Domain 変更を先に完了させますか？
+    `/spec-mesh change` で Domain 変更を先に完了させますか？
 ```

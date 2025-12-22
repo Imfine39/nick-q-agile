@@ -1,0 +1,145 @@
+# Fix Workflow
+
+Entry point for bug fixes. Creates Issue → Branch → Fix Spec (調査報告書).
+
+## Prerequisites
+
+- None (bugs can happen anytime)
+
+## Quick Mode
+
+For urgent fixes, use `--quick` flag:
+```
+/spec-mesh fix --quick ログインできない
+```
+
+## Quick Input
+
+**Input file:** `.specify/input/fix-input.md`
+
+Required fields:
+- 何が起きているか (non-empty)
+- 期待する動作 (non-empty)
+
+---
+
+## Steps
+
+### Step 1: Input Collection
+
+1. **Check Quick Mode:**
+   - If ARGUMENTS contains `--quick` → Skip to Step 1.3
+   - Otherwise → Read input file
+
+2. **Read input file:**
+   ```
+   Read tool: .specify/input/fix-input.md
+   ```
+
+3. **Extract:**
+   | Input | Target |
+   |-------|--------|
+   | 何が起きているか | Issue Body, Fix Spec Section 1 |
+   | 期待する動作 | Issue Body, Fix Spec Section 1 |
+   | 再現手順 | Issue Body, Fix Spec Section 1 |
+   | 影響範囲 | Fix Spec Section 2 |
+   | 緊急度 | Issue label |
+
+### Step 2: Create GitHub Issue
+
+```bash
+gh issue create --title "[Bug] {概要}" --body "..." --label "bug"
+```
+
+### Step 3: Create Branch
+
+```bash
+node .claude/skills/spec-mesh/scripts/branch.cjs --type fix --slug {slug} --issue {issue_num}
+```
+
+### Step 4: Investigate Root Cause
+
+Use codebase exploration to:
+- Identify affected files
+- Trace error path
+- Find root cause
+- Assess impact scope
+
+Document findings in Fix Spec.
+
+### Step 5: Create Fix Spec
+
+1. **Run scaffold:**
+   ```bash
+   node .claude/skills/spec-mesh/scripts/scaffold-spec.cjs --kind fix --id F-XXX-001 --title "{バグ概要}"
+   ```
+
+2. **Fill sections:**
+   - Section 1: Problem Description (症状、再現手順、期待動作)
+   - Section 2: Root Cause Analysis (原因、影響範囲)
+   - Section 3: Proposed Fix (修正方針、影響するファイル)
+   - Section 4: Verification Plan (テスト方法)
+
+3. **Check Screen impact** (if UI affected):
+   - Add to Screen Modification Log with status `Planned`
+
+### Step 6: Run Lint
+
+```bash
+node .claude/skills/spec-mesh/scripts/spec-lint.cjs
+```
+
+### Step 7: Preserve & Reset Input
+
+If input file was used:
+1. **Preserve input to spec directory:**
+   ```bash
+   node .claude/skills/spec-mesh/scripts/preserve-input.cjs fix --project {project} --fix {fix-dir}
+   ```
+   - Saves to: `.specify/specs/{project}/fixes/{fix-dir}/input.md`
+
+2. **Reset input file:**
+   ```bash
+   node .claude/skills/spec-mesh/scripts/reset-input.cjs fix
+   ```
+
+### Step 8: Summary
+
+Display:
+```
+=== Fix Spec 作成完了 ===
+
+Bug: {概要}
+Issue: #{issue_num}
+Branch: fix/{issue_num}-{slug}
+Spec: .specify/specs/{project}/fixes/{id}/spec.md
+
+Root Cause: {原因の要約}
+Impact: {影響範囲}
+
+=== 次のステップ ===
+緊急度に応じて選択:
+- Trivial: `/spec-mesh implement` で直接修正
+- Standard: `/spec-mesh plan` → `/spec-mesh tasks` → `/spec-mesh implement`
+```
+
+---
+
+## Self-Check
+
+- [ ] Read tool で入力ファイルを読み込んだか（--quick 以外）
+- [ ] gh issue create を実行したか
+- [ ] branch.cjs でブランチを作成したか
+- [ ] 原因調査を実施したか
+- [ ] Fix Spec に Root Cause を記載したか
+- [ ] spec-lint.cjs を実行したか
+
+---
+
+## Next Steps
+
+| Action | Command | Description |
+|--------|---------|-------------|
+| Clarify | `/spec-mesh clarify` | 詳細確認 |
+| Plan | `/spec-mesh plan` | 修正計画（標準フロー） |
+| Implement | `/spec-mesh implement` | 直接修正（Trivial fix） |

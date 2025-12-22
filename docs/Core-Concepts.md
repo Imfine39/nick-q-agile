@@ -11,7 +11,7 @@ SSD-Template では仕様を4層構造で管理します。
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                     VISION SPEC                              │
-│  .specify/specs/vision/spec.md                              │
+│  .specify/specs/{project}/overview/vision/spec.md           │
 │                                                              │
 │  - プロジェクトの目的（Why）                                 │
 │  - ターゲットユーザー                                        │
@@ -22,7 +22,7 @@ SSD-Template では仕様を4層構造で管理します。
                            ↓
 ┌─────────────────────────────────────────────────────────────┐
 │                     DOMAIN SPEC                              │
-│  .specify/specs/domain/spec.md                              │
+│  .specify/specs/{project}/overview/domain/spec.md           │
 │                                                              │
 │  - 共有マスターデータ (M-*)                                  │
 │  - 共有 API 契約 (API-*)                                     │
@@ -33,7 +33,7 @@ SSD-Template では仕様を4層構造で管理します。
                            ↓
 ┌─────────────────────────────────────────────────────────────┐
 │                     SCREEN SPEC                              │
-│  .specify/specs/screen/spec.md                              │
+│  .specify/specs/{project}/overview/screen/spec.md           │
 │                                                              │
 │  - 画面一覧 (Screen Index)                                   │
 │  - 画面遷移図 (Mermaid)                                      │
@@ -44,7 +44,7 @@ SSD-Template では仕様を4層構造で管理します。
                            ↓
 ┌─────────────────────────────────────────────────────────────┐
 │                    FEATURE SPECS                             │
-│  .specify/specs/<feature-id>/spec.md                        │
+│  .specify/specs/{project}/features/<feature-id>/spec.md     │
 │                                                              │
 │  - 個別機能の詳細仕様                                        │
 │  - ユースケース (UC-*)                                       │
@@ -102,10 +102,10 @@ ID は以下で参照され、追跡可能性を確保します：
 
 ---
 
-## 3. Clarify (独立コマンド)
+## 3. Clarify (独立ワークフロー)
 
 曖昧さを排除するための対話的プロセスです。
-**Clarify は独立したコマンド (`/speckit.clarify`) として実行**し、各コマンド (vision, design, add, fix) には組み込みません。
+**Clarify は独立したワークフロー (`/spec-mesh clarify`) として実行**し、各ワークフロー (vision, design, add, fix) には組み込みません。
 
 ### 仕組み
 
@@ -113,7 +113,7 @@ ID は以下で参照され、追跡可能性を確保します：
 ┌─────────────────────────────────────────────────────────────┐
 │  1. Spec に `[NEEDS CLARIFICATION]` マークを付ける           │
 │                           ↓                                  │
-│  2. `/speckit.clarify` を実行                                │
+│  2. `/spec-mesh clarify` を実行                              │
 │                           ↓                                  │
 │  3. AI が 4 問ずつバッチで質問を提示                          │
 │     - 推奨オプション (Recommended) を先頭に                  │
@@ -231,7 +231,7 @@ ID は以下で参照され、追跡可能性を確保します：
       "type": "feature",
       "issue": 123,
       "specId": "S-INVENTORY-001",
-      "specPath": ".specify/specs/s-inventory-001/spec.md",
+      "specPath": ".specify/specs/{project}/features/s-inventory-001/spec.md",
       "step": "implement", // idle|spec|spec_review|plan|plan_review|tasks|implement|pr|suspended
       "taskProgress": {
         "completed": 3,
@@ -246,17 +246,17 @@ ID は以下で参照され、追跡可能性を確保します：
 
 ```bash
 # 状態確認
-node .specify/scripts/state.cjs query --repo
-node .specify/scripts/state.cjs query --branch
-node .specify/scripts/state.cjs query --all
+node .claude/skills/spec-mesh/scripts/state.cjs query --repo
+node .claude/skills/spec-mesh/scripts/state.cjs query --branch
+node .claude/skills/spec-mesh/scripts/state.cjs query --all
 
 # 状態更新
-node .specify/scripts/state.cjs repo --set-phase development
-node .specify/scripts/state.cjs branch --set-step implement
+node .claude/skills/spec-mesh/scripts/state.cjs repo --set-phase development
+node .claude/skills/spec-mesh/scripts/state.cjs branch --set-step implement
 
 # 中断・再開
-node .specify/scripts/state.cjs suspend --reason "Domain change required"
-node .specify/scripts/state.cjs resume
+node .claude/skills/spec-mesh/scripts/state.cjs suspend --reason "Domain change required"
+node .claude/skills/spec-mesh/scripts/state.cjs resume
 ```
 
 ---
@@ -272,7 +272,7 @@ SSD-Template は強制ブロックではなく、警告ベースのアプロー�
 │  前提条件を満たさない場合:                                   │
 │                                                              │
 │  WARNING: Vision Spec がまだ承認されていません。             │
-│  技術設計の前に /speckit.vision を実行することを推奨します。 │
+│  技術設計の前に /spec-mesh vision を実行することを推奨します。│
 │                                                              │
 │  続行しますか？ (y/N)                                        │
 │                                                              │
@@ -294,11 +294,11 @@ Feature Spec 作成時の Domain 要素の扱い方。
 
 ### 3つのケース
 
-| Case       | Situation                   | Action                                 |
-| ---------- | --------------------------- | -------------------------------------- |
-| **Case 1** | 既存の M-_/API-_ で足りる   | 参照を追加                             |
-| **Case 2** | 新規 M-_/API-_ が必要       | Feature 作成中に Domain を更新         |
-| **Case 3** | 既存 M-_/API-_ の変更が必要 | `/speckit.change` で Domain 変更を先行 |
+| Case       | Situation                   | Action                                  |
+| ---------- | --------------------------- | --------------------------------------- |
+| **Case 1** | 既存の M-_/API-_ で足りる   | 参照を追加                              |
+| **Case 2** | 新規 M-_/API-_ が必要       | Feature 作成中に Domain を更新          |
+| **Case 3** | 既存 M-_/API-_ の変更が必要 | `/spec-mesh change` で Domain 変更を先行 |
 
 ### Case 3 のフロー
 
@@ -307,7 +307,7 @@ Feature 作成中に既存 M-* の変更が必要と判明
               ↓
 現在のブランチを suspend
               ↓
-/speckit.change で Domain 変更ブランチ作成
+/spec-mesh change で Domain 変更ブランチ作成
               ↓
 Domain 変更を完了・マージ
               ↓
@@ -356,21 +356,22 @@ Draft → In Review → Approved → Implementing → Completed
 
 ## 9. Quick Input System
 
-コマンド実行前にユーザーが構造化された情報を入力するシステムです。
+ワークフロー実行前にユーザーが構造化された情報を入力するシステムです。
 
 ### 仕組み
 
 ```
-.specify/
+.claude/skills/spec-mesh/
 ├── templates/           # ベーステンプレート（読み取り専用）
+│   ├── quickinput-vision.md
+│   ├── quickinput-add.md
+│   └── quickinput-fix.md
+
+.specify/
+├── input/               # ユーザー入力用（編集対象）
 │   ├── vision-input.md
 │   ├── add-input.md
 │   └── fix-input.md
-│
-├── input/               # ユーザー入力用（編集対象）
-│   ├── vision.md
-│   ├── add.md
-│   └── fix.md
 │
 └── scripts/
     └── reset-input.cjs   # 入力ファイルリセット
@@ -378,8 +379,8 @@ Draft → In Review → Approved → Implementing → Completed
 
 ### 使い方
 
-1. `.specify/input/<type>.md` を編集して情報を入力
-2. 対応するコマンド（`/speckit.vision`, `/speckit.add`, `/speckit.fix`）を実行
+1. `.specify/input/<type>-input.md` を編集して情報を入力
+2. 対応するワークフロー（`/spec-mesh vision`, `/spec-mesh add`, `/spec-mesh fix`）を実行
 3. 完了後、入力内容は Spec の「Original Input」セクションに記録され、入力ファイルは自動リセット
 
 ### メリット
@@ -406,7 +407,7 @@ Draft → In Review → Approved → Implementing → Completed
         "hooks": [
           {
             "type": "command",
-            "command": "node .specify/scripts/state.cjs query --all 2>/dev/null || echo \"[SSD State] Not initialized\""
+            "command": "node .claude/skills/spec-mesh/scripts/state.cjs query --all 2>/dev/null || echo \"[SSD State] Not initialized\""
           }
         ]
       }
@@ -443,8 +444,65 @@ feature/45-auth:
 
 ---
 
+## 11. Skills Architecture (v2.0.73+)
+
+Claude Code v2.0.73 以降では、Skills が `/` 構文で直接呼び出されます。
+
+### args 受け渡しの仕組み
+
+```
+ユーザー入力: /spec-mesh change
+       ↓
+Claude 内部: Skill(skill: "spec-mesh", args: "change")
+       ↓
+SKILL.md 読み込み時に末尾に追加: ARGUMENTS: change
+       ↓
+SKILL.md がルーティング: workflows/change.md を実行
+```
+
+### 実例
+
+| ユーザー入力 | Skill 呼び出し | ARGUMENTS |
+|-------------|----------------|-----------|
+| `/spec-mesh vision` | `Skill(skill: "spec-mesh", args: "vision")` | `vision` |
+| `/spec-mesh add` | `Skill(skill: "spec-mesh", args: "add")` | `add` |
+| `/spec-mesh fix --quick` | `Skill(skill: "spec-mesh", args: "fix --quick")` | `fix --quick` |
+
+### SKILL.md でのルーティング
+
+```markdown
+## Routing Table
+
+| ARGUMENTS | Workflow File |
+|-----------|---------------|
+| vision | workflows/vision.md |
+| add | workflows/add.md |
+| change | workflows/change.md |
+
+## Instructions
+
+1. Parse ARGUMENTS（末尾に `ARGUMENTS: xxx` として渡される）
+2. Routing Table に従って対応する workflow を Read tool で読み込む
+3. workflow の指示に従って実行
+```
+
+### 重要な違い（v2.0.72 以前との比較）
+
+| 項目 | v2.0.72 以前 | v2.0.73 以降 |
+|------|-------------|--------------|
+| `/xxx` の動作 | SlashCommand tool → `.claude/commands/xxx.md` | Skill tool → `.claude/skills/xxx/SKILL.md` |
+| 引数参照 | `$ARGUMENTS`, `$1`, `$2` | `ARGUMENTS: xxx` として末尾に追加 |
+| コマンドファイル | `.claude/commands/` 必須 | **廃止**（Skills に統合） |
+
+### 参考
+
+- [Claude Code v2.0.73 変更点](https://github.com/anthropics/claude-code/releases)
+- `.claude/skills/test-skill/` - args 受け渡しのテスト用 Skill
+
+---
+
 ## Next Steps
 
 - [[Workflow-New-Project]] - 新規プロジェクトの具体的なフロー
 - [[Workflow-Add-Feature]] - 機能追加の具体的なフロー
-- [[Commands-Reference]] - 各コマンドの詳細
+- [[Commands-Reference]] - 各ワークフローの詳細

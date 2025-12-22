@@ -6,14 +6,14 @@ Spec テンプレートのリファレンスです。
 
 ## Overview
 
-| Template     | Location                                      | Purpose                        |
-| ------------ | --------------------------------------------- | ------------------------------ |
-| Vision Spec  | `.specify/templates/vision-spec-template.md`  | プロジェクトの目的・ジャーニー |
-| Domain Spec  | `.specify/templates/domain-spec-template.md`  | M-_/API-_/ルール定義           |
-| Feature Spec | `.specify/templates/feature-spec-template.md` | 個別機能の詳細仕様             |
-| Plan         | `.specify/templates/plan-template.md`         | 実装計画                       |
-| Tasks        | `.specify/templates/tasks-template.md`        | タスク分割                     |
-| Checklist    | `.specify/templates/checklist-template.md`    | 品質チェックリスト             |
+| Template     | Location                                                     | Purpose                        |
+| ------------ | ------------------------------------------------------------ | ------------------------------ |
+| Vision Spec  | `.claude/skills/spec-mesh/templates/vision-spec-template.md` | プロジェクトの目的・ジャーニー |
+| Domain Spec  | `.claude/skills/spec-mesh/templates/domain-spec-template.md` | M-_/API-_/ルール定義           |
+| Feature Spec | `.claude/skills/spec-mesh/templates/feature-spec-template.md`| 個別機能の詳細仕様             |
+| Plan         | `.claude/skills/spec-mesh/templates/plan-template.md`        | 実装計画                       |
+| Tasks        | `.claude/skills/spec-mesh/templates/tasks-template.md`       | タスク分割                     |
+| Checklist    | `.claude/skills/spec-mesh/templates/checklist-template.md`   | 品質チェックリスト             |
 
 ---
 
@@ -129,9 +129,9 @@ Related Vision: S-VISION-001
 ### Feature Index Format
 
 ```markdown
-| Feature ID | Title   | Path                        | Status   | Related M-_/API-_ |
-| ---------- | ------- | --------------------------- | -------- | ----------------- |
-| S-XXX-001  | [Title] | `.specify/specs/s-xxx-001/` | [Status] | [M-*, API-*]      |
+| Feature ID | Title   | Path                                          | Status   | Related M-_/API-_ |
+| ---------- | ------- | --------------------------------------------- | -------- | ----------------- |
+| S-XXX-001  | [Title] | `.specify/specs/{project}/features/s-xxx-001/`| [Status] | [M-*, API-*]      |
 ```
 
 ---
@@ -316,5 +316,5 @@ Requirements を「英語のユニットテスト」として表現し、検証�
 ## Related Pages
 
 - [[Core-Concepts]] - 3層構造の詳細
-- [[Commands-Reference]] - テンプレートを使用するコマンド
+- [[Commands-Reference]] - テンプレートを使用するワークフロー
 - [[Scripts-Reference]] - scaffold-spec.cjs

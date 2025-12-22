@@ -57,7 +57,7 @@ git clone https://github.com/your-org/ssd-template.git my-project
 cd my-project
 
 # 状態管理を初期化
-node .specify/scripts/state.cjs init
+node .claude/skills/spec-mesh/scripts/state.cjs init
 ```
 
 ### Option 2: 既存プロジェクトに追加
@@ -70,7 +70,7 @@ cp ssd-template/CLAUDE.md your-project/
 
 # 状態管理を初期化
 cd your-project
-node .specify/scripts/state.cjs init
+node .claude/skills/spec-mesh/scripts/state.cjs init
 ```
 
 ---
@@ -82,33 +82,28 @@ node .specify/scripts/state.cjs init
 ```
 your-project/
 ├── .claude/
-│   └── commands/           # speckit.* コマンド定義
-│       ├── speckit.vision.md
-│       ├── speckit.design.md
-│       └── ...
+│   ├── skills/
+│   │   └── spec-mesh/          # spec-mesh Skill
+│   │       ├── SKILL.md        # Skill 定義
+│   │       ├── constitution.md # Engineering Constitution
+│   │       ├── workflows/      # ワークフロー定義 (17+)
+│   │       ├── templates/      # Spec テンプレート
+│   │       ├── guides/         # ガイドドキュメント
+│   │       └── scripts/        # Node.js スクリプト
+│   ├── agents/                 # Agent 定義
+│   └── settings.local.json     # Hooks 設定
 ├── .specify/
-│   ├── guides/             # ガイドドキュメント
-│   ├── input/              # Quick Input ファイル（ユーザー入力用）
-│   │   ├── vision.md       # Vision 作成時の入力（統合: ビジョン + 画面 + デザイン）
-│   │   ├── add.md          # 機能追加時の入力
-│   │   └── fix.md          # バグ修正時の入力
-│   ├── memory/
-│   │   └── constitution.md # Engineering Constitution
-│   ├── scripts/            # Node.js スクリプト
-│   │   ├── state.cjs
-│   │   ├── scaffold-spec.cjs
-│   │   ├── spec-lint.cjs
-│   │   ├── reset-input.cjs  # Quick Input リセット
-│   │   └── ...
-│   ├── specs/              # 仕様書（自動生成）
-│   │   ├── vision/
-│   │   ├── domain/
-│   │   ├── screen/
-│   │   └── <feature-id>/
-│   ├── state/              # 状態ファイル（自動生成）
-│   └── templates/          # Spec テンプレート
-├── CLAUDE.md               # AI エージェント用ガイド
-└── docs/                   # ドキュメント
+│   ├── memory/                 # 状態記憶（リダイレクト）
+│   ├── input/                  # Quick Input ファイル（ユーザー入力用）
+│   │   ├── vision-input.md     # Vision 作成時の入力（統合: ビジョン + 画面 + デザイン）
+│   │   ├── add-input.md        # 機能追加時の入力
+│   │   └── fix-input.md        # バグ修正時の入力
+│   ├── specs/                  # 仕様書（自動生成）
+│   │   ├── {project}/overview/ # Vision, Domain, Screen Spec
+│   │   └── {project}/features/ # Feature Specs
+│   └── state/                  # 状態ファイル（自動生成）
+├── CLAUDE.md                   # AI エージェント用ガイド
+└── docs/                       # ドキュメント
 ```
 
 ---
@@ -121,14 +116,14 @@ your-project/
 # Option A: Quick Input を使用（推奨）
 # 1. .specify/input/vision-input.md を編集
 # 2. 以下を実行
-/speckit.vision
+/spec-mesh vision
 
 # Option B: コマンドラインから直接
-/speckit.vision 〇〇システムを作りたい
+/spec-mesh vision 〇〇システムを作りたい
 ```
 
 AI が Vision Spec を作成し、プロジェクトの目的を明確化します。
-作成後、`/speckit.clarify` で曖昧点を解消します。
+作成後、`/spec-mesh clarify` で曖昧点を解消します。
 
 詳細: [[Workflow-New-Project]]
 
@@ -138,14 +133,14 @@ AI が Vision Spec を作成し、プロジェクトの目的を明確化しま�
 # Option A: Quick Input を使用（推奨）
 # 1. .specify/input/add-input.md を編集
 # 2. 以下を実行
-/speckit.add
+/spec-mesh add
 
 # Option B: コマンドラインから直接
-/speckit.add ユーザー認証機能を追加したい
+/spec-mesh add ユーザー認証機能を追加したい
 ```
 
 AI が Issue を作成し、Feature Spec の作成を開始します。
-作成後、`/speckit.clarify` で曖昧点を解消します。
+作成後、`/spec-mesh clarify` で曖昧点を解消します。
 
 詳細: [[Workflow-Add-Feature]]
 
@@ -157,22 +152,22 @@ AI が Issue を作成し、Feature Spec の作成を開始します。
 ┌─────────────────────────────────────────────────────────────┐
 │                    NEW PROJECT                               │
 ├─────────────────────────────────────────────────────────────┤
-│  /speckit.vision     → Vision Spec 作成（Screen Hints 含む） │
-│  /speckit.clarify    → 曖昧点を解消（4問ずつバッチ）          │
+│  /spec-mesh vision  → Vision Spec 作成（Screen Hints 含む） │
+│  /spec-mesh clarify → 曖昧点を解消（4問ずつバッチ）          │
 │         ↓                                                    │
-│  /speckit.design     → Screen + Domain Spec 同時作成         │
-│  /speckit.clarify    → 曖昧点を解消                          │
+│  /spec-mesh design  → Screen + Domain Spec 同時作成         │
+│  /spec-mesh clarify → 曖昧点を解消                          │
 │         ↓                                                    │
-│  /speckit.issue      → Foundation 実装開始                   │
-│  /speckit.clarify    → 曖昧点を解消                          │
+│  /spec-mesh issue   → Foundation 実装開始                   │
+│  /spec-mesh clarify → 曖昧点を解消                          │
 │         ↓                                                    │
-│  /speckit.plan       → 実装計画作成                          │
+│  /spec-mesh plan    → 実装計画作成                          │
 │         ↓                                                    │
-│  /speckit.tasks      → タスク分割                            │
+│  /spec-mesh tasks   → タスク分割                            │
 │         ↓                                                    │
-│  /speckit.implement  → 実装                                  │
+│  /spec-mesh implement → 実装                                │
 │         ↓                                                    │
-│  /speckit.pr         → PR 作成                               │
+│  /spec-mesh pr      → PR 作成                               │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -183,7 +178,7 @@ AI が Issue を作成し、Feature Spec の作成を開始します。
 1. **Constitution を読む**
 
    ```
-   .specify/memory/constitution.md
+   .claude/skills/spec-mesh/constitution.md
    ```
 
    プロジェクトの原則と規約を理解します。
@@ -199,12 +194,12 @@ AI が Issue を作成し、Feature Spec の作成を開始します。
 3. **状態を初期化**
 
    ```bash
-   node .specify/scripts/state.cjs init
+   node .claude/skills/spec-mesh/scripts/state.cjs init
    ```
 
-4. **最初のコマンドを実行**
+4. **最初のワークフローを実行**
    ```
-   /speckit.vision あなたのプロジェクト説明
+   /spec-mesh vision あなたのプロジェクト説明
    ```
 
 ---
@@ -215,10 +210,10 @@ AI が Issue を作成し、Feature Spec の作成を開始します。
 
 ```bash
 # 状態管理スクリプトが動作するか確認
-node .specify/scripts/state.cjs query --repo
+node .claude/skills/spec-mesh/scripts/state.cjs query --repo
 
 # spec-lint が動作するか確認
-node .specify/scripts/spec-lint.cjs
+node .claude/skills/spec-mesh/scripts/spec-lint.cjs
 
 # GitHub CLI が認証されているか確認
 gh auth status
@@ -230,7 +225,7 @@ gh auth status
 
 - [[Core-Concepts]] - フレームワークの主要概念を理解
 - [[Workflow-New-Project]] - 新規プロジェクトの詳細フロー
-- [[Commands-Reference]] - 全コマンドのリファレンス
+- [[Commands-Reference]] - 全ワークフローのリファレンス
 
 ---
 

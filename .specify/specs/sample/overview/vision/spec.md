@@ -159,7 +159,7 @@ Items that may be considered for future phases:
 ## 5. Screen Hints
 
 > **Note**: This section captures screen-level information from the unified Quick Input.
-> These hints are used by `/speckit.design` to create Screen Spec and Domain Spec simultaneously.
+> These hints are used by `/spec-mesh design` to create Screen Spec and Domain Spec simultaneously.
 
 ### 5.1 Screen List (Provisional)
 
@@ -256,8 +256,8 @@ Record of clarification questions and answers during the vision refinement proce
 
 ## 10. Related Documents
 
-- Screen Spec: `.specify/specs/sample/screen/spec.md` (to be created by /speckit.design)
-- Domain Spec: `.specify/specs/sample/domain/spec.md` (to be created by /speckit.design)
+- Screen Spec: `.specify/specs/sample/screen/spec.md` (to be created by /spec-mesh design)
+- Domain Spec: `.specify/specs/sample/domain/spec.md` (to be created by /spec-mesh design)
 - Feature Specs: (to be created after Screen + Domain Specs)
 
 ---

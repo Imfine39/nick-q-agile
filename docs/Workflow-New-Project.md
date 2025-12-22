@@ -7,13 +7,13 @@
 ## Overview
 
 ```
-Phase 1: Vision     /speckit.vision     目的・ジャーニー・Screen Hints
+Phase 1: Vision     /spec-mesh vision     目的・ジャーニー・Screen Hints
     ↓
-Phase 2: Design     /speckit.design     Screen + Domain Spec 同時作成
+Phase 2: Design     /spec-mesh design     Screen + Domain Spec 同時作成
     ↓
-Phase 3: Foundation /speckit.issue      基盤実装
+Phase 3: Foundation /spec-mesh issue      基盤実装
     ↓
-Phase 4: Features   /speckit.issue      各Feature実装（繰り返し）
+Phase 4: Features   /spec-mesh issue      各Feature実装（繰り返し）
 ```
 
 ---
@@ -24,10 +24,10 @@ Phase 4: Features   /speckit.issue      各Feature実装（繰り返し）
 
 プロジェクトの「なぜ」を明確にし、画面イメージも収集します。
 
-### コマンド
+### ワークフロー
 
 ```
-/speckit.vision 中小企業向けの在庫管理システム
+/spec-mesh vision 中小企業向けの在庫管理システム
 ```
 
 ### AI の動作
@@ -39,7 +39,7 @@ Phase 4: Features   /speckit.issue      各Feature実装（繰り返し）
 2. **Vision Spec 作成**: scaffold-spec.cjs で作成
 3. **セクション記入**: Purpose, Users, Journeys, Scope, **Screen Hints**, Constraints, Risks
 4. **サマリー表示 & 曖昧点レポート**
-5. **→ `/speckit.clarify` で曖昧点を 4 問ずつバッチ解消（別コマンド）**
+5. **→ `/spec-mesh clarify` で曖昧点を 4 問ずつバッチ解消（別ワークフロー）**
 
 ### Human Checkpoint
 
@@ -47,7 +47,7 @@ Phase 4: Features   /speckit.issue      各Feature実装（繰り返し）
 
 ### 出力
 
-- `.specify/specs/vision/spec.md`（Screen Hints セクション含む）
+- `.specify/specs/{project}/overview/vision/spec.md`（Screen Hints セクション含む）
 
 ---
 
@@ -57,10 +57,10 @@ Phase 4: Features   /speckit.issue      各Feature実装（繰り返し）
 
 画面設計と技術設計を同時に行い、ID の相互参照を可能にします。
 
-### コマンド
+### ワークフロー
 
 ```
-/speckit.design
+/spec-mesh design
 ```
 
 ### AI の動作
@@ -86,8 +86,8 @@ Phase 4: Features   /speckit.issue      各Feature実装（繰り返し）
 ### 出力
 
 - Feature Issues (GitHub)
-- `.specify/specs/screen/spec.md`（M-_/API-_ 対応表付き）
-- `.specify/specs/domain/spec.md`（Screen 参照付き）
+- `.specify/specs/{project}/overview/screen/spec.md`（M-_/API-_ 対応表付き）
+- `.specify/specs/{project}/overview/domain/spec.md`（Screen 参照付き）
 - Foundation Issue
 
 ### Screen ↔ Domain 対応
@@ -109,17 +109,17 @@ Phase 4: Features   /speckit.issue      各Feature実装（繰り返し）
 ### フロー
 
 ```
-/speckit.issue → Foundation Issue を選択
+/spec-mesh issue → Foundation Issue を選択
     ↓
 Feature Spec 作成 + Clarify
     ↓
-/speckit.plan → 実装計画
+/spec-mesh plan → 実装計画
     ↓
-/speckit.tasks → タスク分割
+/spec-mesh tasks → タスク分割
     ↓
-/speckit.implement → 実装
+/spec-mesh implement → 実装
     ↓
-/speckit.pr → PR 作成
+/spec-mesh pr → PR 作成
 ```
 
 ### Human Checkpoint
@@ -134,13 +134,13 @@ Feature Spec 作成 + Clarify
 ### 繰り返しフロー
 
 ```
-/speckit.issue → Feature Issue を選択
+/spec-mesh issue → Feature Issue を選択
     ↓
 Feature Spec 作成 + Clarify → Human: 承認
     ↓
-/speckit.plan → Human: 承認
+/spec-mesh plan → Human: 承認
     ↓
-/speckit.tasks → /speckit.implement → /speckit.pr
+/spec-mesh tasks → /spec-mesh implement → /spec-mesh pr
     ↓
 Human: PR レビュー・マージ → 次の Feature へ
 ```
@@ -183,12 +183,12 @@ Human: PR レビュー・マージ → 次の Feature へ
 ### 4. 並行開発も可能
 
 - 複数ブランチで異なる Feature を実装可能
-- `.specify/guides/parallel-development.md` 参照
+- `.claude/skills/spec-mesh/guides/parallel-development.md` 参照
 
 ---
 
 ## Related Pages
 
 - [[Workflow-Add-Feature]] - 機能追加フロー
-- [[Commands-Reference]] - 各コマンドの詳細
+- [[Commands-Reference]] - 各ワークフローの詳細
 - [[Core-Concepts]] - 4層構造の詳細
