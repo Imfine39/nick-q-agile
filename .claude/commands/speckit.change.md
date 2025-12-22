@@ -99,9 +99,9 @@ This command handles **modifications to existing items**, not additions.
    - If empty, ask: "何を変更しますか？（例: M-USER の email を必須化）"
 
 2. **Determine target Spec**:
-   - Vision Spec (`.specify/specs/vision/spec.md`)
-   - Domain Spec (`.specify/specs/domain/spec.md`)
-   - Screen Spec (`.specify/specs/screen/spec.md`)
+   - Vision Spec (`.specify/specs/{project}/overview/vision/spec.md`)
+   - Domain Spec (`.specify/specs/{project}/overview/domain/spec.md`)
+   - Screen Spec (`.specify/specs/{project}/overview/screen/spec.md`)
 
 3. **Identify specific item**:
    - For Domain: M-_, API-_, BR-_, VR-_
@@ -262,7 +262,7 @@ This command handles **modifications to existing items**, not additions.
 
     ## 関連
     - Spec Change: #[親Issue番号]
-    - Feature Spec: .specify/specs/s-auth-001/spec.md" \
+    - Feature Spec: .specify/specs/{project}/features/s-auth-001/spec.md" \
       --label fix
     ```
 
@@ -301,7 +301,7 @@ This command handles **modifications to existing items**, not additions.
 
 16. **Check if Matrix update is needed**:
 
-    Matrix が存在する場合（`.specify/matrix/cross-reference.json`）、以下を確認:
+    Matrix が存在する場合（`.specify/specs/{project}/overview/matrix/cross-reference.json`）、以下を確認:
 
     | 変更種別 | Matrix 更新内容 |
     |---------|----------------|
@@ -363,9 +363,9 @@ This command handles **modifications to existing items**, not additions.
     - #23 [Fix] S-REGISTRATION-001 実装修正 (後で対応)
 
     変更した Spec:
-    - .specify/specs/domain/spec.md
-    - .specify/specs/s-auth-001/spec.md
-    - .specify/specs/s-registration-001/spec.md
+    - .specify/specs/{project}/overview/domain/spec.md
+    - .specify/specs/{project}/features/s-auth-001/spec.md
+    - .specify/specs/{project}/features/s-registration-001/spec.md
 
     Matrix 更新:
     - cross-reference.json: 該当なし / 更新済み

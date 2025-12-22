@@ -259,7 +259,7 @@ Quick Input の内容を各セクションに展開:
 - [ ] Write/Edit tool で spec ファイルを実際に作成/編集したか
 - [ ] Example の値を使用せず、Step 1 で取得した実データを使用したか
 - [ ] 曖昧な箇所に `[NEEDS CLARIFICATION]` マークを付けたか
-- [ ] `.specify/specs/vision/spec.md` が存在するか
+- [ ] `.specify/specs/{project}/overview/vision/spec.md` が存在するか
 
 ---
 
@@ -287,7 +287,7 @@ Scope:
 
 Screen Hints: [N] 画面定義済み / [空の場合: なし（/speckit.design で入力を促します）]
 
-Spec: .specify/specs/vision/spec.md
+Spec: .specify/specs/{project}/overview/vision/spec.md
 ```
 
 #### 3.2 曖昧点レポート
@@ -372,7 +372,7 @@ node .specify/scripts/state.cjs repo --set-vision-status draft --set-phase visio
 
 ## Output
 
-- Vision spec: `.specify/specs/vision/spec.md`
+- Vision spec: `.specify/specs/{project}/overview/vision/spec.md`
   - Section 1-4: Core Vision (Purpose, Users, Journeys, Scope)
   - Section 5: Screen Hints (画面情報、デザイン希望 - `/speckit.design` で使用)
   - Section 6-12: Constraints, Risks, Open Questions, etc.

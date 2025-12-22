@@ -191,7 +191,7 @@ Generate detailed spec content from description.
 ## Example
 
 ```
-AI: Feature Spec を作成しました: .specify/specs/s-auth-001/spec.md
+AI: Feature Spec を作成しました: .specify/specs/{project}/features/s-auth-001/spec.md
 
     概要:
     - UC: 3個

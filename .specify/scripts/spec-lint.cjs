@@ -24,6 +24,7 @@ const root = process.cwd();
 const specsRoot = path.join(root, '.specify', 'specs');
 const allowedStatus = new Set([
   'DRAFT',
+  'BACKLOG',
   'IN REVIEW',
   'APPROVED',
   'IMPLEMENTING',
@@ -60,6 +61,7 @@ function normalizeSpecType(raw) {
   if (cleaned.startsWith('OVERVIEW') || cleaned.startsWith('DOMAIN')) return 'DOMAIN';
   if (cleaned.startsWith('SCREEN')) return 'SCREEN';
   if (cleaned.startsWith('FEATURE')) return 'FEATURE';
+  if (cleaned.startsWith('FIX')) return 'FIX';
   return cleaned || null;
 }
 
@@ -261,27 +263,31 @@ const featureIndexHeader4 = '| FEATURE ID | TITLE | PATH | STATUS |';
 const featureIndexHeader5 = '| FEATURE ID | TITLE | PATH | STATUS | RELATED M-*/API-* |';
 const domainFeatureRows = new Map(); // ID -> {path,status}
 for (const spec of domainSpecs) {
-  const text = fileContentCache.get(spec.file).toUpperCase();
-  const has4Col = text.includes(featureIndexHeader4);
-  const has5Col = text.includes(featureIndexHeader5);
+  const originalText = fileContentCache.get(spec.file);
+  const textUpper = originalText.toUpperCase();
+  const has4Col = textUpper.includes(featureIndexHeader4);
+  const has5Col = textUpper.includes(featureIndexHeader5);
   if (!has4Col && !has5Col) {
     warnings.push(`Domain ${spec.relFile} is missing Feature index table header.`);
     continue;
   }
-  const lines = text.split(/\r?\n/);
+  // Use original text for parsing to preserve path case
+  const lines = originalText.split(/\r?\n/);
   let inTable = false;
   for (const line of lines) {
     const trimmed = line.trim();
-    if (trimmed === featureIndexHeader4 || trimmed === featureIndexHeader5) {
+    const trimmedUpper = trimmed.toUpperCase();
+    if (trimmedUpper === featureIndexHeader4 || trimmedUpper === featureIndexHeader5) {
       inTable = true;
       continue;
     }
     if (inTable) {
       if (!trimmed.startsWith('|')) break;
+      if (trimmed.includes('---')) continue; // Skip separator row
       const cells = trimmed.split('|').map((c) => c.trim()).filter(Boolean);
       if (cells.length >= 4) {
-        const id = cells[0];
-        const pathCell = cells[2];
+        const id = cells[0].toUpperCase();
+        const pathCell = cells[2]; // Keep original case for paths
         const statusCell = cells[3];
         domainFeatureRows.set(id, { path: pathCell, status: statusCell });
       }
@@ -303,7 +309,8 @@ for (const [id, meta] of domainFeatureRows.entries()) {
   const specMatch = featureSpecs.find((s) => s.specIds.includes(id));
   if (!specMatch) continue;
   if (meta.path) {
-    const p = meta.path.replace(/\\/g, '/').replace(/^\.?\//, '');
+    // Remove backticks, normalize slashes, and strip leading ./
+    const p = meta.path.replace(/`/g, '').replace(/\\/g, '/').replace(/^\.?\//, '');
     const full = path.join(root, p);
     if (!fs.existsSync(full)) {
       errors.push(`Feature index entry for "${id}" points to missing path: ${meta.path}`);
@@ -430,15 +437,37 @@ if (domainSpecs.length > 0) {
 // Cross-Reference Matrix Validation
 // ============================================================================
 
-const matrixRoot = path.join(root, '.specify', 'matrix');
-const matrixPath = path.join(matrixRoot, 'cross-reference.json');
+// Matrix paths - check new structure first, then legacy locations
+function findMatrixPath() {
+  // New structure: .specify/specs/{project}/overview/matrix/
+  const projectDirs = fs.existsSync(specsRoot)
+    ? fs.readdirSync(specsRoot, { withFileTypes: true })
+        .filter(d => d.isDirectory() && d.name !== 'vision')
+        .map(d => d.name)
+    : [];
 
-// Also check for matrix in specs directory (legacy location)
-const matrixPathAlt = path.join(specsRoot, 'matrix', 'cross-reference.json');
+  for (const project of projectDirs) {
+    const newPath = path.join(specsRoot, project, 'overview', 'matrix', 'cross-reference.json');
+    if (fs.existsSync(newPath)) return newPath;
+  }
+
+  // Legacy: .specify/matrix/
+  const legacyPath1 = path.join(root, '.specify', 'matrix', 'cross-reference.json');
+  if (fs.existsSync(legacyPath1)) return legacyPath1;
+
+  // Legacy: .specify/specs/matrix/
+  const legacyPath2 = path.join(specsRoot, 'matrix', 'cross-reference.json');
+  if (fs.existsSync(legacyPath2)) return legacyPath2;
+
+  return null;
+}
 
 function loadMatrix() {
-  if (fs.existsSync(matrixPath)) return JSON.parse(fs.readFileSync(matrixPath, 'utf8'));
-  if (fs.existsSync(matrixPathAlt)) return JSON.parse(fs.readFileSync(matrixPathAlt, 'utf8'));
+  const matrixPath = findMatrixPath();
+  if (matrixPath) {
+    console.log(`Found matrix at: ${rel(matrixPath)}`);
+    return JSON.parse(fs.readFileSync(matrixPath, 'utf8'));
+  }
   return null;
 }
 

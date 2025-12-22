@@ -328,9 +328,9 @@ No new screens required. Using existing SCR-003, SCR-004 from Screen Spec.
 
 ## 15. Traceability
 
-- Vision Spec: `.specify/specs/sample/vision/spec.md`
-- Domain Spec: `.specify/specs/sample/domain/spec.md`
-- Screen Spec: `.specify/specs/sample/screen/spec.md`
+- Vision Spec: `.specify/specs/sample/overview/vision/spec.md`
+- Domain Spec: `.specify/specs/sample/overview/domain/spec.md`
+- Screen Spec: `.specify/specs/sample/overview/screen/spec.md`
 
 ---
 

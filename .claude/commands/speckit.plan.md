@@ -128,7 +128,7 @@ If changes are needed, update the plan and re-review.
 ## Example
 
 ```
-AI: Plan を作成しました: .specify/specs/s-auth-001/plan.md
+AI: Plan を作成しました: .specify/specs/{project}/features/s-auth-001/plan.md
 
     設計概要:
     - JWT認証 + Refresh Token方式

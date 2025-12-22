@@ -24,13 +24,13 @@
     "dependency-cruiser": "^16.0.0",
     "eslint": "^9.0.0",
     "eslint-config-prettier": "^9.0.0",
-    "typescript-eslint": "^8.0.0",
     "husky": "^9.0.0",
     "knip": "^5.0.0",
     "lint-staged": "^15.0.0",
     "madge": "^8.0.0",
     "prettier": "^3.0.0",
-    "typescript": "^5.0.0"
+    "typescript": "^5.0.0",
+    "typescript-eslint": "^8.0.0"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": [
@@ -43,5 +43,8 @@
   },
   "engines": {
     "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "typescript-language-server": "^5.1.3"
   }
 }

@@ -95,7 +95,7 @@ Lists Issues → User selects → Creates Branch → Creates Feature Spec. Clari
    - Human can choose to proceed
 
 2. **Verify Domain Spec exists and is clarified**:
-   - Check `.specify/specs/domain/spec.md` exists (or legacy `.specify/specs/overview/spec.md`)
+   - Check `.specify/specs/{project}/overview/domain/spec.md` exists (or legacy `.specify/specs/domain/`)
    - Check Domain has M-_ and API-_ definitions (not just placeholders)
    - If Domain is scaffold or missing M-_/API-_:
 
@@ -110,7 +110,7 @@ Lists Issues → User selects → Creates Branch → Creates Feature Spec. Clari
      ```
 
 3. **Check Screen Spec exists (optional but recommended)**:
-   - Check `.specify/specs/screen/spec.md` exists
+   - Check `.specify/specs/{project}/overview/screen/spec.md` exists
    - If not found: Warning only (続行可能)
      ```
      WARNING: Screen Spec が見つかりません。
@@ -271,10 +271,10 @@ Lists Issues → User selects → Creates Branch → Creates Feature Spec. Clari
 ### Step 6.6: Update Domain Spec Feature Index
 
 17. **Update Feature Index in Domain Spec**:
-    - Open `.specify/specs/domain/spec.md`
+    - Open `.specify/specs/{project}/overview/domain/spec.md`
     - Add or update entry in Section 8 (Feature Index):
       ```markdown
-      | S-XXX-001 | [Feature Title] | `.specify/specs/s-xxx-001/` | Draft | [M-*, API-*] |
+      | S-XXX-001 | [Feature Title] | `.specify/specs/{project}/features/s-xxx-001/` | Draft | [M-*, API-*] |
       ```
     - If entry already exists (from `/speckit.design`), update Status to current state
 
@@ -282,7 +282,7 @@ Lists Issues → User selects → Creates Branch → Creates Feature Spec. Clari
 
 **Matrix が存在する場合、Feature を追加/更新する。**
 
-18. **Read `.specify/matrix/cross-reference.json`**
+18. **Read `.specify/specs/{project}/overview/matrix/cross-reference.json`**
 
 19. **Add or update Feature entry**:
     ```json
@@ -415,7 +415,7 @@ Lists Issues → User selects → Creates Branch → Creates Feature Spec. Clari
 
     Issue: #[N] [タイトル]
     Branch: feature/[N]-[slug]
-    Spec: .specify/specs/s-xxx-001/spec.md
+    Spec: .specify/specs/{project}/features/s-xxx-001/spec.md
 
     概要:
     - UC (User Stories): [N] 個
@@ -462,7 +462,7 @@ Lists Issues → User selects → Creates Branch → Creates Feature Spec. Clari
 32. **Update branch state** (on approval):
 
     ```bash
-    node .specify/scripts/state.cjs branch --set-spec-id S-XXX-001 --set-spec-path .specify/specs/s-xxx-001/spec.md --set-step spec_review
+    node .specify/scripts/state.cjs branch --set-spec-id S-XXX-001 --set-spec-path .specify/specs/{project}/features/s-xxx-001/spec.md --set-step spec_review
     ```
 
 33. **Update repo state** (if Case 2 occurred):
@@ -546,7 +546,7 @@ AI: Issue #2 "S-INVENTORY-001: 在庫一覧・検索" を選択しました
 
     Issue: #2 S-INVENTORY-001: 在庫一覧・検索
     Branch: feature/2-inventory
-    Spec: .specify/specs/s-inventory-001/spec.md
+    Spec: .specify/specs/{project}/features/s-inventory-001/spec.md
 
     概要:
     - UC (User Stories): 3 個

@@ -115,7 +115,7 @@ Matrix が参照するものが Spec に存在するかをチェック。
 
 ### Cross-Reference Matrix Validation
 
-Matrix が存在する場合（`.specify/matrix/cross-reference.json`）、以下もチェック:
+Matrix が存在する場合（`.specify/specs/{project}/overview/matrix/cross-reference.json`）、以下もチェック:
 
 - **Matrix ↔ Domain 整合性**: Matrix 内の `masters`, `apis` が Domain Spec に存在するか
 - **Matrix ↔ Screen 整合性**: Matrix 内の `screens` が Screen Spec に存在するか
@@ -134,14 +134,14 @@ Matrix が存在する場合（`.specify/matrix/cross-reference.json`）、以�
 **Domain validation:**
 
 ```
-ERROR: Unknown master "M-INVENTORY" referenced in feature .specify/specs/s-inv-001/spec.md; update Domain spec first.
+ERROR: Unknown master "M-INVENTORY" referenced in feature .specify/specs/{project}/features/s-inv-001/spec.md; update Domain spec first.
 WARNING: API "API-REPORTS-EXPORT" defined in Domain is not referenced by any feature.
 ```
 
 **Screen validation:**
 
 ```
-ERROR: Unknown screen "SCR-005" referenced in feature .specify/specs/s-orders-001/spec.md; update Screen spec first.
+ERROR: Unknown screen "SCR-005" referenced in feature .specify/specs/{project}/features/s-orders-001/spec.md; update Screen spec first.
 WARNING: Screen "SCR-SETTINGS" defined in Screen spec is not referenced by any feature.
 ```
 

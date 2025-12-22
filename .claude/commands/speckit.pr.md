@@ -196,7 +196,7 @@ Step 5 of the 6-step workflow. Before creating a PR, this command:
    マージ後の手順:
    1. `main` ブランチに切り替え
    2. Screen Spec の Status を更新:
-      - `.specify/specs/screen/spec.md` を編集
+      - `.specify/specs/{project}/overview/screen/spec.md` を編集
       - Section 2 Screen Index: Status を Implemented に変更
       - Section 2.1 Modification Log: Status を Implemented に変更
    3. Changelog に記録:

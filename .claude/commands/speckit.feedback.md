@@ -68,7 +68,7 @@ specification. This command provides a structured way to record:
    - Find the spec being implemented (from branch name or context)
    - Read the current spec content
    - Identify the affected sections (UC, FR, SC, etc.)
-   - For `screen` type: Also check Screen Spec (`.specify/specs/screen/spec.md`)
+   - For `screen` type: Also check Screen Spec (`.specify/specs/{project}/overview/screen/spec.md`)
 
 #### Self-Check (Step 2)
 

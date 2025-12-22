@@ -83,7 +83,7 @@ Propose additional Features based on user intent and create GitHub Issues.
 ### Step 1: Check Context
 
 1. **Check Domain Spec**:
-   - Look for `.specify/specs/domain/spec.md`
+   - Look for `.specify/specs/{project}/overview/domain/spec.md` (or legacy `.specify/specs/domain/`)
    - If not found:
      ```
      WARNING: Domain Spec が見つかりません。
@@ -93,7 +93,7 @@ Propose additional Features based on user intent and create GitHub Issues.
    - If found: Extract M-_/API-_ for reference
 
 2. **Check Vision Spec** (optional):
-   - Look for `.specify/specs/vision/spec.md`
+   - Look for `.specify/specs/{project}/overview/vision/spec.md` (or legacy `.specify/specs/vision/`)
    - If found: Extract journeys and scope for context
 
 3. **Fetch existing Feature Issues**:
@@ -242,7 +242,7 @@ Propose additional Features based on user intent and create GitHub Issues.
 Human: /speckit.featureproposal レポート機能を追加したい
 
 AI: Domain Spec を確認中...
-    .specify/specs/domain/spec.md が見つかりました。
+    .specify/specs/{project}/overview/domain/spec.md が見つかりました。
 
     === 既存の Features ===
     - #2 S-INVENTORY-001: 在庫一覧・検索 [Implementing]

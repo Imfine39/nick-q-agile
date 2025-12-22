@@ -2,19 +2,28 @@
 'use strict';
 
 /**
- * Scaffold Vision, Domain, Screen, or Feature specs from templates.
+ * Scaffold Vision, Domain, Screen, Feature, or Fix specs from templates.
  *
  * Examples:
- *   node .specify/scripts/scaffold-spec.cjs --kind vision --id S-VISION-001 --title "Project Vision"
+ *   node .specify/scripts/scaffold-spec.cjs --kind vision --id S-VISION-001 --title "Project Vision" --project sample
  *
- *   node .specify/scripts/scaffold-spec.cjs --kind domain --id S-DOMAIN-001 --title "System Domain"
+ *   node .specify/scripts/scaffold-spec.cjs --kind domain --id S-DOMAIN-001 --title "System Domain" --project sample
  *     --vision S-VISION-001 --masters M-CLIENTS,M-ORDERS --apis API-ORDERS-LIST
  *
- *   node .specify/scripts/scaffold-spec.cjs --kind screen --id S-SCREEN-001 --title "System Screens"
+ *   node .specify/scripts/scaffold-spec.cjs --kind screen --id S-SCREEN-001 --title "System Screens" --project sample
  *     --vision S-VISION-001 --domain S-DOMAIN-001
  *
- *   node .specify/scripts/scaffold-spec.cjs --kind feature --id S-SALES-001 --title "Basic Sales Recording"
+ *   node .specify/scripts/scaffold-spec.cjs --kind feature --id S-SALES-001 --title "Basic Sales Recording" --project sample
  *     --domain S-DOMAIN-001 --uc UC-001:Record sale,UC-002:Adjust sale --masters M-CLIENTS --apis API-ORDERS-LIST
+ *
+ *   node .specify/scripts/scaffold-spec.cjs --kind fix --id F-AUTH-001 --title "Login Error Fix" --project sample
+ *     --issue 50
+ *
+ * Directory structure:
+ *   .specify/specs/{project}/
+ *   ├── overview/           # vision, domain, screen, matrix
+ *   ├── features/           # feature specs
+ *   └── fixes/              # fix specs
  *
  * Legacy support:
  *   --kind overview  → treated as --kind domain
@@ -24,11 +33,22 @@
 const fs = require('fs');
 const path = require('path');
 
-const VALID_KINDS = ['vision', 'domain', 'screen', 'feature', 'overview'];
+const VALID_KINDS = ['vision', 'domain', 'screen', 'feature', 'fix', 'overview'];
 
 function parseArgs() {
   const args = process.argv.slice(2);
-  const out = { kind: null, id: null, title: null, vision: null, domain: null, masters: [], apis: [], uc: [] };
+  const out = {
+    kind: null,
+    id: null,
+    title: null,
+    vision: null,
+    domain: null,
+    project: 'sample',  // Default project
+    issue: null,
+    masters: [],
+    apis: [],
+    uc: []
+  };
   for (let i = 0; i < args.length; i++) {
     const a = args[i];
     if (a === '--kind') out.kind = args[++i];
@@ -36,6 +56,8 @@ function parseArgs() {
     else if (a === '--title') out.title = args[++i];
     else if (a === '--vision') out.vision = args[++i];
     else if (a === '--domain' || a === '--overview') out.domain = args[++i]; // --overview for legacy
+    else if (a === '--project') out.project = args[++i];
+    else if (a === '--issue') out.issue = args[++i];
     else if (a === '--masters') out.masters = args[++i].split(',').map((s) => s.trim()).filter(Boolean);
     else if (a === '--apis') out.apis = args[++i].split(',').map((s) => s.trim()).filter(Boolean);
     else if (a === '--uc') out.uc = args[++i].split(',').map((s) => s.trim()).filter(Boolean);
@@ -49,11 +71,11 @@ function parseArgs() {
 
   if (!out.kind || !out.id || !out.title) {
     console.error('ERROR: --kind, --id, --title are required');
-    console.error('  --kind: vision | domain | screen | feature');
+    console.error('  --kind: vision | domain | screen | feature | fix');
     process.exit(1);
   }
   if (!VALID_KINDS.includes(out.kind)) {
-    console.error(`ERROR: Invalid kind "${out.kind}". Must be: vision, domain, screen, or feature`);
+    console.error(`ERROR: Invalid kind "${out.kind}". Must be: vision, domain, screen, feature, or fix`);
     process.exit(1);
   }
   if (out.kind === 'domain' && !out.vision) {
@@ -74,7 +96,8 @@ function getTemplatePath(kind) {
     vision: 'vision-spec-template.md',
     domain: 'domain-spec-template.md',
     screen: 'screen-spec-template.md',
-    feature: 'feature-spec-template.md'
+    feature: 'feature-spec-template.md',
+    fix: 'fix-spec-template.md'
   };
   const templateFile = templateMap[kind];
   if (!templateFile) {
@@ -135,6 +158,11 @@ function buildSpecContent(template, args, relDir) {
       content = content.replace('Related Domain: S-DOMAIN-001', `Related Domain: ${args.domain}`);
     }
     content = content.replace('Related Issue(s): [#123]', 'Related Issue(s): ');
+  } else if (args.kind === 'fix') {
+    content = content.replace('Spec ID: F-[XXX]-001', `Spec ID: ${args.id}`);
+    if (args.issue) {
+      content = content.replace('Related Issue: [#N]', `Related Issue: #${args.issue}`);
+    }
   }
 
   return content;
@@ -179,43 +207,43 @@ function appendFeatureIndexRow(domainPath, featureEntry) {
   fs.writeFileSync(domainPath, text, 'utf8');
 }
 
+function fixDirFromId(id, title) {
+  const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  return `${id.replace(/[^A-Z0-9]+/gi, '').toLowerCase()}-${slug}`.slice(0, 80);
+}
+
 function main() {
   const args = parseArgs();
   const template = readTemplate(args.kind);
+  const specsBase = path.join(process.cwd(), '.specify', 'specs', args.project);
 
-  if (args.kind === 'vision') {
-    const dir = path.join(process.cwd(), '.specify', 'specs', 'vision');
+  // Overview specs: vision, domain, screen
+  if (['vision', 'domain', 'screen'].includes(args.kind)) {
+    const dir = path.join(specsBase, 'overview', args.kind);
     ensureDir(dir);
     const outPath = path.join(dir, 'spec.md');
-    const content = buildSpecContent(template, args, 'vision');
+    const content = buildSpecContent(template, args, args.kind);
     fs.writeFileSync(outPath, content, 'utf8');
-    console.log(`Created Vision spec at ${path.relative(process.cwd(), outPath)}`);
+    console.log(`Created ${args.kind.charAt(0).toUpperCase() + args.kind.slice(1)} spec at ${path.relative(process.cwd(), outPath)}`);
     return;
   }
 
-  if (args.kind === 'domain') {
-    const dir = path.join(process.cwd(), '.specify', 'specs', 'domain');
+  // Fix specs
+  if (args.kind === 'fix') {
+    const fixDir = fixDirFromId(args.id, args.title);
+    const dir = path.join(specsBase, 'fixes', fixDir);
     ensureDir(dir);
     const outPath = path.join(dir, 'spec.md');
-    const content = buildSpecContent(template, args, 'domain');
+    const relDir = path.relative(process.cwd(), dir).replace(/\\/g, '/');
+    const content = buildSpecContent(template, args, relDir);
     fs.writeFileSync(outPath, content, 'utf8');
-    console.log(`Created Domain spec at ${path.relative(process.cwd(), outPath)}`);
+    console.log(`Created Fix spec at ${path.relative(process.cwd(), outPath)}`);
     return;
   }
 
-  if (args.kind === 'screen') {
-    const dir = path.join(process.cwd(), '.specify', 'specs', 'screen');
-    ensureDir(dir);
-    const outPath = path.join(dir, 'spec.md');
-    const content = buildSpecContent(template, args, 'screen');
-    fs.writeFileSync(outPath, content, 'utf8');
-    console.log(`Created Screen spec at ${path.relative(process.cwd(), outPath)}`);
-    return;
-  }
-
-  // Feature
+  // Feature specs
   const featureDir = featureDirFromId(args.id, args.title);
-  const dir = path.join(process.cwd(), '.specify', 'specs', featureDir);
+  const dir = path.join(specsBase, 'features', featureDir);
   ensureDir(dir);
   const outPath = path.join(dir, 'spec.md');
   const relDir = path.relative(process.cwd(), dir).replace(/\\/g, '/');
@@ -223,10 +251,21 @@ function main() {
   fs.writeFileSync(outPath, content, 'utf8');
   console.log(`Created Feature spec at ${path.relative(process.cwd(), outPath)}`);
 
-  // Append to Domain index if present (preferred) or Overview (legacy)
-  const domainPath = path.join(process.cwd(), '.specify', 'specs', 'domain', 'spec.md');
-  const overviewPath = path.join(process.cwd(), '.specify', 'specs', 'overview', 'spec.md');
-  const targetPath = fs.existsSync(domainPath) ? domainPath : (fs.existsSync(overviewPath) ? overviewPath : null);
+  // Append to Domain index if present
+  // New structure: {project}/overview/domain/spec.md
+  // Legacy: specs/domain/spec.md or specs/overview/spec.md
+  const newDomainPath = path.join(specsBase, 'overview', 'domain', 'spec.md');
+  const legacyDomainPath = path.join(process.cwd(), '.specify', 'specs', 'domain', 'spec.md');
+  const legacyOverviewPath = path.join(process.cwd(), '.specify', 'specs', 'overview', 'spec.md');
+
+  let targetPath = null;
+  if (fs.existsSync(newDomainPath)) {
+    targetPath = newDomainPath;
+  } else if (fs.existsSync(legacyDomainPath)) {
+    targetPath = legacyDomainPath;
+  } else if (fs.existsSync(legacyOverviewPath)) {
+    targetPath = legacyOverviewPath;
+  }
 
   if (targetPath) {
     const masters = args.masters.length > 0 ? args.masters.join(', ') : '-';

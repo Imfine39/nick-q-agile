@@ -588,7 +588,7 @@ AI: 回答を記録しました:
     === Clarify 完了: S-DOMAIN-001 ===
 
     質問/回答: 6 問 (2 ラウンド)
-    更新したSpec: .specify/specs/domain/spec.md
+    更新したSpec: .specify/specs/{project}/overview/domain/spec.md
 
     更新したセクション:
     - Section 2 (Actors): 4種類のアクター定義

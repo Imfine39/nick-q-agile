@@ -318,6 +318,7 @@ IMG-{NNN}
 | Domain Spec | `S-DOMAIN-001` | S-DOMAIN-001 |
 | Screen Spec | `S-SCREEN-001` | S-SCREEN-001 |
 | Feature Spec | `S-{AREA}-{NNN}` | S-AUTH-001 |
+| Fix Spec | `F-{AREA}-{NNN}` | F-AUTH-001 |
 | Use Case | `UC-{AREA}-{NNN}` | UC-AUTH-001 |
 | Functional Req | `FR-{AREA}-{NNN}` | FR-AUTH-001 |
 | Master Data | `M-{NAME}` | M-USER |

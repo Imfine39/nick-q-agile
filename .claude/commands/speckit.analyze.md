@@ -58,7 +58,7 @@ PR作成前の「安心確認」として、実装が Spec/Domain の要件を�
 
 ### 2.6. Cross-Reference Matrix との整合性
 
-Matrix が存在する場合（`.specify/matrix/cross-reference.json`）:
+Matrix が存在する場合（`.specify/specs/{project}/overview/matrix/cross-reference.json`）:
 
 - Feature が Matrix に登録されているか
 - Matrix 内の screens/masters/apis 参照が正しいか

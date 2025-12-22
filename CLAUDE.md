@@ -130,12 +130,11 @@ Phase 5以降: Feature 開発（繰り返し）
 /speckit.fix (バグ修正)
   → .specify/input/fix-input.md に入力（または --quick でスキップ）
   → Issue 作成 → Branch 作成
-  → [Spec-First] 画面変更が必要な場合、Screen Spec を先に更新（Status: Planned）
-  → 既存 Spec 更新
+  → 原因調査（Serena で影響範囲特定）
+  → **Fix Spec 作成**（.specify/specs/{project}/fixes/f-xxx-001/）
   → /speckit.clarify で曖昧点解消
-  → 人間: Spec をレビュー・承認
+  → 人間: Fix Spec をレビュー・承認
   → plan → tasks → implement → pr
-  → [PR マージ後] Screen Spec の Status を Implemented に更新
 ```
 
 ### コマンド一覧
@@ -181,12 +180,31 @@ Phase 5以降: Feature 開発（繰り返し）
 
 ## 4. Spec ドキュメント構成
 
-### 4層構造
+### ディレクトリ構造
 
-- **Vision Spec** (`.specify/specs/vision/`): プロジェクトの目的、ユーザージャーニー、スコープ、**Screen Hints**、ビジネスルール初期案
-- **Screen Spec** (`.specify/specs/screen/`): 画面一覧、画面遷移図、ワイヤーフレーム
-- **Domain Spec** (`.specify/specs/domain/`): 共有マスタ (`M-*`)、共有 API (`API-*`)、ビジネスルール、Feature Index
-- **Feature Spec** (`.specify/specs/<feature-id>/`): 個別機能の詳細仕様。Domain/Screen を参照するのみ、マスタ/API/画面を再定義しない。
+```
+.specify/specs/{project}/
+├── overview/              # プロジェクト全体の定義
+│   ├── vision/            # Vision Spec（目的、ジャーニー、Screen Hints）
+│   ├── domain/            # Domain Spec（M-*, API-*, Rules）
+│   ├── screen/            # Screen Spec（画面一覧、遷移図）
+│   └── matrix/            # Cross-Reference Matrix
+│
+├── features/              # Feature Specs (S-XXX-001)
+│   ├── s-auth-001/
+│   └── s-lead-001/
+│
+└── fixes/                 # Fix Specs (F-XXX-001) - バグ調査報告書
+    └── f-auth-001/
+```
+
+### 5層構造
+
+- **Vision Spec** (`overview/vision/`): プロジェクトの目的、ジャーニー、Screen Hints
+- **Screen Spec** (`overview/screen/`): 画面一覧、遷移図、ワイヤーフレーム
+- **Domain Spec** (`overview/domain/`): M-\*, API-\*, BR-\*/VR-\*/CR-\*
+- **Feature Spec** (`features/s-xxx-001/`): 機能の詳細仕様（WHAT）
+- **Fix Spec** (`fixes/f-xxx-001/`): バグ調査報告書（原因分析、影響範囲）
 
 ```
 Vision (WHY + Screen Hints)
@@ -197,7 +215,12 @@ Screen ─┬─ Domain
         ↓
       Matrix (cross-reference.json) で一元管理
         ↓
-      Feature (HOW)
+    ┌───┴───┐
+Feature   Fix
+ (WHAT)  (WHAT)
+    ↓      ↓
+   Plan   Plan
+   (HOW)  (HOW)
 ```
 
 ### Cross-Reference Matrix
@@ -206,7 +229,7 @@ Screen ─┬─ Domain
 
 **ファイル構成:**
 ```
-.specify/matrix/
+.specify/specs/{project}/overview/matrix/
 ├── cross-reference.json  # 機械可読な対応関係（Single Source of Truth）
 └── cross-reference.md    # 人間可読なビュー（自動生成）
 ```

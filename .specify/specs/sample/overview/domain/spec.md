@@ -915,14 +915,14 @@ All features that implement this domain. Updated as features are added.
 
 | Feature ID | Title | Path | Status | Related M-*/API-* |
 |------------|-------|------|--------|-------------------|
-| S-FOUNDATION-001 | 基盤構築 | `.specify/specs/sample/s-foundation-001/` | Backlog | M-USER, M-ROLE, M-SECTOR, API-AUTH-* |
-| S-AUTH-001 | Azure AD 認証 | `.specify/specs/sample/s-auth-001/` | Backlog | M-USER, API-AUTH-* |
-| S-LEAD-001 | リード案件管理 | `.specify/specs/sample/s-lead-001/` | Backlog | M-LEAD, M-ACTIVITY, API-LEAD-* |
-| S-ORDER-001 | 受注案件管理 | `.specify/specs/sample/s-order-001/` | Backlog | M-ORDER, M-ASSIGNMENT, API-ORDER-*, API-ASSIGNMENT-* |
-| S-SALES-001 | 売上実績管理 | `.specify/specs/sample/s-sales-001/` | Backlog | M-SALES-RECORD, API-SALES-RECORD-*, API-SALES-SUMMARY-* |
-| S-MEMBER-001 | メンバー稼働率管理 | `.specify/specs/sample/s-member-001/` | Backlog | M-USER, M-ASSIGNMENT, API-MEMBER-* |
-| S-TARGET-001 | セクター売上目標管理 | `.specify/specs/sample/s-target-001/` | Backlog | M-SALES-TARGET, API-SALES-TARGET-* |
-| S-DASHBOARD-001 | ダッシュボード | `.specify/specs/sample/s-dashboard-001/` | Backlog | API-DASHBOARD-* |
+| S-FOUNDATION-001 | 基盤構築 | `.specify/specs/sample/features/s-foundation-001/` | Backlog | M-USER, M-ROLE, M-SECTOR, API-AUTH-* |
+| S-AUTH-001 | Azure AD 認証 | `.specify/specs/sample/features/s-auth-001/` | Backlog | M-USER, API-AUTH-* |
+| S-LEAD-001 | リード案件管理 | `.specify/specs/sample/features/s-lead-001/` | Backlog | M-LEAD, M-ACTIVITY, API-LEAD-* |
+| S-ORDER-001 | 受注案件管理 | `.specify/specs/sample/features/s-order-001/` | Backlog | M-ORDER, M-ASSIGNMENT, API-ORDER-*, API-ASSIGNMENT-* |
+| S-SALES-001 | 売上実績管理 | `.specify/specs/sample/features/s-sales-001/` | Backlog | M-SALES-RECORD, API-SALES-RECORD-*, API-SALES-SUMMARY-* |
+| S-MEMBER-001 | メンバー稼働率管理 | `.specify/specs/sample/features/s-member-001/` | Backlog | M-USER, M-ASSIGNMENT, API-MEMBER-* |
+| S-TARGET-001 | セクター売上目標管理 | `.specify/specs/sample/features/s-target-001/` | Backlog | M-SALES-TARGET, API-SALES-TARGET-* |
+| S-DASHBOARD-001 | ダッシュボード | `.specify/specs/sample/features/s-dashboard-001/` | Backlog | API-DASHBOARD-* |
 
 **Status values:** Draft | In Review | Approved | Implementing | Completed | Deprecated | Backlog
 

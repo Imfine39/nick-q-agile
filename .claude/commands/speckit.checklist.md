@@ -385,7 +385,7 @@ AI: Feature Spec S-AUTH-001 を読み込みました。
     - CHK-003: Rate limiting thresholds not specified [Gap]
     - CHK-007: Error response format inconsistent with Domain API-* [Consistency]
 
-    Checklist saved: .specify/specs/s-auth-001/checklist-api.md
+    Checklist saved: .specify/specs/{project}/features/s-auth-001/checklist-api.md
 
     Next steps:
     - Rate limiting の閾値を clarify で明確化することを推奨

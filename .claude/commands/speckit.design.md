@@ -112,7 +112,7 @@ $ARGUMENTS
      ```
 
 2. **Check Vision Spec exists**:
-   - Look for `.specify/specs/vision/spec.md`
+   - Look for `.specify/specs/{project}/overview/vision/spec.md` (or legacy `.specify/specs/vision/`)
    - If not found:
      ```
      WARNING: Vision Spec が見つかりません。
@@ -337,7 +337,7 @@ Screen 情報がありません。
 
 #### 4.6 Cross-Reference Matrix の作成
 
-14. **Create `.specify/matrix/cross-reference.json`**:
+14. **Create `.specify/specs/{project}/overview/matrix/cross-reference.json`**:
 
     AI が Screen Spec と Domain Spec の内容を理解し、適切なマッピングを作成する。
 
@@ -365,7 +365,7 @@ Screen 情報がありません。
     ```bash
     node .specify/scripts/generate-matrix-view.cjs
     ```
-    - Creates `.specify/matrix/cross-reference.md` (human-readable view)
+    - Creates `.specify/specs/{project}/overview/matrix/cross-reference.md` (human-readable view)
 
 #### Self-Check (Step 4)
 
@@ -458,10 +458,10 @@ Screen 情報がありません。
     - Permissions: [Count] APIs
 
     Files:
-    - .specify/specs/screen/spec.md
-    - .specify/specs/domain/spec.md
-    - .specify/matrix/cross-reference.json
-    - .specify/matrix/cross-reference.md (auto-generated)
+    - .specify/specs/{project}/overview/screen/spec.md
+    - .specify/specs/{project}/overview/domain/spec.md
+    - .specify/specs/{project}/overview/matrix/cross-reference.json
+    - .specify/specs/{project}/overview/matrix/cross-reference.md (auto-generated)
     ```
 
 19. **曖昧点レポート**:
@@ -519,10 +519,10 @@ Screen 情報がありません。
 ## Output
 
 - Feature Issues (numbers and titles)
-- **Screen spec: `.specify/specs/screen/spec.md`**
-- Domain spec: `.specify/specs/domain/spec.md`
-- **Cross-Reference Matrix: `.specify/matrix/cross-reference.json`** (NEW)
-- Cross-Reference View: `.specify/matrix/cross-reference.md` (auto-generated)
+- **Screen spec: `.specify/specs/{project}/overview/screen/spec.md`**
+- Domain spec: `.specify/specs/{project}/overview/domain/spec.md`
+- **Cross-Reference Matrix: `.specify/specs/{project}/overview/matrix/cross-reference.json`**
+- Cross-Reference View: `.specify/specs/{project}/overview/matrix/cross-reference.md` (auto-generated)
 - 曖昧点レポート
 - Foundation Issue number
 - Next step recommendation: `/speckit.clarify`
@@ -631,7 +631,7 @@ Screen + Domain Spec の clarify で Focus する領域（`/speckit.clarify` で
 Human: /speckit.design
 
 AI: Vision Spec を確認中...
-    .specify/specs/vision/spec.md が見つかりました。
+    .specify/specs/{project}/overview/vision/spec.md が見つかりました。
 
     === Vision Summary ===
     Purpose: 中小企業向け在庫管理システム

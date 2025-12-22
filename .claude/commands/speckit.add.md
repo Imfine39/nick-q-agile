@@ -162,14 +162,14 @@ Option B: チャットで情報を提供
 ### Step 2: Check Prerequisites
 
 1. **Check Domain Spec exists and is clarified**:
-   - Look for Domain spec in `.specify/specs/domain/` (or legacy `.specify/specs/overview/`)
+   - Look for Domain spec in `.specify/specs/{project}/overview/domain/` (or legacy `.specify/specs/domain/`)
    - If not found: "Domain Spec が見つかりません。先に `/speckit.design` を実行してください"
    - Check Domain has M-_ and API-_ definitions (not just placeholders)
    - If Domain is scaffold or missing M-_/API-_:
      "Domain Spec がまだ精密化されていません。先に `/speckit.design` を完了してください"
 
 2. **Check Screen Spec exists (optional but recommended)**:
-   - Look for Screen spec in `.specify/specs/screen/`
+   - Look for Screen spec in `.specify/specs/{project}/overview/screen/`
    - If not found: Warning only (続行可能)
      "WARNING: Screen Spec が見つかりません。`/speckit.design` で画面設計を含めて作成することを推奨します。"
    - If found: Extract Screen Index for Step 6.5
@@ -347,10 +347,10 @@ Identify all M-_, API-_, BR-\* that this Feature needs and classify:
 
 ### Step 8: Update Domain Spec Feature Index
 
-Open `.specify/specs/domain/spec.md` and add entry in Section 8 (Feature Index):
+Open `.specify/specs/{project}/overview/domain/spec.md` and add entry in Section 8 (Feature Index):
 
 ```markdown
-| S-XXX-001 | [Feature Title] | `.specify/specs/s-xxx-001/` | Draft | [M-*, API-*] |
+| S-XXX-001 | [Feature Title] | `.specify/specs/{project}/features/s-xxx-001/` | Draft | [M-*, API-*] |
 ```
 
 ---
@@ -359,7 +359,7 @@ Open `.specify/specs/domain/spec.md` and add entry in Section 8 (Feature Index):
 
 **Matrix が存在する場合、Feature を追加する。**
 
-1. **Read `.specify/matrix/cross-reference.json`**
+1. **Read `.specify/specs/{project}/overview/matrix/cross-reference.json`**
 
 2. **Add Feature entry**:
    ```json
@@ -448,7 +448,7 @@ node .specify/scripts/spec-lint.cjs
 
 Issue: #[N] [Feature] [タイトル]
 Branch: feature/[N]-[slug]
-Spec: .specify/specs/s-xxx-001/spec.md
+Spec: .specify/specs/{project}/features/s-xxx-001/spec.md
 
 概要:
 - UC (User Stories): [N] 個
