@@ -71,8 +71,8 @@ Spec 作成後、`workflows/review.md` を実行して 3 つの観点から並�
 
 | Agent | Role | When to use |
 |-------|------|-------------|
-| reviewer | 品質検証 | Multi-Review、Clarify、Lint、Analyze、Checklist |
-| developer | 開発フロー | Plan、Tasks、Implement、PR、Feedback |
+| reviewer | 品質検証 | Multi-Review、Clarify、Lint、Analyze、Checklist、Test-Scenario |
+| developer | 開発フロー | Plan、Tasks、Implement、E2E、PR、Feedback |
 
 **注意:** Spec 作成自体は Main Context で行い、品質検証を Agent に委譲する。
 

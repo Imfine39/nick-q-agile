@@ -15,7 +15,7 @@ You are a development workflow specialist for Spec-Driven Development (SSD).
 
 ## Role
 
-Execute the implementation phases of SSD: Plan → Tasks → Implement → PR.
+Execute the implementation phases of SSD: Plan → Tasks → Implement → E2E → PR.
 Ensure code adheres to specifications, follows test-first principles, and maintains
 high quality standards.
 
@@ -90,7 +90,19 @@ Execute tasks in order following test-first approach:
 5. **Check for feedback needs**: Technical constraints not in spec?
 6. **Update progress**: Use state.cjs
 
-### 4. PR Creation
+### 4. E2E Test Execution (Optional)
+
+After implementation, verify with browser-based E2E tests:
+
+1. **Load Test Scenario Spec**: Read test cases from `.specify/specs/{project}/features/{feature}/test-scenarios.md`
+2. **Setup browser session**: Use Chrome extension tools (tabs_context_mcp, navigate)
+3. **Execute test cases**: Follow steps in Test Scenario Spec
+4. **Record evidence**: Screenshots and GIF recordings
+5. **Update Test Scenario Spec**: Record results in Execution Log section
+
+See `/spec-mesh e2e` workflow for detailed procedures.
+
+### 5. PR Creation
 
 Before creating PR:
 
@@ -105,7 +117,7 @@ Before creating PR:
    - Test plan summary
    - Post-merge checklist (Screen status updates, etc.)
 
-### 5. Feedback Recording
+### 6. Feedback Recording
 
 When implementation reveals spec issues:
 

@@ -65,6 +65,7 @@ Version control MUST ensure traceability.
 | **Screen Spec** | Screen definitions (SCR-*), transitions, wireframes |
 | **Feature Spec** | User stories, functional requirements per feature |
 | **Fix Spec** | Bug analysis, root cause, fix proposal |
+| **Test Scenario Spec** | Test cases, test data, expected results per feature |
 
 ---
 
@@ -74,22 +75,34 @@ Version control MUST ensure traceability.
 1. Entry Point (/spec-mesh add, fix, issue)
    → Issue creation → Branch creation → Spec creation
 
-2. Clarify (/spec-mesh clarify)
+2. Multi-Review (/spec-mesh review) [自動実行]
+   → 3観点並列レビュー（構造・内容・完全性）
+   → AI修正可能な問題を修正
+
+3. Clarify (/spec-mesh clarify)
    → Resolve [NEEDS CLARIFICATION] markers
    → Human approves spec
 
-3. Plan (/spec-mesh plan)
+4. Test Scenario (/spec-mesh test-scenario) [任意]
+   → Feature Spec からテストケース生成
+   → テストデータ定義
+
+5. Plan (/spec-mesh plan)
    → Implementation plan
    → HUMAN_CHECKPOINT: approval required
 
-4. Tasks (/spec-mesh tasks)
+6. Tasks (/spec-mesh tasks)
    → Break into atomic tasks
 
-5. Implement (/spec-mesh implement)
+7. Implement (/spec-mesh implement)
    → Test-first development
    → Record feedback if discoveries
 
-6. PR (/spec-mesh pr)
+8. E2E Test (/spec-mesh e2e) [任意]
+   → Chrome 拡張によるブラウザテスト
+   → スクリーンショット/GIF 証跡
+
+9. PR (/spec-mesh pr)
    → Integrity checks → PR creation → Review → Merge
 ```
 
@@ -145,6 +158,5 @@ For detailed procedures, see:
 - `guides/error-recovery.md` - Handling errors and edge cases
 
 For agent-specific rules, see:
-- `.claude/agents/spec-author.md` - Spec creation rules
-- `.claude/agents/reviewer.md` - Quality verification rules
-- `.claude/agents/developer.md` - Implementation rules
+- `.claude/agents/reviewer.md` - Quality verification rules (Multi-Review, Clarify, Lint, Analyze, Checklist, Test-Scenario)
+- `.claude/agents/developer.md` - Implementation rules (Plan, Tasks, Implement, E2E, PR, Feedback)

@@ -2,8 +2,9 @@
 name: reviewer
 description: |
   Quality verification specialist for specs. Handles multi-perspective review,
-  clarification of ambiguities, spec linting, implementation analysis, and quality checklists.
-  Called by /spec-mesh review, clarify, lint, analyze, and checklist workflows.
+  clarification of ambiguities, spec linting, implementation analysis, quality checklists,
+  and test scenario creation. Called by /spec-mesh review, clarify, lint, analyze,
+  checklist, and test-scenario workflows.
 tools: Read, Write, Edit, Glob, Grep, Bash
 model: inherit
 ---
@@ -87,6 +88,14 @@ Spec 作成後に 3 つの観点からレビュー：
 - Consistency: ID 参照の妥当性
 - Testability: 要件の測定可能性
 - Traceability: Issue, Domain, Screen へのリンク
+
+### 6. Test Scenario (テストシナリオ作成)
+
+Feature Spec から Test Scenario Spec を作成：
+- AC/FR をテストケースにマッピング
+- テストデータの定義
+- Positive/Negative/Journey テストの作成
+- テストカバレッジマトリクス生成
 
 ---
 
