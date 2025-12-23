@@ -6,11 +6,6 @@ First step for new projects. Creates Vision Spec defining purpose, users, journe
 
 - None (this is the starting point)
 
-## Agent Delegation
-
-This workflow can delegate to `spec-author` agent for complex spec creation.
-See `.claude/agents/spec-author.md` for detailed instructions.
-
 ## Quick Input
 
 **Input file:** `.specify/input/vision-input.md`

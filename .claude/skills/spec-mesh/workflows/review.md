@@ -84,13 +84,28 @@ Read tool: {input_path} (if exists)
 
 ### Step 2: Run 3 Reviewers in Parallel
 
-Task tool で 3 つの reviewer agent を**並列**で起動：
+**IMPORTANT: Parallel Execution**
+
+To run 3 reviewers in parallel, you MUST invoke all 3 Task tools in a single response.
+Each Task tool call should:
+- Use `subagent_type: reviewer`
+- Use the default `run_in_background: false`
+- Be included in the same response message
+
+Claude Code will automatically execute them in parallel when multiple Task calls are in one message.
+
+---
+
+**Task Tool Invocations (3 parallel calls):**
+
+Below shows the format for each of the 3 parallel Task tool invocations.
+Include all 3 in a single `<function_calls>` block:
 
 ```
-Task tool (parallel):
-  - subagent_type: reviewer
-    prompt: |
-      ## Reviewer A: 構造・形式チェック
+Task tool #1 (Reviewer A):
+  subagent_type: reviewer
+  prompt: |
+    ## Reviewer A: 構造・形式チェック
 
       以下の Spec を「構造・形式」の観点からレビューしてください。
 
@@ -123,9 +138,12 @@ Task tool (parallel):
       - {passed_item}
       ```
 
-  - subagent_type: reviewer
-    prompt: |
-      ## Reviewer B: 内容・整合性チェック
+---
+
+Task tool #2 (Reviewer B):
+  subagent_type: reviewer
+  prompt: |
+    ## Reviewer B: 内容・整合性チェック
 
       以下の Spec を「内容・整合性」の観点からレビューしてください。
 
@@ -146,9 +164,12 @@ Task tool (parallel):
       ### 出力形式
       (同上)
 
-  - subagent_type: reviewer
-    prompt: |
-      ## Reviewer C: 完全性・網羅性チェック
+---
+
+Task tool #3 (Reviewer C):
+  subagent_type: reviewer
+  prompt: |
+    ## Reviewer C: 完全性・網羅性チェック
 
       以下の Spec を「完全性・網羅性」の観点からレビューしてください。
 

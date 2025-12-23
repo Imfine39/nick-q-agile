@@ -17,7 +17,7 @@ const path = require('path');
 
 const REPO_ROOT = path.resolve(__dirname, '../../..');
 const TEMPLATES_DIR = path.join(__dirname, '..', 'templates', 'inputs');
-const INPUT_DIR = path.join(REPO_ROOT, 'input');
+const INPUT_DIR = path.join(REPO_ROOT, '.specify', 'input');
 
 const INPUT_TYPES = {
   vision: {
@@ -58,7 +58,7 @@ function listTypes() {
   for (const [type, info] of Object.entries(INPUT_TYPES)) {
     console.log(`  ${type.padEnd(8)} - ${info.description}`);
     console.log(`             Template: .claude/skills/spec-mesh/templates/inputs/${info.template}`);
-    console.log(`             Input:    input/${info.input}`);
+    console.log(`             Input:    .specify/input/${info.input}`);
     console.log('');
   }
 }
@@ -89,7 +89,7 @@ function resetInput(type) {
   const content = fs.readFileSync(templatePath, 'utf8');
   fs.writeFileSync(inputPath, content, 'utf8');
 
-  console.log(`Reset: input/${info.input}`);
+  console.log(`Reset: .specify/input/${info.input}`);
 }
 
 function main() {

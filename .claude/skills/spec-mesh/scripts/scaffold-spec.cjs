@@ -19,6 +19,9 @@
  *   node .claude/skills/spec-mesh/scripts/scaffold-spec.cjs --kind fix --id F-AUTH-001 --title "Login Error Fix" --project sample
  *     --issue 50
  *
+ *   node .claude/skills/spec-mesh/scripts/scaffold-spec.cjs --kind test-scenario --id TS-SALES-001 --title "Sales Recording Tests" --project sample
+ *     --feature ssales001-basic-sales-recording
+ *
  * Directory structure:
  *   .specify/specs/{project}/
  *   ├── overview/           # vision, domain, screen, matrix
@@ -33,7 +36,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const VALID_KINDS = ['vision', 'domain', 'screen', 'feature', 'fix', 'overview'];
+const VALID_KINDS = ['vision', 'domain', 'screen', 'feature', 'fix', 'overview', 'test-scenario'];
 
 function parseArgs() {
   const args = process.argv.slice(2);
@@ -45,6 +48,7 @@ function parseArgs() {
     domain: null,
     project: 'sample',  // Default project
     issue: null,
+    feature: null,
     masters: [],
     apis: [],
     uc: []
@@ -58,6 +62,7 @@ function parseArgs() {
     else if (a === '--domain' || a === '--overview') out.domain = args[++i]; // --overview for legacy
     else if (a === '--project') out.project = args[++i];
     else if (a === '--issue') out.issue = args[++i];
+    else if (a === '--feature') out.feature = args[++i];
     else if (a === '--masters') out.masters = args[++i].split(',').map((s) => s.trim()).filter(Boolean);
     else if (a === '--apis') out.apis = args[++i].split(',').map((s) => s.trim()).filter(Boolean);
     else if (a === '--uc') out.uc = args[++i].split(',').map((s) => s.trim()).filter(Boolean);
@@ -71,11 +76,11 @@ function parseArgs() {
 
   if (!out.kind || !out.id || !out.title) {
     console.error('ERROR: --kind, --id, --title are required');
-    console.error('  --kind: vision | domain | screen | feature | fix');
+    console.error('  --kind: vision | domain | screen | feature | fix | test-scenario');
     process.exit(1);
   }
   if (!VALID_KINDS.includes(out.kind)) {
-    console.error(`ERROR: Invalid kind "${out.kind}". Must be: vision, domain, screen, feature, or fix`);
+    console.error(`ERROR: Invalid kind "${out.kind}". Must be: vision, domain, screen, feature, fix, or test-scenario`);
     process.exit(1);
   }
   if (out.kind === 'domain' && !out.vision) {
@@ -88,6 +93,10 @@ function parseArgs() {
     console.error('ERROR: Feature requires --domain (Domain Spec ID)');
     process.exit(1);
   }
+  if (out.kind === 'test-scenario' && !out.feature) {
+    console.error('ERROR: Test-scenario requires --feature (Feature directory name)');
+    process.exit(1);
+  }
   return out;
 }
 
@@ -97,7 +106,8 @@ function getTemplatePath(kind) {
     domain: 'domain-spec.md',
     screen: 'screen-spec.md',
     feature: 'feature-spec.md',
-    fix: 'fix-spec.md'
+    fix: 'fix-spec.md',
+    'test-scenario': 'test-scenario-spec.md'
   };
   const templateFile = templateMap[kind];
   if (!templateFile) {
@@ -162,6 +172,14 @@ function buildSpecContent(template, args, relDir) {
     content = content.replace('Spec ID: F-[XXX]-001', `Spec ID: ${args.id}`);
     if (args.issue) {
       content = content.replace('Related Issue: [#N]', `Related Issue: #${args.issue}`);
+    }
+  } else if (args.kind === 'test-scenario') {
+    content = content.replace('Spec ID: TS-[FEATURE_ID]', `Spec ID: ${args.id}`);
+    content = content.replace('[FEATURE_NAME]', args.title);
+    if (args.feature) {
+      content = content.replace('Feature: S-[XXX]-001', `Feature: ${args.feature}`);
+      content = content.replace('.specify/specs/[project]/features/[feature]/spec.md', `${relDir}/spec.md`);
+      content = content.replace('.specify/specs/[project]/features/[feature]', relDir);
     }
   }
 
@@ -238,6 +256,22 @@ function main() {
     const content = buildSpecContent(template, args, relDir);
     fs.writeFileSync(outPath, content, 'utf8');
     console.log(`Created Fix spec at ${path.relative(process.cwd(), outPath)}`);
+    return;
+  }
+
+  // Test scenario specs
+  if (args.kind === 'test-scenario') {
+    const dir = path.join(specsBase, 'features', args.feature);
+    if (!fs.existsSync(dir)) {
+      console.error(`ERROR: Feature directory not found: ${dir}`);
+      console.error('  --feature should be the feature directory name (e.g., ssales001-basic-sales-recording)');
+      process.exit(1);
+    }
+    const outPath = path.join(dir, 'test-scenarios.md');
+    const relDir = path.relative(process.cwd(), dir).replace(/\\/g, '/');
+    const content = buildSpecContent(template, args, relDir);
+    fs.writeFileSync(outPath, content, 'utf8');
+    console.log(`Created Test Scenario spec at ${path.relative(process.cwd(), outPath)}`);
     return;
   }
 

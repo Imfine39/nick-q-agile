@@ -99,13 +99,33 @@ node .claude/skills/spec-mesh/scripts/scaffold-spec.cjs --kind feature --id {spe
 
 **6.6 Update Cross-Reference Matrix**
 
-### Step 7: Run Lint
+### Step 7: Multi-Review (3観点並列レビュー)
+
+Spec 作成後、品質を担保するため Multi-Review を実行：
+
+1. **Read review workflow:**
+   ```
+   Read tool: .claude/skills/spec-mesh/workflows/review.md
+   ```
+
+2. **Execute Multi-Review:**
+   - 3 つの reviewer agent を並列で起動
+   - フィードバック統合
+   - AI 修正可能な問題を修正
+   - Lint 実行
+
+3. **Handle results:**
+   - すべてパス → Step 8 (Summary) へ
+   - 曖昧点あり → `/spec-mesh clarify` を推奨
+   - Critical 未解決 → 問題をリストし対応を促す
+
+### Step 8: Run Lint
 
 ```bash
 node .claude/skills/spec-mesh/scripts/spec-lint.cjs
 ```
 
-### Step 8: Summary
+### Step 9: Summary
 
 Display:
 ```
@@ -128,7 +148,7 @@ Screen References:
 推奨: `/spec-mesh clarify` で曖昧点を解消してください。
 ```
 
-### Step 9: Update State
+### Step 10: Update State
 
 ```bash
 node .claude/skills/spec-mesh/scripts/state.cjs branch --set-step spec
@@ -144,6 +164,7 @@ node .claude/skills/spec-mesh/scripts/state.cjs branch --set-step spec
 - [ ] Domain Spec を読み込んで M-*/API-* を確認したか
 - [ ] Screen Spec を更新したか（Spec-First）
 - [ ] Feature Spec を作成したか
+- [ ] **Multi-Review を実行したか（3観点並列）**
 - [ ] spec-lint.cjs を実行したか
 
 ---
