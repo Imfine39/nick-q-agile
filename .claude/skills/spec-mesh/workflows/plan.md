@@ -114,7 +114,7 @@ Risks:
 - {リスクがある場合}
 
 ---
-🛑 HUMAN_CHECKPOINT: Plan の承認を待っています。
+**[HUMAN_CHECKPOINT]** Plan の承認を待っています。
 承認後、`/spec-mesh tasks` でタスク分割に進んでください。
 ```
 

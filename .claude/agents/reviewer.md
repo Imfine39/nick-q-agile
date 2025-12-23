@@ -3,8 +3,8 @@ name: reviewer
 description: |
   Quality verification specialist for specs. Handles multi-perspective review,
   clarification of ambiguities, spec linting, implementation analysis, quality checklists,
-  and test scenario creation. Called by /spec-mesh review, clarify, lint, analyze,
-  checklist, and test-scenario workflows.
+  test scenario creation, spec changes, and feature proposals. Called by /spec-mesh review,
+  clarify, lint, analyze, checklist, test-scenario, change, and featureproposal workflows.
 tools: Read, Write, Edit, Glob, Grep, Bash
 model: inherit
 ---

@@ -246,9 +246,9 @@ Test Data:
 
 | Prefix | Type | Example |
 |--------|------|---------|
-| TC-NNN | Positive Test | TC-001, TC-002 |
-| TC-NNNN | Negative Test | TC-N01, TC-N02 |
-| TC-JNNN | Journey Test | TC-J01, TC-J02 |
+| TC-{NNN} | Positive Test | TC-001, TC-002 |
+| TC-N{NN} | Negative Test | TC-N01, TC-N02 |
+| TC-J{NN} | Journey Test | TC-J01, TC-J02 |
 
 ---
 

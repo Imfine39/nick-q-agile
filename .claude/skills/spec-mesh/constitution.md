@@ -347,6 +347,7 @@ For detailed procedures, see:
 - `guides/id-naming.md` - Complete ID format definitions
 - `guides/parallel-development.md` - Working on multiple features
 - `guides/error-recovery.md` - Handling errors and edge cases
+- `guides/scripts-errors.md` - Script error codes and troubleshooting
 
 For agent-specific rules, see:
 - `.claude/agents/reviewer.md` - Quality verification rules (Multi-Review, Clarify, Lint, Analyze, Checklist, Test-Scenario)
