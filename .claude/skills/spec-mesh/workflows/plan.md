@@ -6,10 +6,34 @@ Create implementation plan from spec. **Human must review and approve before pro
 
 - Feature Spec or Fix Spec must exist
 - On Issue-linked branch
+- **★ CLARIFY GATE 通過必須**: `[NEEDS CLARIFICATION]` マーカーが 0 件であること
 
 ---
 
 ## Steps
+
+### Step 0: Verify CLARIFY GATE
+
+**Plan 開始前に必ず確認:**
+
+```bash
+# Spec 内の [NEEDS CLARIFICATION] をカウント
+grep -c "\[NEEDS CLARIFICATION\]" .specify/specs/{project}/features/{id}/spec.md
+```
+
+- **0 件**: CLARIFY GATE 通過 → Step 1 へ進む
+- **1 件以上**: GATE 未通過 → `/spec-mesh clarify` を実行してから再度 Plan を開始
+
+```
+⚠️ CLARIFY GATE 未通過
+
+[NEEDS CLARIFICATION] が {N} 件残っています。
+曖昧点を解消してから Plan に進んでください。
+
+推奨: /spec-mesh clarify
+```
+
+---
 
 ### Step 1: Load Context
 
@@ -18,7 +42,10 @@ Create implementation plan from spec. **Human must review and approve before pro
    Read tool: .specify/specs/{project}/features/{id}/spec.md
    ```
 
-2. **Read Domain Spec** for M-*/API-* context
+2. **Read Domain Spec** for M-*/API-* context:
+   ```
+   Read tool: .specify/specs/{project}/overview/domain/spec.md
+   ```
 
 3. **Read Constitution:**
    ```

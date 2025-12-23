@@ -50,6 +50,23 @@ From plan's Work Breakdown section, create atomic tasks:
 - Define clear acceptance criteria
 - Specify required tests
 
+### Test Requirements by Task Type
+
+| Task Type | Required Tests | Optional Tests |
+|-----------|----------------|----------------|
+| API endpoint | Unit tests for handler logic, Integration tests for endpoint | E2E tests |
+| UI Component | Unit tests for component behavior, Snapshot tests | Integration tests |
+| Data/Schema | Migration tests, Unit tests for validators | - |
+| Business Logic | Unit tests for all branches, Edge case tests | Integration tests |
+| Bug Fix | Regression test (proves fix), Unit test for edge case | E2E test |
+
+**Test Checklist per Task:**
+- [ ] Unit tests cover the main functionality
+- [ ] Unit tests cover edge cases and error handling
+- [ ] Tests are linked to Spec IDs (@spec, @uc, @fr annotations)
+- [ ] Integration tests if the task involves multiple components
+- [ ] E2E tests if the task implements a complete UC flow
+
 ### Step 3: Save Tasks
 
 Save to feature directory:

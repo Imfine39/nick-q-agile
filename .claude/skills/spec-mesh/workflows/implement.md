@@ -74,7 +74,20 @@ describe('Feature behavior', () => {
 **3.6 Check for feedback needs:**
 - Technical constraint not in spec?
 - Ambiguity that needed decision?
-- → If yes, ask human permission to record feedback
+- Deviation from spec required?
+- Design decision made during implementation?
+
+**Feedback Approval Flow:**
+1. If any of the above apply, **stop and ask human permission**
+2. Describe the issue and proposed feedback
+3. On approval, use `/spec-mesh feedback` to record:
+   ```
+   /spec-mesh feedback
+   ```
+4. The feedback workflow will guide you to add Implementation Notes to the appropriate Spec
+5. **Never** record feedback without explicit human approval
+
+See `workflows/feedback.md` for detailed feedback recording process.
 
 ### Step 4: After All Tasks
 

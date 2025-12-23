@@ -43,7 +43,11 @@ Code MUST be maintainable and consistent.
 ### 4. Spec-Driven Workflow
 All changes MUST be driven by specifications.
 - Every non-trivial change from a GitHub Issue
-- 6-step sequence: Entry → Clarify → Plan → Tasks → Implement → PR
+- Core sequence: Entry → 入力検証 → Spec作成 → Multi-Review → [Clarify] → Plan → Tasks → Implement → PR
+  - 入力検証: Spec作成前に必須項目を確認（不足時は追加入力を要求）
+  - Multi-Review: Spec 作成直後に自動実行
+  - Clarify: [NEEDS CLARIFICATION] がある場合のみ実行
+  - **CLARIFY GATE**: [NEEDS CLARIFICATION] = 0 が Plan の前提条件
 - Specifications in `.specify/specs/` are the single source of truth
 - Ambiguity → Escalate, never guess
 
@@ -73,37 +77,55 @@ Version control MUST ensure traceability.
 
 ```
 1. Entry Point (/spec-mesh add, fix, issue)
-   → Issue creation → Branch creation → Spec creation
+   → Issue creation → Branch creation
 
-2. Multi-Review (/spec-mesh review) [自動実行]
+2. 入力検証（厳格）
+   → 必須項目チェック
+   → 不足時はユーザーに追加入力を要求
+
+3. Spec 作成
+   → 曖昧な箇所は [NEEDS CLARIFICATION] でマーク
+
+4. Multi-Review (/spec-mesh review) [自動実行]
    → 3観点並列レビュー（構造・内容・完全性）
    → AI修正可能な問題を修正
 
-3. Clarify (/spec-mesh clarify)
-   → Resolve [NEEDS CLARIFICATION] markers
-   → Human approves spec
+5. Lint 実行
+   → 構造検証
 
-4. Test Scenario (/spec-mesh test-scenario) [任意]
+6. [HUMAN_CHECKPOINT] Spec 確認
+   → ユーザーが Spec 内容を確認
+
+7. Clarify (/spec-mesh clarify) [条件付き]
+   → [NEEDS CLARIFICATION] がある場合のみ実行
+   → 解消後 Step 4 へ戻りループ
+
+   ════════════════════════════════════════════════════
+   ★ CLARIFY GATE: [NEEDS CLARIFICATION] = 0 必須
+   ════════════════════════════════════════════════════
+
+8. Test Scenario (/spec-mesh test-scenario) [任意]
    → Feature Spec からテストケース生成
    → テストデータ定義
 
-5. Plan (/spec-mesh plan)
+9. Plan (/spec-mesh plan)
+   → CLARIFY GATE 通過が前提条件
    → Implementation plan
    → HUMAN_CHECKPOINT: approval required
 
-6. Tasks (/spec-mesh tasks)
-   → Break into atomic tasks
+10. Tasks (/spec-mesh tasks)
+    → Break into atomic tasks
 
-7. Implement (/spec-mesh implement)
-   → Test-first development
-   → Record feedback if discoveries
+11. Implement (/spec-mesh implement)
+    → Test-first development
+    → Record feedback if discoveries
 
-8. E2E Test (/spec-mesh e2e) [任意]
-   → Chrome 拡張によるブラウザテスト
-   → スクリーンショット/GIF 証跡
+12. E2E Test (/spec-mesh e2e) [任意]
+    → Chrome 拡張によるブラウザテスト
+    → スクリーンショット/GIF 証跡
 
-9. PR (/spec-mesh pr)
-   → Integrity checks → PR creation → Review → Merge
+13. PR (/spec-mesh pr)
+    → Integrity checks → PR creation → Review → Merge
 ```
 
 ---

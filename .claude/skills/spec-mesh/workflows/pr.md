@@ -142,9 +142,22 @@ node .claude/skills/spec-mesh/scripts/state.cjs branch --set-step pr
 
 ---
 
-## Post-Merge Actions
+## Post-Merge Actions (MANDATORY)
 
-After PR is merged:
-1. Update Screen Spec status: `Planned` → `Implemented`
-2. Update Feature Index status
-3. Delete feature branch
+After PR is merged, the following updates are **required**:
+
+1. **Update Screen Spec status** (MANDATORY):
+   - Open `.specify/specs/{project}/overview/screen/spec.md`
+   - Find all SCR-* entries that were implemented in this PR
+   - Change `Status: Planned` to `Status: Implemented`
+   - This ensures the Screen Spec accurately reflects the current state
+
+2. **Update Feature Index status**:
+   - Update the feature's status in the index
+
+3. **Delete feature branch**:
+   ```bash
+   git branch -d {branch_name}
+   ```
+
+**Note:** Failing to update Screen Status creates inconsistency between specs and implementation.

@@ -50,10 +50,47 @@ ARGUMENTS に基づいて適切な workflow を実行します。
 Spec 作成は以下のフローで品質を担保：
 
 ```
-Input → Spec 作成 → Multi-Review (3観点並列) → 修正 → Lint → [HUMAN_CHECKPOINT]
-                          ↓
-                    問題あり → Clarify (ユーザー対話)
+┌─────────────────────────────────────────────────────────────────┐
+│ 1. Entry Point (add/fix/issue)                                  │
+│    ↓                                                            │
+│ 2. 入力検証（厳格）                                             │
+│    ├─ 必須項目不足 → ユーザーに追加入力を要求 → Step 2 へ戻る  │
+│    └─ OK → 次へ                                                 │
+│    ↓                                                            │
+│ 3. Spec 作成                                                    │
+│    ↓                                                            │
+│ 4. Multi-Review (3観点並列) → AI修正可能な問題を自動修正       │
+│    ↓                                                            │
+│ 5. Lint 実行                                                    │
+│    ↓                                                            │
+│ 6. [HUMAN_CHECKPOINT] ← Spec 内容を確認                         │
+│    ↓                                                            │
+│    [NEEDS CLARIFICATION] あり?                                  │
+│    ├─ YES → Spec Clarify → Step 4 へ戻る（ループ）             │
+│    │                                                            │
+│    └─ NO → ★ CLARIFY GATE 通過 ★                               │
+│                                                                 │
+│ ════════════════════════════════════════════════════════════════│
+│ ★ CLARIFY GATE: [NEEDS CLARIFICATION] = 0 が Plan の前提条件   │
+│ ════════════════════════════════════════════════════════════════│
+│                                                                 │
+│ 7. Plan → [HUMAN_CHECKPOINT]                                    │
+│    ↓                                                            │
+│ 8. Tasks → Implement → PR                                       │
+└─────────────────────────────────────────────────────────────────┘
 ```
+
+**2段階の曖昧点解消（ハイブリッド方式）**
+
+| 段階 | タイミング | 対象 | 方法 |
+|------|-----------|------|------|
+| 入力検証 | Spec作成前 | 入力の必須項目・明らかな不足 | ユーザーに追加入力を要求 |
+| Spec Clarify | Multi-Review後 | Spec内の[NEEDS CLARIFICATION] | `/spec-mesh clarify` で解消 |
+
+**重要: CLARIFY GATE**
+- **Plan に進む前提条件:** `[NEEDS CLARIFICATION]` マーカーが 0 件であること
+- 曖昧点が残っている状態で Plan に進むことは禁止
+- Clarify → Multi-Review → Lint のループを曖昧点解消まで繰り返す
 
 ### Multi-Review (Spec 作成後に自動実行)
 
@@ -93,9 +130,9 @@ Task tool (parallel, subagent_type: reviewer):
 | Lint | Review 後 | 自動構造検証 |
 | Checklist | Review 後（任意） | 品質スコア測定（50点満点） |
 | Clarify | 曖昧点発見時 | ユーザー対話で解消 |
-| **Test-Scenario** | Feature Spec 承認後 | テストケース作成 |
+| Test-Scenario | Feature Spec 承認後 | テストケース作成 |
 | Analyze | 実装完了後 | 実装 vs Spec 差分分析 |
-| **E2E** | 実装完了後 | ブラウザ操作による実動作テスト |
+| E2E | 実装完了後 | ブラウザ操作による実動作テスト |
 
 ## Core Rules
 
