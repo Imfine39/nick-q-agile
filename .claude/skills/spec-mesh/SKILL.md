@@ -35,6 +35,8 @@ ARGUMENTS に基づいて適切な workflow を実行します。
 | feedback | workflows/feedback.md | Spec へのフィードバック記録 |
 | featureproposal | workflows/featureproposal.md | Feature 提案 |
 | spec | workflows/spec.md | Spec 直接操作（上級者向け） |
+| **test-scenario** | workflows/test-scenario.md | **Test Scenario Spec 作成** |
+| **e2e** | workflows/e2e.md | **E2E テスト実行（Chrome 拡張）** |
 | (none/help) | Show available commands |
 
 ## Instructions
@@ -91,7 +93,9 @@ Task tool (parallel, subagent_type: reviewer):
 | Lint | Review 後 | 自動構造検証 |
 | Checklist | Review 後（任意） | 品質スコア測定（50点満点） |
 | Clarify | 曖昧点発見時 | ユーザー対話で解消 |
+| **Test-Scenario** | Feature Spec 承認後 | テストケース作成 |
 | Analyze | 実装完了後 | 実装 vs Spec 差分分析 |
+| **E2E** | 実装完了後 | ブラウザ操作による実動作テスト |
 
 ## Core Rules
 
@@ -137,4 +141,8 @@ Task tool (parallel, subagent_type: reviewer):
 /spec-mesh analyze     - 実装分析
 /spec-mesh checklist   - 品質チェックリスト
 /spec-mesh feedback    - フィードバック記録
+
+[テスト]
+/spec-mesh test-scenario - Test Scenario Spec 作成
+/spec-mesh e2e           - E2E テスト実行（Chrome 拡張）
 ```

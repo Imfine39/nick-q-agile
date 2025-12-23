@@ -98,6 +98,12 @@ Spec 作成 → Multi-Review (3観点並列) → Lint → [HUMAN_CHECKPOINT]
 | `/spec-mesh checklist` | 品質スコア測定 |
 | `/spec-mesh feedback` | フィードバック記録 |
 
+**テスト**
+| コマンド | 用途 |
+|----------|------|
+| `/spec-mesh test-scenario` | Test Scenario Spec 作成 |
+| `/spec-mesh e2e` | E2E テスト実行（Chrome 拡張） |
+
 ### 典型的なワークフロー
 
 **新規プロジェクト:**
@@ -108,12 +114,19 @@ Spec 作成 → Multi-Review (3観点並列) → Lint → [HUMAN_CHECKPOINT]
 
 **機能追加:**
 ```
-/spec-mesh add → (Multi-Review自動) → clarify → plan → tasks → implement → pr
+/spec-mesh add → (Multi-Review自動) → clarify
+→ test-scenario → plan → tasks → implement → e2e → pr
 ```
 
 **バグ修正:**
 ```
-/spec-mesh fix → (Multi-Review自動) → plan → tasks → implement → pr
+/spec-mesh fix → (Multi-Review自動) → plan → tasks → implement → e2e → pr
+```
+
+**テストフロー:**
+```
+Feature Spec 承認後 → /spec-mesh test-scenario → テストデータ定義
+→ 実装完了後 → /spec-mesh e2e → Pass/Fail レポート
 ```
 
 ---
