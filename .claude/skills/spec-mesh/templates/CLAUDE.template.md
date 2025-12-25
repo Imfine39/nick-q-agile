@@ -1,6 +1,3 @@
-<!-- SSD-MESH-TEMPLATE-START -->
-<!-- このセクションは update.cjs で自動更新されます。直接編集しないでください。 -->
-
 # Claude Code Development Guide
 
 このリポジトリで動作する Claude Code の行動指針です。
@@ -208,24 +205,3 @@ node .claude/skills/spec-mesh/scripts/update.cjs          # 更新実行
 | [constitution.md](.claude/skills/spec-mesh/constitution.md) | Engineering Constitution |
 | [SKILL.md](.claude/skills/spec-mesh/SKILL.md) | Skill 定義・ルーティング |
 | [docs/](docs/) | 詳細ドキュメント |
-
-<!-- SSD-MESH-TEMPLATE-END -->
-
----
-
-## Project-Specific Rules
-
-このセクション以降はプロジェクト固有の設定です。
-テンプレート更新時も保持されます。
-
-### Additional Rules
-
-<!-- プロジェクト固有のルールをここに追加 -->
-
-### Custom Workflows
-
-<!-- プロジェクト固有のワークフローをここに追加 -->
-
-### Notes
-
-<!-- その他のメモ -->

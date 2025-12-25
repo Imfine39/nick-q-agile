@@ -263,6 +263,56 @@ node .claude/skills/spec-mesh/scripts/generate-matrix-view.cjs
 # Git・PR
 node .claude/skills/spec-mesh/scripts/branch.cjs --type <type> --slug <slug> --issue <num>
 node .claude/skills/spec-mesh/scripts/pr.cjs
+
+# テンプレート更新
+node .claude/skills/spec-mesh/scripts/update.cjs --check  # 更新確認
+node .claude/skills/spec-mesh/scripts/update.cjs          # 更新実行
+```
+
+---
+
+## Template Update
+
+このプロジェクトが ssd-template から作成された場合、以下のコマンドでテンプレートを更新できます。
+
+```bash
+# 更新があるか確認
+node .claude/skills/spec-mesh/scripts/update.cjs --check
+
+# 更新を実行
+node .claude/skills/spec-mesh/scripts/update.cjs
+```
+
+### 更新対象
+
+| ファイル/ディレクトリ | 説明 |
+|---------------------|------|
+| `.claude/skills/spec-mesh/` | フレームワーク本体 |
+| `.claude/agents/reviewer.md` | Reviewer Agent |
+| `.claude/agents/developer.md` | Developer Agent |
+| `.github/workflows/` | CI/CD |
+| `docs/` | ドキュメント |
+| `CLAUDE.md` | テンプレートセクションのみ |
+
+### 保護対象（更新されない）
+
+| ファイル/ディレクトリ | 説明 |
+|---------------------|------|
+| `.specify/specs/` | プロジェクトの仕様書 |
+| `.specify/input/` | ユーザー入力 |
+| `.specify/state/` | プロジェクト状態 |
+| `CLAUDE.md` | Project-Specific セクション |
+| プロジェクト独自のスキル/Agent | `.claude/skills/` 内の他フォルダ |
+
+### CLAUDE.md のセクション構造
+
+```markdown
+<!-- SSD-MESH-TEMPLATE-START -->
+... テンプレート内容（自動更新）...
+<!-- SSD-MESH-TEMPLATE-END -->
+
+## Project-Specific Rules
+... プロジェクト固有設定（保護）...
 ```
 
 ---
