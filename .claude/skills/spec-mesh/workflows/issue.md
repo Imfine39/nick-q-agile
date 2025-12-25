@@ -217,6 +217,7 @@ node .claude/skills/spec-mesh/scripts/state.cjs branch --set-step spec --set-fea
 - [ ] branch.cjs でブランチを作成したか
 - [ ] Domain Spec を読み込んで M-*/API-* を確認したか
 - [ ] Screen Spec を更新したか（Spec-First）
+- [ ] **Impact Analysis を実行したか（Domain/Screen 変更時）** → [shared/impact-analysis.md](shared/impact-analysis.md)
 - [ ] Feature Spec を作成したか
 - [ ] **Multi-Review を実行したか（3観点並列）**
 - [ ] spec-lint.cjs を実行したか
@@ -228,7 +229,7 @@ node .claude/skills/spec-mesh/scripts/state.cjs branch --set-step spec --set-fea
 
 **[HUMAN_CHECKPOINT]** Feature Spec の内容を確認してから次のステップに進んでください。
 
-| Condition | Command | Description |
-|-----------|---------|-------------|
-| 曖昧点がある場合 | clarify ワークフロー | 曖昧点解消 |
-| 曖昧点が解消済み | plan ワークフロー | 実装計画作成 |
+| Condition | Workflow | Description |
+|-----------|----------|-------------|
+| 曖昧点がある場合 | clarify | 曖昧点解消 |
+| 曖昧点が解消済み | plan | 実装計画作成 |

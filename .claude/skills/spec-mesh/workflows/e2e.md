@@ -2,6 +2,17 @@
 
 Chrome 拡張を使用して E2E テストを実行する。
 
+## Flow Position
+
+```
+implement → test-scenario → [e2e] → pr
+```
+
+**タイミング:** test-scenario 完了後、PR 作成前
+**対象:** UI を含む Feature（Test Scenario Spec 必須）
+
+---
+
 ## Purpose
 
 - Test Scenario Spec に基づいて実際のブラウザ操作でテスト
@@ -338,11 +349,11 @@ find でマッチしない場合:
 
 **[HUMAN_CHECKPOINT]** E2E テスト結果を確認してから次のステップに進んでください。
 
-| Condition | Command | Description |
-|-----------|---------|-------------|
-| 全テストパスの場合 | pr ワークフロー | PR 作成 |
-| 一部失敗の場合 | e2e ワークフロー | 実装修正後に再テスト |
-| Spec に問題がある場合 | change ワークフロー | Spec 更新 |
+| Condition | Workflow | Description |
+|-----------|----------|-------------|
+| 全テストパスの場合 | pr | PR 作成 |
+| 一部失敗の場合 | e2e | 実装修正後に再テスト |
+| Spec に問題がある場合 | change | Spec 更新 |
 
 ---
 

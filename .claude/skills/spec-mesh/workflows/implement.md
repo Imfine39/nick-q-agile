@@ -165,7 +165,8 @@ node .claude/skills/spec-mesh/scripts/state.cjs branch --set-step implement --se
 
 **[HUMAN_CHECKPOINT]** 実装結果とテスト結果を確認してから次のステップに進んでください。
 
-| Condition | Command | Description |
-|-----------|---------|-------------|
-| 実装完了後 | pr ワークフロー | PR 作成 |
-| Spec へのフィードバックがある場合 | feedback ワークフロー | Spec へのフィードバック記録 |
+| Condition | Workflow | Description |
+|-----------|----------|-------------|
+| UI 機能の場合（推奨） | test-scenario | Test Scenario 作成 → E2E テスト |
+| API のみ / テスト不要の場合 | pr | PR 作成 |
+| Spec へのフィードバックがある場合 | feedback | Spec へのフィードバック記録 |

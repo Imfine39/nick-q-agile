@@ -30,6 +30,7 @@
 | 「画面設計」「Design を作成」 | `workflows/design.md` |
 | 「機能を追加」「〇〇機能を作りたい」 | `workflows/add.md` |
 | 「バグを修正」「エラーを直して」 | `workflows/fix.md` |
+| 「色を変更」「typo修正」「簡単なfix」 | `workflows/quick.md` |
 | 「Issue #N から開始」 | `workflows/issue.md` |
 | 「Spec を変更」「M-* を修正」 | `workflows/change.md` |
 | 「実装計画」「Plan を作成」 | `workflows/plan.md` |
@@ -172,7 +173,9 @@ node .claude/skills/spec-mesh/scripts/reset-input.cjs vision|add|fix
 node .claude/skills/spec-mesh/scripts/preserve-input.cjs vision|add|fix|design
 
 # Lint・検証
-node .claude/skills/spec-mesh/scripts/spec-lint.cjs
+node .claude/skills/spec-mesh/scripts/spec-lint.cjs             # フル lint
+node .claude/skills/spec-mesh/scripts/spec-lint.cjs -i          # 増分 lint（変更ファイルのみ）
+node .claude/skills/spec-mesh/scripts/spec-lint.cjs --force     # キャッシュリセット + フル lint
 node .claude/skills/spec-mesh/scripts/validate-matrix.cjs
 node .claude/skills/spec-mesh/scripts/spec-metrics.cjs
 
@@ -183,6 +186,12 @@ node .claude/skills/spec-mesh/scripts/generate-matrix-view.cjs
 # Git・PR
 node .claude/skills/spec-mesh/scripts/branch.cjs --type <type> --slug <slug> --issue <num>
 node .claude/skills/spec-mesh/scripts/pr.cjs
+node .claude/skills/spec-mesh/scripts/post-merge.cjs --feature <id> --delete-branch
+
+# Changelog
+node .claude/skills/spec-mesh/scripts/changelog.cjs record --spec <path> --type <type> --description <desc>
+node .claude/skills/spec-mesh/scripts/changelog.cjs list --limit 10
+node .claude/skills/spec-mesh/scripts/changelog.cjs export --format md
 
 # テンプレート更新
 node .claude/skills/spec-mesh/scripts/update.cjs --check  # 更新確認

@@ -2,6 +2,17 @@
 
 Feature Spec から Test Scenario Spec を作成する。
 
+## Flow Position
+
+```
+implement → [test-scenario] → e2e → pr
+```
+
+**タイミング:** implement 完了後、PR 作成前
+**対象:** UI を含む Feature（API のみの場合はスキップ可）
+
+---
+
 ## Purpose
 
 - Feature Spec の Acceptance Criteria をテスト可能な形式に変換
@@ -275,10 +286,10 @@ Test Data:
 
 **[HUMAN_CHECKPOINT]** Test Scenario Spec の内容を確認してから次のステップに進んでください。
 
-| Condition | Command | Description |
-|-----------|---------|-------------|
-| 実装完了後 | e2e ワークフロー | E2E テスト実行 |
-| テスト前に実装する場合 | plan ワークフロー | 実装計画作成 |
+| Condition | Workflow | Description |
+|-----------|----------|-------------|
+| 実装完了後 | e2e | E2E テスト実行 |
+| テスト前に実装する場合 | plan | 実装計画作成 |
 
 ---
 

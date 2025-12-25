@@ -144,9 +144,34 @@ node .claude/skills/spec-mesh/scripts/branch.cjs --type feature --slug {slug} --
    - Case 2: Need new → Add to Domain
    - Case 3: Need change → Recommend change ワークフロー
 
-5. **Update Domain Spec Feature Index**
+5. **Impact Analysis (Case 2/3 の場合)**
 
-6. **Update Cross-Reference Matrix**
+   > **共通コンポーネント参照:** [shared/impact-analysis.md](shared/impact-analysis.md) を **STANDARD モード** で実行
+
+   Domain への追加/変更が必要な場合、影響範囲を確認：
+   ```
+   === Impact Analysis (STANDARD) ===
+
+   追加/変更: M-NEWENTITY, API-NEWENTITY-LIST
+
+   参照整合性:
+   - [x] 新規 ID が既存と重複していないか
+   - [x] 参照する M-*/API-* が定義済みか
+
+   Matrix 更新: 必要（新規 Feature 追加のため）
+   ```
+
+6. **Update Domain Spec Feature Index**
+
+7. **Update Cross-Reference Matrix**
+
+8. **Record Changelog:**
+   ```bash
+   node .claude/skills/spec-mesh/scripts/changelog.cjs record \
+     --feature S-XXX-001 \
+     --type create \
+     --description "Feature Spec 作成: {機能名}"
+   ```
 
 ### Step 7: Multi-Review (3観点並列レビュー)
 
@@ -264,6 +289,7 @@ If input file was used:
 - [ ] scaffold-spec.cjs で spec を作成したか
 - [ ] Screen Spec を先に更新したか（Spec-First）
 - [ ] M-*/API-* の Case 判定を行ったか
+- [ ] **Impact Analysis を実行したか（Case 2/3 の場合）**
 - [ ] **Multi-Review を実行したか（3観点並列）**
 - [ ] **CLARIFY GATE をチェックしたか**
 - [ ] spec-lint.cjs を実行したか
@@ -273,7 +299,7 @@ If input file was used:
 
 ## Next Steps
 
-| Condition | Command | Description |
-|-----------|---------|-------------|
-| CLARIFY GATE: BLOCKED | clarify ワークフロー | **必須** - 曖昧点を解消 |
-| CLARIFY GATE: PASSED + 人間承認 | plan ワークフロー | 実装計画作成 |
+| Condition | Workflow | Description |
+|-----------|----------|-------------|
+| CLARIFY GATE: BLOCKED | clarify | **必須** - 曖昧点を解消 |
+| CLARIFY GATE: PASSED + 人間承認 | plan | 実装計画作成 |

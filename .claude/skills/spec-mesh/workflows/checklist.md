@@ -168,8 +168,8 @@ Checklist: .specify/specs/features/{id}/checklist.md
 
 **[HUMAN_CHECKPOINT]** 品質スコアを確認してから次のステップに進んでください。
 
-| Condition | Command | Description |
-|-----------|---------|-------------|
-| スコア 40+ の場合 | plan ワークフロー | 実装計画作成 |
-| スコア 30-39 の場合 | clarify ワークフロー | 軽微な問題を解消（推奨） |
-| スコア 30 未満の場合 | clarify ワークフロー | 重大な問題を解消（必須） |
+| Condition | Workflow | Description |
+|-----------|----------|-------------|
+| スコア 40+ の場合 | plan | 実装計画作成 |
+| スコア 30-39 の場合 | clarify | 軽微な問題を解消（推奨） |
+| スコア 30 未満の場合 | clarify | 重大な問題を解消（必須） |

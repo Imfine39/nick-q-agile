@@ -183,10 +183,10 @@ node .claude/skills/spec-mesh/scripts/state.cjs repo --set-{spec_type}-status cl
 
 **[HUMAN_CHECKPOINT]** 曖昧点の解消結果を確認してから次のステップに進んでください。
 
-| Condition | Command | Description |
-|-----------|---------|-------------|
-| Vision Spec の場合 | design ワークフロー | Screen + Domain + Matrix 作成 |
-| Domain Spec の場合 | issue ワークフロー | Issue から開発開始 |
-| Screen Spec の場合 | issue ワークフロー | Issue から開発開始 |
-| Feature Spec の場合 | plan ワークフロー | 実装計画作成 |
-| Fix Spec の場合 | plan ワークフロー | 修正計画作成 |
+| Condition | Workflow | Description |
+|-----------|----------|-------------|
+| Vision Spec の場合 | design | Screen + Domain + Matrix 作成 |
+| Domain Spec の場合 | issue | Issue から開発開始 |
+| Screen Spec の場合 | issue | Issue から開発開始 |
+| Feature Spec の場合 | plan | 実装計画作成 |
+| Fix Spec の場合 | plan | 修正計画作成 |

@@ -88,25 +88,51 @@ Read tool: .specify/specs/overview/{spec_type}/spec.md
 
 ### Step 4: Impact Analysis (Case 3 Decision)
 
-1. **Find affected Features:**
-   - Search for references to changed IDs
-   - List all impacted Feature Specs
+> **共通コンポーネント参照:** [shared/impact-analysis.md](shared/impact-analysis.md) を **FULL モード** で実行
 
-2. **Display impact and request approval:**
-   ```
-   === Impact Analysis ===
+#### 4.1 FULL モード影響分析
 
-   Changing: M-USER (属性追加: email)
+1. **変更対象の特定** - 変更する M-*/API-*/SCR-* を明確化
+2. **上流影響分析** - この変更の影響を受ける Feature Spec を検索
+3. **下流影響分析** - 変更対象が依存している要素を確認
+4. **Matrix 整合性チェック** - 参照関係を確認
 
-   Affected:
-   - S-AUTH-001: ユーザー認証 (uses M-USER)
-   - S-PROFILE-001: プロフィール編集 (uses M-USER)
-   - API-USER-CREATE: 新規作成API (returns M-USER)
-   - API-USER-UPDATE: 更新API (accepts M-USER)
-   - SCR-002: ユーザー登録画面
-   ```
+#### 4.2 影響度判定
+
+| 影響度 | 条件 | 対応 |
+|--------|------|------|
+| **CRITICAL** | 3つ以上の Feature が影響 | 全 Feature オーナーへの事前通知必須 |
+| **HIGH** | 1-2つの Feature が影響 | 影響 Spec の同時更新必須 |
+| **MEDIUM** | Matrix のみ影響 | Matrix 更新で対応 |
+| **LOW** | 参照なし | そのまま続行 |
+
+#### 4.3 影響レポート出力
+
+```
+=== Impact Analysis (FULL) ===
+
+変更対象: M-USER (属性追加: email)
+影響度: HIGH
+
+上流影響（この変更の影響を受ける Spec）:
+- S-AUTH-001: ユーザー認証 (uses M-USER)
+- S-PROFILE-001: プロフィール編集 (uses M-USER)
+
+下流依存:
+- API-USER-CREATE: 新規作成API (returns M-USER)
+- API-USER-UPDATE: 更新API (accepts M-USER)
+
+Matrix 参照:
+- SCR-002: ユーザー登録画面
+
+必要なアクション:
+1. S-AUTH-001 の FR を更新
+2. S-PROFILE-001 の UC を更新
+3. Matrix の screen mappings を更新
+```
 
 **[HUMAN_CHECKPOINT]** (Case 3 Decision)
+- [ ] 影響分析結果を確認したか
 - [ ] 影響を受ける Feature の一覧を確認したか
 - [ ] 変更による破壊的影響を理解しているか
 - [ ] 影響を受ける実装の更新計画があるか
@@ -130,6 +156,13 @@ node .claude/skills/spec-mesh/scripts/branch.cjs --type spec --slug {slug} --iss
    node .claude/skills/spec-mesh/scripts/generate-matrix-view.cjs
    ```
 3. **Update affected Feature Specs** (if needed)
+4. **Record Changelog:**
+   ```bash
+   node .claude/skills/spec-mesh/scripts/changelog.cjs record \
+     --spec "{spec_path}" \
+     --type update \
+     --description "{変更内容の要約}"
+   ```
 
 ### Step 7: Multi-Review (3観点並列レビュー)
 
@@ -248,8 +281,8 @@ node .claude/skills/spec-mesh/scripts/validate-matrix.cjs
 
 ## Next Steps
 
-| Condition | Command | Description |
-|-----------|---------|-------------|
-| CLARIFY GATE: BLOCKED | clarify ワークフロー | **必須** - 曖昧点を解消 |
-| CLARIFY GATE: PASSED + Spec のみ | pr ワークフロー | PR 作成 |
-| CLARIFY GATE: PASSED + 実装必要 | implement ワークフロー | Feature 作業を再開 |
+| Condition | Workflow | Description |
+|-----------|----------|-------------|
+| CLARIFY GATE: BLOCKED | clarify | **必須** - 曖昧点を解消 |
+| CLARIFY GATE: PASSED + Spec のみ | pr | PR 作成 |
+| CLARIFY GATE: PASSED + 実装必要 | implement | Feature 作業を再開 |

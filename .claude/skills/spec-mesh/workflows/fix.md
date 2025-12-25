@@ -235,6 +235,84 @@ If input file was used:
 
 ---
 
+## Severity Classification（修正規模の判定）
+
+Fix Spec 作成後、以下の基準で修正規模を判定する：
+
+### Trivial（軽微）
+
+以下の **すべて** を満たす場合：
+
+| 条件 | チェック |
+|------|----------|
+| 変更ファイル数 | ≤ 3 ファイル |
+| 変更行数 | ≤ 30 行 |
+| Root Cause | 明確（typo、null チェック漏れ、設定ミス等） |
+| 影響範囲 | 局所的（単一機能内） |
+| テスト | 既存テストで検証可能 or テスト追加不要 |
+| ロールバックリスク | 低（簡単に戻せる） |
+
+**例:**
+- null チェック漏れによる例外
+- 設定値の typo
+- CSS の表示崩れ
+- 単純な条件分岐ミス
+
+### Standard（標準）
+
+Trivial の条件を **いずれか** 満たさない場合：
+
+| 条件 | 例 |
+|------|-----|
+| 変更ファイル数 | > 3 ファイル |
+| 変更行数 | > 30 行 |
+| Root Cause | 複雑（設計問題、競合状態、データ不整合等） |
+| 影響範囲 | 広域（複数機能、共有コンポーネント） |
+| テスト | 新規テスト作成が必要 |
+| ロールバックリスク | 高（データ影響、依存関係） |
+
+**例:**
+- データ競合による不整合
+- 複数コンポーネントに跨るバグ
+- パフォーマンス問題
+- セキュリティ脆弱性
+
+### 判定出力
+
+```
+=== Severity Classification ===
+
+Root Cause: {概要}
+
+チェック結果:
+- [x] 変更ファイル数: 2 (≤ 3)
+- [x] 変更行数: 15 (≤ 30)
+- [x] Root Cause: 明確（null チェック漏れ）
+- [x] 影響範囲: 局所的
+- [x] テスト: 既存テストで検証可能
+- [x] ロールバックリスク: 低
+
+判定: Trivial → implement ワークフロー へ直接進む
+```
+
+```
+=== Severity Classification ===
+
+Root Cause: {概要}
+
+チェック結果:
+- [x] 変更ファイル数: 5 (> 3)
+- [ ] 変更行数: 80 (> 30)
+- [ ] Root Cause: 複雑（データ競合）
+- [ ] 影響範囲: 広域
+- [x] テスト: 新規テスト必要
+- [ ] ロールバックリスク: 高
+
+判定: Standard → plan ワークフロー で計画を作成
+```
+
+---
+
 ## Self-Check
 
 - [ ] **TodoWrite で全ステップを登録したか**
@@ -243,6 +321,8 @@ If input file was used:
 - [ ] branch.cjs でブランチを作成したか
 - [ ] 原因調査を実施したか
 - [ ] Fix Spec に Root Cause を記載したか
+- [ ] **Impact Analysis を実行したか（Screen 変更時）** → [shared/impact-analysis.md](shared/impact-analysis.md)
+- [ ] **Severity Classification を実行したか（Trivial/Standard）**
 - [ ] **Multi-Review を実行したか（3観点並列）**
 - [ ] **CLARIFY GATE をチェックしたか**
 - [ ] spec-lint.cjs を実行したか
@@ -252,8 +332,8 @@ If input file was used:
 
 ## Next Steps
 
-| Condition | Command | Description |
-|-----------|---------|-------------|
-| CLARIFY GATE: BLOCKED | clarify ワークフロー | **必須** - 曖昧点を解消 |
-| CLARIFY GATE: PASSED + Trivial | implement ワークフロー | 直接修正 |
-| CLARIFY GATE: PASSED + Standard | plan ワークフロー | 修正計画作成 |
+| Condition | Workflow | Description |
+|-----------|----------|-------------|
+| CLARIFY GATE: BLOCKED | clarify | **必須** - 曖昧点を解消 |
+| CLARIFY GATE: PASSED + Trivial | implement | 直接修正 |
+| CLARIFY GATE: PASSED + Standard | plan | 修正計画作成 |

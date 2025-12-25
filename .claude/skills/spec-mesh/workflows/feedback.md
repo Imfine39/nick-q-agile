@@ -51,7 +51,40 @@ Impact: {Spec への影響}
 この内容を Spec に記録してよいですか？ (y/N)
 ```
 
-### Step 3: Update Spec
+### Step 3: Impact Analysis（影響分析）
+
+フィードバックを記録する前に、影響範囲を確認：
+
+> **共通コンポーネント参照:** [shared/impact-analysis.md](shared/impact-analysis.md) を **FULL モード** で実行
+
+#### 実行理由
+
+フィードバックは複数の Spec に影響を与える可能性が高い：
+- 技術的制約 → Domain の API 定義に影響
+- 設計決定 → Screen/Feature 両方に影響
+- エッジケース → Feature の UC/FR に影響
+
+#### 影響分析の出力
+
+```
+=== Impact Analysis (FULL) ===
+
+フィードバック: API レート制限のためキャッシュが必要
+影響度: HIGH
+
+上流影響:
+- S-ORDERS-001: UC-ORDERS-002 でAPI呼び出し → キャッシュ戦略の記載必要
+- S-DASHBOARD-001: リアルタイム更新仕様 → 更新間隔の見直し必要
+
+下流依存:
+- API-ORDER-LIST: レート制限の明記が必要
+
+必要なアクション:
+1. Domain Spec に API レート制限を追記
+2. S-ORDERS-001, S-DASHBOARD-001 の Implementation Notes を更新
+```
+
+### Step 4: Update Spec
 
 1. **Read current Spec:**
    ```
@@ -94,17 +127,18 @@ Impact: {Spec への影響}
 
 3. **Update affected sections** if needed
 
-4. **Cross-update related Specs** if the feedback affects multiple Specs:
-   - Domain 変更 → Screen/Feature への影響を確認
-   - Screen 変更 → Feature への影響を確認
+4. **Cross-update related Specs** based on Impact Analysis results:
+   - Impact Analysis で特定された全 Spec を更新
+   - Domain 変更 → Screen/Feature への影響を反映
+   - Screen 変更 → Feature への影響を反映
 
-### Step 4: Run Lint
+### Step 5: Run Lint
 
 ```bash
 node .claude/skills/spec-mesh/scripts/spec-lint.cjs
 ```
 
-### Step 5: Summary
+### Step 6: Summary
 
 Display:
 ```
@@ -117,10 +151,11 @@ Section: {Clarifications|Implementation Notes}
 記録内容:
 - Type: {Feedback Type}
 - Title: {Title}
+- Impact: {影響度}
 
-{関連 Spec がある場合}
-関連 Spec への影響:
-- {related_spec_path}: {影響内容}
+関連 Spec への影響（Impact Analysis 結果）:
+- {related_spec_1}: {更新内容}
+- {related_spec_2}: {更新内容}
 
 実装を続行してください: implement ワークフロー
 ```
@@ -131,7 +166,9 @@ Section: {Clarifications|Implementation Notes}
 
 - [ ] Feedback の種類を特定したか
 - [ ] 人間の承認を得たか
+- [ ] **Impact Analysis (FULL) を実行したか**
 - [ ] Spec の Clarifications セクションに追記したか
+- [ ] **影響を受ける関連 Spec も更新したか**
 - [ ] spec-lint を実行したか
 
 ---
@@ -140,7 +177,7 @@ Section: {Clarifications|Implementation Notes}
 
 **[HUMAN_CHECKPOINT]** フィードバック記録の内容を確認してから次のステップに進んでください。
 
-| Condition | Command | Description |
-|-----------|---------|-------------|
-| 実装を続行する場合 | implement ワークフロー | 実装続行 |
-| 実装完了の場合 | pr ワークフロー | PR 作成 |
+| Condition | Workflow | Description |
+|-----------|----------|-------------|
+| 実装を続行する場合 | implement | 実装続行 |
+| 実装完了の場合 | pr | PR 作成 |

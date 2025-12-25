@@ -28,13 +28,13 @@
  *   node .claude/skills/spec-mesh/scripts/scaffold-spec.cjs --kind vision --id S-VISION-001 --title "Project Vision"
  *
  *   node .claude/skills/spec-mesh/scripts/scaffold-spec.cjs --kind domain --id S-DOMAIN-001 --title "System Domain"
- *     --vision S-VISION-001 --masters M-CLIENTS,M-ORDERS --apis API-ORDERS-LIST
+ *     --vision S-VISION-001 --masters M-CLIENT,M-ORDER --apis API-ORDER-LIST
  *
  *   node .claude/skills/spec-mesh/scripts/scaffold-spec.cjs --kind screen --id S-SCREEN-001 --title "System Screens"
  *     --vision S-VISION-001 --domain S-DOMAIN-001
  *
  *   node .claude/skills/spec-mesh/scripts/scaffold-spec.cjs --kind feature --id S-SALES-001 --title "Basic Sales Recording"
- *     --domain S-DOMAIN-001 --uc UC-001:Record sale,UC-002:Adjust sale --masters M-CLIENTS --apis API-ORDERS-LIST
+ *     --domain S-DOMAIN-001 --uc UC-001:Record sale,UC-002:Adjust sale --masters M-CLIENT --apis API-ORDER-LIST
  *
  *   node .claude/skills/spec-mesh/scripts/scaffold-spec.cjs --kind fix --id F-AUTH-001 --title "Login Error Fix"
  *     --issue 50
@@ -58,6 +58,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { execSync } = require('child_process');
 
 const VALID_KINDS = ['vision', 'domain', 'screen', 'feature', 'fix', 'overview', 'test-scenario'];
 
@@ -252,6 +253,28 @@ function fixDirFromId(id, title) {
   return `${id.replace(/[^A-Z0-9]+/gi, '').toLowerCase()}-${slug}`.slice(0, 80);
 }
 
+// Record changelog entry for spec creation
+function recordChangelog(specPath, specId, kind, title) {
+  try {
+    const changelogScript = path.join(__dirname, 'changelog.cjs');
+    if (!fs.existsSync(changelogScript)) {
+      return; // Skip if changelog script doesn't exist
+    }
+
+    const description = `${kind.charAt(0).toUpperCase() + kind.slice(1)} Spec 作成: ${title}`;
+    const specArg = kind === 'feature' || kind === 'fix' ? `--feature ${specId}` : `--spec ${specPath}`;
+
+    execSync(
+      `node "${changelogScript}" record ${specArg} --type create --description "${description}"`,
+      { stdio: 'pipe', cwd: process.cwd() }
+    );
+    console.log('Changelog entry recorded');
+  } catch (e) {
+    // Non-critical, just log warning
+    console.log('Note: Could not record changelog entry');
+  }
+}
+
 function main() {
   const args = parseArgs();
   const template = readTemplate(args.kind);
@@ -265,6 +288,7 @@ function main() {
     const content = buildSpecContent(template, args, args.kind);
     fs.writeFileSync(outPath, content, 'utf8');
     console.log(`Created ${args.kind.charAt(0).toUpperCase() + args.kind.slice(1)} spec at ${path.relative(process.cwd(), outPath)}`);
+    recordChangelog(path.relative(process.cwd(), outPath), args.id, args.kind, args.title);
     return;
   }
 
@@ -278,6 +302,7 @@ function main() {
     const content = buildSpecContent(template, args, relDir);
     fs.writeFileSync(outPath, content, 'utf8');
     console.log(`Created Fix spec at ${path.relative(process.cwd(), outPath)}`);
+    recordChangelog(path.relative(process.cwd(), outPath), args.id, args.kind, args.title);
     return;
   }
 
@@ -294,6 +319,7 @@ function main() {
     const content = buildSpecContent(template, args, relDir);
     fs.writeFileSync(outPath, content, 'utf8');
     console.log(`Created Test Scenario spec at ${path.relative(process.cwd(), outPath)}`);
+    recordChangelog(path.relative(process.cwd(), outPath), args.id, args.kind, args.title);
     return;
   }
 
@@ -306,6 +332,7 @@ function main() {
   const content = buildSpecContent(template, args, relDir);
   fs.writeFileSync(outPath, content, 'utf8');
   console.log(`Created Feature spec at ${path.relative(process.cwd(), outPath)}`);
+  recordChangelog(path.relative(process.cwd(), outPath), args.id, 'feature', args.title);
 
   // Append to Domain index if present
   // Structure: specs/overview/domain/spec.md

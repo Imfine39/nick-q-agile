@@ -191,7 +191,7 @@ node .claude/skills/spec-mesh/scripts/state.cjs branch --set-step plan
 
 承認後、tasks ワークフロー でタスク分割に進んでください。
 
-| Condition | Command | Description |
-|-----------|---------|-------------|
-| Plan 承認後 | tasks ワークフロー | タスク分割 |
-| 不明点がある場合 | clarify ワークフロー | 不明点確認 |
+| Condition | Workflow | Description |
+|-----------|----------|-------------|
+| Plan 承認後 | tasks | タスク分割 |
+| 不明点がある場合 | clarify | 不明点確認 |

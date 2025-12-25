@@ -184,29 +184,40 @@ node .claude/skills/spec-mesh/scripts/state.cjs branch --set-step pr
 
 PR 作成完了後、レビューを待ってください。
 
-| Condition | Command | Description |
-|-----------|---------|-------------|
-| PR マージ後 | (Post-Merge Actions 参照) | Screen Spec / Feature Index の Status 更新 |
-| 追加修正が必要な場合 | implement ワークフロー | 実装を修正 |
+| Condition | Workflow | Description |
+|-----------|----------|-------------|
+| PR マージ後 | (Post-Merge Actions) | Screen Spec / Feature Index の Status 更新 |
+| 追加修正が必要な場合 | implement | 実装を修正 |
 
 ---
 
 ## Post-Merge Actions (MANDATORY)
 
-After PR is merged, the following updates are **required**:
+After PR is merged, run the post-merge script:
 
-1. **Update Screen Spec status** (MANDATORY):
-   - Open `.specify/specs/overview/screen/spec.md`
-   - Find all SCR-* entries that were implemented in this PR
-   - Change `Status: Planned` to `Status: Implemented`
-   - This ensures the Screen Spec accurately reflects the current state
+```bash
+node .claude/skills/spec-mesh/scripts/post-merge.cjs --feature {FEATURE_ID} --delete-branch
+```
 
-2. **Update Feature Index status**:
-   - Update the feature's status in the index
+**Example:**
+```bash
+node .claude/skills/spec-mesh/scripts/post-merge.cjs --feature S-AUTH-001 --delete-branch
+```
 
-3. **Delete feature branch**:
-   ```bash
-   git branch -d {branch_name}
-   ```
+### What it does:
 
-**Note:** Failing to update Screen Status creates inconsistency between specs and implementation.
+1. **Update Screen Spec status**: `Planned` → `Implemented` for all SCR-* referenced
+2. **Update Feature Index status**: `IMPLEMENTING` → `COMPLETED`
+3. **Update Feature Spec status**: `IMPLEMENTING` → `COMPLETED`
+4. **Clean up branch state**: Remove from `branch-state.cjson`
+5. **Delete git branch** (if `--delete-branch` specified)
+
+### Manual fallback:
+
+If the script fails, perform these updates manually:
+
+1. Open `.specify/specs/overview/screen/spec.md` and update SCR-* status
+2. Open `.specify/specs/overview/domain/spec.md` and update Feature Index
+3. Delete branch: `git branch -d {branch_name}`
+
+**Note:** Failing to run post-merge creates inconsistency between specs and implementation.

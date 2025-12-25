@@ -63,10 +63,10 @@ node .claude/skills/spec-mesh/scripts/state.cjs repo --set-{kind}-status scaffol
 
 **[HUMAN_CHECKPOINT]** 作成した Spec の内容を確認してから次のステップに進んでください。
 
-| Condition | Command | Description |
-|-----------|---------|-------------|
-| Vision Spec の場合 | clarify ワークフロー | 曖昧点解消 → design ワークフロー |
-| Domain Spec の場合 | clarify ワークフロー | 曖昧点解消 → issue ワークフロー |
-| Screen Spec の場合 | clarify ワークフロー | 曖昧点解消 → issue ワークフロー |
-| Feature Spec の場合 | clarify ワークフロー | 曖昧点解消 → plan ワークフロー |
-| Fix Spec の場合 | clarify ワークフロー | 曖昧点解消 → plan ワークフロー |
+| Condition | Workflow | Description |
+|-----------|----------|-------------|
+| Vision Spec の場合 | clarify | 曖昧点解消 → design |
+| Domain Spec の場合 | clarify | 曖昧点解消 → issue |
+| Screen Spec の場合 | clarify | 曖昧点解消 → issue |
+| Feature Spec の場合 | clarify | 曖昧点解消 → plan |
+| Fix Spec の場合 | clarify | 曖昧点解消 → plan |

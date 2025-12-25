@@ -239,7 +239,7 @@ Status: {PASSED | BLOCKED}
 
 ## Next Steps
 
-| Condition | Command | Description |
-|-----------|---------|-------------|
-| CLARIFY GATE: BLOCKED | clarify ワークフロー | **必須** - 曖昧点を解消 |
-| CLARIFY GATE: PASSED + 人間承認 | design ワークフロー | Screen + Domain + Matrix 同時作成 |
+| Condition | Workflow | Description |
+|-----------|----------|-------------|
+| CLARIFY GATE: BLOCKED | clarify | **必須** - 曖昧点を解消 |
+| CLARIFY GATE: PASSED + 人間承認 | design | Screen + Domain + Matrix 同時作成 |

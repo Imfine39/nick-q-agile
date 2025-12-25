@@ -307,8 +307,8 @@ Foundation includes: 認証、DB接続、基本構造
 
 ## Next Steps
 
-| Condition | Command | Description |
-|-----------|---------|-------------|
-| CLARIFY GATE: BLOCKED | clarify ワークフロー | **必須** - 曖昧点を解消 |
-| CLARIFY GATE: PASSED + 人間承認 | issue ワークフロー | Foundation Issue から開始 |
-| 追加機能を提案する場合 | featureproposal ワークフロー | 追加 Feature 提案 |
+| Condition | Workflow | Description |
+|-----------|----------|-------------|
+| CLARIFY GATE: BLOCKED | clarify | **必須** - 曖昧点を解消 |
+| CLARIFY GATE: PASSED + 人間承認 | issue | Foundation Issue から開始 |
+| 追加機能を提案する場合 | featureproposal | 追加 Feature 提案 |
