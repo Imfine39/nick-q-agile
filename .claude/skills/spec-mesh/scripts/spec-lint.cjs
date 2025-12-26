@@ -4,16 +4,24 @@
 /**
  * Specification linter for Vision/Domain/Screen/Feature consistency.
  *
+ * Usage:
+ *   node spec-lint.cjs              # Full lint (all specs)
+ *   node spec-lint.cjs --incremental # Incremental lint (changed specs only)
+ *   node spec-lint.cjs -i            # Short form of --incremental
+ *   node spec-lint.cjs --force       # Force full lint, update cache
+ *
  * Error Handling:
  *   Exit Code 0: Validation passed (may have warnings)
  *   Exit Code 1: Validation failed with errors
  *     - Missing Spec Type or Spec ID
  *     - Duplicate Spec IDs or UC IDs
+ *     - Duplicate FR/BR/VR/PLAN/COMP IDs (global scope)
  *     - Unknown master/API/screen references
  *     - Feature ID not in Domain Feature index
  *     - Feature index path points to missing file
  *     - Matrix references undefined entities
  *     - Superseded spec without successor reference
+ *     - Circular dependency between Features
  *
  * Warnings (exit code still 0):
  *   - Unexpected status value
@@ -24,6 +32,12 @@
  *   - Plan/Tasks don't reference spec IDs
  *   - Deprecated spec without documented reason
  *   - No cross-reference.json found
+ *   - Duplicate T-NNN/TC-NNN IDs within same spec (local scope)
+ *
+ * Incremental Mode:
+ *   Uses a cache file (.specify/state/lint-cache.json) to track file hashes.
+ *   Only processes files that have changed since the last run.
+ *   Use --force to reset the cache and run full lint.
  *
  * Common Errors:
  *   - "Missing Spec Type in X" - Add "Spec Type: [Type]" to spec metadata
@@ -34,6 +48,8 @@
  * Checks:
  *  - Spec Type and Spec ID presence
  *  - Unique Spec IDs and UC IDs
+ *  - Unique FR/BR/VR/PLAN/COMP IDs (global scope)
+ *  - T-NNN/TC-NNN IDs uniqueness within same spec (local scope)
  *  - Feature specs only reference masters/APIs defined in Domain specs
  *  - Feature specs only reference screens (SCR-*) defined in Screen specs
  *  - Warns on unused masters/APIs defined in Domain
@@ -43,12 +59,62 @@
  *  - Deprecated/Superseded specs have required metadata
  *  - Plan/Tasks alignment with spec IDs
  *  - Domain freshness vs Feature specs
+ *  - Circular dependency detection between Features
  */
 
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
+
+// Parse command-line arguments
+const args = process.argv.slice(2);
+const isIncremental = args.includes('--incremental') || args.includes('-i');
+const isForce = args.includes('--force');
 
 const root = process.cwd();
+const LINT_CACHE_PATH = path.join(root, '.specify', 'state', 'lint-cache.json');
+
+// Hash function for file content
+function hashFile(filePath) {
+  const content = fs.readFileSync(filePath, 'utf8');
+  return crypto.createHash('md5').update(content).digest('hex');
+}
+
+// Read lint cache
+function readLintCache() {
+  try {
+    if (fs.existsSync(LINT_CACHE_PATH)) {
+      return JSON.parse(fs.readFileSync(LINT_CACHE_PATH, 'utf8'));
+    }
+  } catch {
+    // Ignore errors, return empty cache
+  }
+  return { version: '1.0.0', files: {} };
+}
+
+// Write lint cache
+function writeLintCache(cache) {
+  const dir = path.dirname(LINT_CACHE_PATH);
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+  cache.lastRun = new Date().toISOString();
+  fs.writeFileSync(LINT_CACHE_PATH, JSON.stringify(cache, null, 2), 'utf8');
+}
+
+// Check if file has changed since last lint
+function hasFileChanged(filePath, cache) {
+  const relPath = path.relative(root, filePath);
+  const currentHash = hashFile(filePath);
+  const cachedHash = cache.files[relPath];
+  return currentHash !== cachedHash;
+}
+
+// Update cache with current file hash
+function updateCacheEntry(filePath, cache) {
+  const relPath = path.relative(root, filePath);
+  cache.files[relPath] = hashFile(filePath);
+}
 const specsRoot = path.join(root, '.specify', 'specs');
 const allowedStatus = new Set([
   'DRAFT',
@@ -121,6 +187,25 @@ function parseSpec(file) {
   const screens = matchTokens(content, /\bSCR-[A-Z0-9_-]+\b/gi);
   const status = statusMatch ? statusMatch[1].trim().toUpperCase() : null;
 
+  // Additional ID types for extended validation
+  const frIds = matchTokens(content, /\bFR-[A-Z0-9_-]+\b/gi);
+  const brIds = matchTokens(content, /\bBR-\d{3}\b/gi);
+  const vrIds = matchTokens(content, /\bVR-\d{3}\b/gi);
+  const taskIds = matchTokens(content, /\bT-\d{3}\b/gi);
+  const tcIds = matchTokens(content, /\bTC-[A-Z]?\d{2,3}\b/gi);
+  const planIds = matchTokens(content, /\bPLAN-[A-Z0-9_-]+\b/gi);
+  const compIds = matchTokens(content, /\bCOMP-\d{3}\b/gi);
+
+  // Extract feature dependencies (S-XXX-NNN references in Feature Dependencies section)
+  const featureDeps = [];
+  const depMatch = content.match(/Feature Dependencies[\s\S]*?\|[\s\S]*?\|[\s\S]*?\|([\s\S]*?)(?=\n##|\n---|\n\n\n|$)/i);
+  if (depMatch) {
+    const depRefs = depMatch[1].match(/\bS-[A-Z0-9]+-\d{3}\b/gi);
+    if (depRefs) {
+      depRefs.forEach(ref => featureDeps.push(ref.toUpperCase()));
+    }
+  }
+
   return {
     file,
     relFile: rel(file),
@@ -131,6 +216,15 @@ function parseSpec(file) {
     apis,
     screens,
     status,
+    // Extended IDs
+    frIds,
+    brIds,
+    vrIds,
+    taskIds,
+    tcIds,
+    planIds,
+    compIds,
+    featureDeps,
   };
 }
 
@@ -139,19 +233,43 @@ if (!fs.existsSync(specsRoot)) {
   process.exit(0);
 }
 
-const specFiles = walkForSpecs(specsRoot);
-if (specFiles.length === 0) {
+const allSpecFiles = walkForSpecs(specsRoot);
+if (allSpecFiles.length === 0) {
   console.log('No spec.md files found under .specify/specs; nothing to lint.');
   process.exit(0);
 }
 
-const specs = specFiles.map(parseSpec);
+// Load cache for incremental mode
+const lintCache = readLintCache();
+let specFilesToLint = allSpecFiles;
+let skippedCount = 0;
+
+// Incremental mode: only lint changed files
+if (isIncremental && !isForce) {
+  specFilesToLint = allSpecFiles.filter(f => hasFileChanged(f, lintCache));
+  skippedCount = allSpecFiles.length - specFilesToLint.length;
+
+  if (specFilesToLint.length === 0) {
+    console.log(`Incremental lint: No files changed since last run (${skippedCount} files unchanged).`);
+    console.log('Use --force to run full lint.');
+    process.exit(0);
+  }
+
+  console.log(`Incremental lint: Checking ${specFilesToLint.length} changed file(s), skipping ${skippedCount} unchanged.`);
+}
+
+// For full lint or incremental mode, we still need all specs for cross-reference checks
+const specs = allSpecFiles.map(parseSpec);
+const changedSpecs = new Set(specFilesToLint);
 const fileContentCache = new Map(
-  specFiles.map((f) => [f, fs.readFileSync(f, 'utf8')])
+  allSpecFiles.map((f) => [f, fs.readFileSync(f, 'utf8')])
 );
 
-// Basic presence checks
+// Basic presence checks (only for changed files in incremental mode)
 for (const spec of specs) {
+  // In incremental mode, only check changed files for basic presence
+  if (isIncremental && !changedSpecs.has(spec.file)) continue;
+
   if (!spec.specType) {
     errors.push(`Missing Spec Type in ${spec.relFile}`);
   }
@@ -179,6 +297,56 @@ for (const [id, count] of specIdCounts.entries()) {
 }
 for (const [uc, count] of ucIdCounts.entries()) {
   if (count > 1) errors.push(`Use Case ID "${uc}" is duplicated ${count} times`);
+}
+
+// Extended ID uniqueness checks (global scope)
+const frIdCounts = new Map();
+const brIdCounts = new Map();
+const vrIdCounts = new Map();
+const planIdCounts = new Map();
+const compIdCounts = new Map();
+
+for (const spec of specs) {
+  for (const id of spec.frIds) frIdCounts.set(id, (frIdCounts.get(id) || 0) + 1);
+  for (const id of spec.brIds) brIdCounts.set(id, (brIdCounts.get(id) || 0) + 1);
+  for (const id of spec.vrIds) vrIdCounts.set(id, (vrIdCounts.get(id) || 0) + 1);
+  for (const id of spec.planIds) planIdCounts.set(id, (planIdCounts.get(id) || 0) + 1);
+  for (const id of spec.compIds) compIdCounts.set(id, (compIdCounts.get(id) || 0) + 1);
+}
+
+for (const [id, count] of frIdCounts.entries()) {
+  if (count > 1) errors.push(`Functional Requirement ID "${id}" is duplicated ${count} times`);
+}
+for (const [id, count] of brIdCounts.entries()) {
+  if (count > 1) errors.push(`Business Rule ID "${id}" is duplicated ${count} times`);
+}
+for (const [id, count] of vrIdCounts.entries()) {
+  if (count > 1) errors.push(`Validation Rule ID "${id}" is duplicated ${count} times`);
+}
+for (const [id, count] of planIdCounts.entries()) {
+  if (count > 1) errors.push(`Plan ID "${id}" is duplicated ${count} times`);
+}
+for (const [id, count] of compIdCounts.entries()) {
+  if (count > 1) errors.push(`Component ID "${id}" is duplicated ${count} times`);
+}
+
+// Check for duplicate T-* and TC-* within same spec (local scope)
+for (const spec of specs) {
+  const taskIdSet = new Set();
+  for (const id of spec.taskIds) {
+    if (taskIdSet.has(id)) {
+      warnings.push(`Task ID "${id}" appears multiple times in ${spec.relFile}`);
+    }
+    taskIdSet.add(id);
+  }
+
+  const tcIdSet = new Set();
+  for (const id of spec.tcIds) {
+    if (tcIdSet.has(id)) {
+      warnings.push(`Test Case ID "${id}" appears multiple times in ${spec.relFile}`);
+    }
+    tcIdSet.add(id);
+  }
 }
 
 // Collect specs by type
@@ -462,6 +630,68 @@ if (domainSpecs.length > 0) {
 }
 
 // ============================================================================
+// Circular Dependency Detection
+// ============================================================================
+
+// Build dependency graph from Feature specs
+const dependencyGraph = new Map(); // featureId -> [dependencyIds]
+for (const spec of featureSpecs) {
+  for (const id of spec.specIds) {
+    if (!dependencyGraph.has(id)) {
+      dependencyGraph.set(id, []);
+    }
+    // Add dependencies
+    for (const dep of spec.featureDeps) {
+      if (dep !== id) { // Don't add self-reference
+        dependencyGraph.get(id).push(dep);
+      }
+    }
+  }
+}
+
+// Detect cycles using DFS
+function detectCycles(graph) {
+  const visited = new Set();
+  const recursionStack = new Set();
+  const cycles = [];
+
+  function dfs(node, path) {
+    if (recursionStack.has(node)) {
+      // Found a cycle - extract the cycle path
+      const cycleStart = path.indexOf(node);
+      const cycle = path.slice(cycleStart).concat(node);
+      cycles.push(cycle);
+      return;
+    }
+    if (visited.has(node)) return;
+
+    visited.add(node);
+    recursionStack.add(node);
+    path.push(node);
+
+    const neighbors = graph.get(node) || [];
+    for (const neighbor of neighbors) {
+      dfs(neighbor, [...path]);
+    }
+
+    recursionStack.delete(node);
+  }
+
+  for (const node of graph.keys()) {
+    if (!visited.has(node)) {
+      dfs(node, []);
+    }
+  }
+
+  return cycles;
+}
+
+const cycles = detectCycles(dependencyGraph);
+for (const cycle of cycles) {
+  errors.push(`Circular dependency detected: ${cycle.join(' → ')}`);
+}
+
+// ============================================================================
 // Cross-Reference Matrix Validation
 // ============================================================================
 
@@ -636,12 +866,24 @@ if (errors.length) {
     console.error('\nWarnings:');
     warnings.forEach((w) => console.error(`- ${w}`));
   }
+  // Don't update cache on failure
   process.exit(1);
 }
+
+// Update cache for successful lint (even with warnings)
+for (const f of allSpecFiles) {
+  updateCacheEntry(f, lintCache);
+}
+writeLintCache(lintCache);
 
 if (warnings.length) {
   console.warn('Spec lint passed with warnings:');
   warnings.forEach((w) => console.warn(`- ${w}`));
 } else {
   console.log('Spec lint passed with no issues.');
+}
+
+// Show incremental mode info
+if (isIncremental && skippedCount > 0) {
+  console.log(`\n(Incremental mode: ${skippedCount} unchanged file(s) skipped)`);
 }

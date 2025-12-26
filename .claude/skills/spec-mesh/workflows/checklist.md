@@ -130,11 +130,14 @@ Checklist: .specify/specs/features/{id}/checklist.md
 
 ### Threshold Levels
 
-| Score | Level | Meaning |
-|-------|-------|---------|
-| **40+ (80%+)** | READY | 全カテゴリで基本要件を満たす。実装開始可能 |
-| **30-39 (60-79%)** | NEEDS_WORK | 1-2 カテゴリで問題あり。軽微な修正で改善可能 |
-| **<30 (<60%)** | BLOCKED | 複数カテゴリで重大な問題。Clarify 必須 |
+> **Severity Classification:** constitution.md の Severity Classifications を参照。
+> スコア 40+ = Minor, スコア 30-39 = Major, スコア <30 = Critical
+
+| Score | Level | Severity | Meaning |
+|-------|-------|----------|---------|
+| **40+ (80%+)** | READY | Minor | 全カテゴリで基本要件を満たす。実装開始可能 |
+| **30-39 (60-79%)** | NEEDS_WORK | Major | 1-2 カテゴリで問題あり。軽微な修正で改善可能 |
+| **<30 (<60%)** | BLOCKED | Critical | 複数カテゴリで重大な問題。Clarify 必須 |
 
 ### Customizing Thresholds
 
@@ -165,8 +168,8 @@ Checklist: .specify/specs/features/{id}/checklist.md
 
 **[HUMAN_CHECKPOINT]** 品質スコアを確認してから次のステップに進んでください。
 
-| Condition | Command | Description |
-|-----------|---------|-------------|
-| スコア 40+ の場合 | plan ワークフロー | 実装計画作成 |
-| スコア 30-39 の場合 | clarify ワークフロー | 軽微な問題を解消（推奨） |
-| スコア 30 未満の場合 | clarify ワークフロー | 重大な問題を解消（必須） |
+| Condition | Workflow | Description |
+|-----------|----------|-------------|
+| スコア 40+ の場合 | plan | 実装計画作成 |
+| スコア 30-39 の場合 | clarify | 軽微な問題を解消（推奨） |
+| スコア 30 未満の場合 | clarify | 重大な問題を解消（必須） |

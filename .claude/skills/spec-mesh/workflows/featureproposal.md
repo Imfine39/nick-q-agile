@@ -145,7 +145,7 @@ Add proposed Features to Domain Spec:
 
 **[HUMAN_CHECKPOINT]** 提案された Feature を確認してから次のステップに進んでください。
 
-| Condition | Command | Description |
-|-----------|---------|-------------|
-| Issue から開始する場合 | issue ワークフロー | Feature 開発を開始 |
-| 詳細を追加する場合 | add ワークフロー | 新機能の詳細を追加 |
+| Condition | Workflow | Description |
+|-----------|----------|-------------|
+| Issue から開始する場合 | issue | Feature 開発を開始 |
+| 詳細を追加する場合 | add | 新機能の詳細を追加 |

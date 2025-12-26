@@ -40,6 +40,9 @@ node .claude/skills/spec-mesh/scripts/validate-matrix.cjs
 
 ### Step 3: Report Results
 
+> **Severity Classification:** constitution.md の Severity Classifications を参照。
+> Error = Critical, Warning = Major, Info = Minor
+
 **All passed:**
 ```
 === Lint 完了 ===
@@ -115,7 +118,7 @@ validate-matrix: ❌ FAILED
 
 **[HUMAN_CHECKPOINT]** Lint 結果を確認してから次のステップに進んでください。
 
-| Condition | Command | Description |
-|-----------|---------|-------------|
-| すべてパスした場合 | (次のワークフローへ) | 現在のワークフローを続行 |
-| エラーがある場合 | lint ワークフロー | 修正後に再実行 |
+| Condition | Workflow | Description |
+|-----------|----------|-------------|
+| すべてパスした場合 | (次へ) | 現在のワークフローを続行 |
+| エラーがある場合 | lint | 修正後に再実行 |

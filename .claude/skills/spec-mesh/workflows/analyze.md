@@ -70,13 +70,15 @@ Spec: .specify/specs/features/{id}/spec.md
 
 ## Issues Found
 
+> **Severity Classification:** constitution.md の Severity Classifications を参照。
+
 ❌ Critical:
 - FR-002: 未実装
 
-⚠️ Warning:
+⚠️ Major:
 - UC-002: テストが不足
 
-ℹ️ Info:
+ℹ️ Minor:
 - Extra file found: src/utils/helper.ts (not in spec)
 
 ## Metrics
@@ -160,9 +162,9 @@ Next: pr ワークフロー
 
 **[HUMAN_CHECKPOINT]** 分析結果を確認してから次のステップに進んでください。
 
-| Condition | Command | Description |
-|-----------|---------|-------------|
-| PASS の場合 | pr ワークフロー | PR 作成 |
-| WARN の場合 | pr ワークフロー | Issue 確認後 PR 作成 |
-| FAIL (未実装) の場合 | analyze ワークフロー | 実装追加後に再分析 |
-| FAIL (Spec外実装) の場合 | analyze ワークフロー | Spec 追加 or コード削除後に再分析 |
+| Condition | Workflow | Description |
+|-----------|----------|-------------|
+| PASS の場合 | pr | PR 作成 |
+| WARN の場合 | pr | Issue 確認後 PR 作成 |
+| FAIL (未実装) の場合 | analyze | 実装追加後に再分析 |
+| FAIL (Spec外実装) の場合 | analyze | Spec 追加 or コード削除後に再分析 |

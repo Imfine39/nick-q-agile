@@ -45,8 +45,8 @@ in the "Domain Model and Dependencies" section:
 
 ### 3.1 Domain Dependencies
 
-- Masters: `M-CLIENTS`, `M-ORDERS`
-- APIs: `API-ORDERS-LIST`, `API-ORDERS-CREATE`
+- Masters: `M-CLIENT`, `M-ORDER`
+- APIs: `API-ORDER-LIST`, `API-ORDER-CREATE`
 
 ### 3.2 Feature Dependencies
 
@@ -58,9 +58,39 @@ in the "Domain Model and Dependencies" section:
 
 **Dependency types**:
 
-- **Hard**: Cannot start implementation until dependency is completed.
-- **Soft**: Can proceed independently, but integration requires dependency.
-- **Parallel**: Can be developed simultaneously with coordination.
+| Type | Definition | Implementation Start | Merge Order |
+|------|------------|---------------------|-------------|
+| **Hard** | 依存 Feature が完了するまで実装開始不可 | 依存完了後 | 依存 Feature を先にマージ |
+| **Soft** | 独立して実装可能だが、統合には依存が必要 | 即時開始可 | どちらが先でも可 |
+| **Parallel** | 同時開発可能、調整が必要 | 即時開始可 | 調整後に順次マージ |
+
+### Parallel 依存の詳細
+
+**Parallel** タイプは以下の条件を満たす場合に使用：
+
+1. **共有リソースがある**: 同じ M-*/API-*/SCR-* を参照または変更
+2. **実装は独立可能**: お互いの完了を待つ必要がない
+3. **調整が必要**: 共有リソースの変更について事前合意が必要
+
+**Parallel 依存の調整プロトコル:**
+
+```
+1. 両 Feature の担当者が共有リソースを特定
+2. 各 Feature が変更する箇所を宣言
+3. 競合がない場合 → 独立して進行
+4. 競合がある場合 → 以下のいずれかで解決:
+   a. 一方が先に変更し、他方が追従
+   b. 共有変更を別 Issue で切り出し、両方の依存とする
+   c. Feature Spec で変更内容を調整
+5. マージ順序を合意
+```
+
+**例:**
+
+| Feature A | Feature B | 共有リソース | 調整方法 |
+|-----------|-----------|-------------|---------|
+| S-AUTH-001 | S-PROFILE-001 | M-USER | A が基本フィールド、B が拡張フィールドを追加 |
+| S-ORDERS-001 | S-INVENTORY-001 | API-ORDER-CREATE | 在庫チェックを A が追加、B はそれを前提に実装 |
 
 ### 2.2 Visualizing Dependencies
 
@@ -94,8 +124,8 @@ Before starting work that will modify the Domain:
    ## Domain Impact
 
    This feature will modify the Domain spec:
-   - Add field `priority` to `M-ORDERS`
-   - Add new API `API-ORDERS-PRIORITY-UPDATE`
+   - Add field `priority` to `M-ORDER`
+   - Add new API `API-ORDER-PRIORITY-UPDATE`
 
    @team Please flag if this conflicts with your current work.
    ```

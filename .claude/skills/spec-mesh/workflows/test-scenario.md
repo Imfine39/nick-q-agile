@@ -2,6 +2,17 @@
 
 Feature Spec から Test Scenario Spec を作成する。
 
+## Flow Position
+
+```
+implement → [test-scenario] → e2e → pr
+```
+
+**タイミング:** implement 完了後、PR 作成前
+**対象:** UI を含む Feature（API のみの場合はスキップ可）
+
+---
+
 ## Purpose
 
 - Feature Spec の Acceptance Criteria をテスト可能な形式に変換
@@ -14,6 +25,44 @@ Feature Spec から Test Scenario Spec を作成する。
 
 - Feature Spec が存在し、clarified 状態であること
 - Screen Spec が存在すること（UI 要素の参照用）
+
+---
+
+## Todo Template
+
+**IMPORTANT:** ワークフロー開始時に、以下の Todo を TodoWrite tool で作成すること。
+
+```
+TodoWrite:
+  todos:
+    - content: "Step 1: Feature Spec 読み込み"
+      status: "pending"
+      activeForm: "Loading Feature Spec"
+    - content: "Step 2: Test Coverage Matrix 生成"
+      status: "pending"
+      activeForm: "Generating Test Coverage Matrix"
+    - content: "Step 3: テストデータ定義"
+      status: "pending"
+      activeForm: "Defining test data"
+    - content: "Step 4: Positive Test Cases 作成"
+      status: "pending"
+      activeForm: "Creating Positive Test Cases"
+    - content: "Step 5: Negative Test Cases 作成"
+      status: "pending"
+      activeForm: "Creating Negative Test Cases"
+    - content: "Step 6: Journey Tests 作成"
+      status: "pending"
+      activeForm: "Creating Journey Tests"
+    - content: "Step 7: Test Scenario Spec 保存"
+      status: "pending"
+      activeForm: "Saving Test Scenario Spec"
+    - content: "Step 8: Multi-Review 実行"
+      status: "pending"
+      activeForm: "Executing Multi-Review"
+    - content: "Step 9: サマリー提示"
+      status: "pending"
+      activeForm: "Presenting summary"
+```
 
 ---
 
@@ -222,12 +271,14 @@ Test Data:
 
 ## Self-Check
 
+- [ ] **TodoWrite で全ステップを登録したか**
 - [ ] Feature Spec を読み込んだか
 - [ ] すべての AC をテストケースにマッピングしたか
 - [ ] テストデータをユーザーに確認したか
 - [ ] Positive / Negative / Journey テストを作成したか
 - [ ] Multi-Review を実行したか
 - [ ] test-scenarios.md を保存したか
+- [ ] **TodoWrite で全ステップを completed にしたか**
 
 ---
 
@@ -235,10 +286,10 @@ Test Data:
 
 **[HUMAN_CHECKPOINT]** Test Scenario Spec の内容を確認してから次のステップに進んでください。
 
-| Condition | Command | Description |
-|-----------|---------|-------------|
-| 実装完了後 | e2e ワークフロー | E2E テスト実行 |
-| テスト前に実装する場合 | plan ワークフロー | 実装計画作成 |
+| Condition | Workflow | Description |
+|-----------|----------|-------------|
+| 実装完了後 | e2e | E2E テスト実行 |
+| テスト前に実装する場合 | plan | 実装計画作成 |
 
 ---
 

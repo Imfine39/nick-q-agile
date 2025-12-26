@@ -291,7 +291,29 @@ COMP-{NNN}
 
 ---
 
-## 9. Task IDs (T-*)
+## 9. Plan IDs (PLAN-*)
+
+```
+PLAN-{AREA}-{NNN}
+```
+
+**形式:**
+- `AREA`: 対応する Feature Spec の AREA と一致
+- `NNN`: 3桁の連番（通常 001）
+
+**例:**
+| ID | Feature | 説明 |
+|----|---------|------|
+| `PLAN-AUTH-001` | S-AUTH-001 | 認証機能の実装計画 |
+| `PLAN-ORDERS-001` | S-ORDERS-001 | 注文管理の実装計画 |
+
+**命名規則:**
+- Feature Spec と 1:1 で対応
+- AREA は Feature Spec と同一にする
+
+---
+
+## 10. Task IDs (T-*)
 
 ```
 T-{NNN}
@@ -307,7 +329,7 @@ T-{NNN}
 
 ---
 
-## 10. Test Case IDs (TC-*)
+## 11. Test Case IDs (TC-*)
 
 ```
 TC-{NNN}       (Positive test cases)
@@ -337,7 +359,7 @@ Test Scenario Spec 内でのテストケース識別子。
 
 ---
 
-## 11. Checklist IDs (CHK-*)
+## 12. Checklist IDs (CHK-*)
 
 ```
 CHK-{NNN}              (General)
@@ -369,7 +391,7 @@ CHK-{DOMAIN}-{NNN}     (Domain-specific)
 
 ---
 
-## 12. Success Criteria IDs (SC-*)
+## 13. Success Criteria IDs (SC-*)
 
 ```
 SC-{AREA}-{NNN}
@@ -385,7 +407,7 @@ Feature の成功基準。
 
 ---
 
-## 13. Image Reference IDs (IMG-*)
+## 14. Image Reference IDs (IMG-*)
 
 ```
 IMG-{NNN}
@@ -423,6 +445,7 @@ IMG-{NNN}
 | Calculation Rule | `CR-{NNN}` | CR-001 |
 | Screen | `SCR-{NNN}` | SCR-001 |
 | Component | `COMP-{NNN}` | COMP-001 |
+| Plan | `PLAN-{AREA}-{NNN}` | PLAN-AUTH-001 |
 | Task | `T-{NNN}` | T-001 |
 | Checklist (General) | `CHK-{NNN}` | CHK-001 |
 | Checklist (Domain) | `CHK-{DOMAIN}-{NNN}` | CHK-UX-001 |

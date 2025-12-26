@@ -75,8 +75,14 @@ Spec 作成は以下のフローで品質を担保：
 │                                                                 │
 │ 7. Plan → [HUMAN_CHECKPOINT]                                    │
 │    ↓                                                            │
-│ 8. Tasks → Implement → PR                                       │
+│ 8. Tasks → Implement                                            │
+│    ↓                                                            │
+│ 9. (Optional) Test Scenario → E2E → [HUMAN_CHECKPOINT]          │
+│    ↓                                                            │
+│ 10. PR                                                          │
 └─────────────────────────────────────────────────────────────────┘
+
+※ Test Scenario / E2E は UI を含む Feature で推奨。API のみの場合はスキップ可。
 ```
 
 **2段階の曖昧点解消（ハイブリッド方式）**
@@ -132,6 +138,44 @@ Task tool (parallel, subagent_type: reviewer):
 | Test-Scenario | Feature Spec 承認後 | テストケース作成 |
 | Analyze | 実装完了後 | 実装 vs Spec 差分分析 |
 | E2E | 実装完了後 | ブラウザ操作による実動作テスト |
+
+## State Management: TodoWrite vs state.cjs
+
+2つの状態管理ツールの役割を明確に区別する：
+
+| ツール | スコープ | 用途 | 永続性 |
+|--------|---------|------|--------|
+| **TodoWrite** | セッション内 | ワークフローステップの進捗追跡 | 会話終了で消失 |
+| **state.cjs** | プロジェクト全体 | Phase/Spec ステータス/ブランチ状態 | ファイルに永続化 |
+
+### TodoWrite の使い方
+
+- ワークフロー開始時に Todo Template を登録
+- 各ステップ完了時に `completed` に更新
+- ユーザーへの進捗可視化が目的
+
+### state.cjs の使い方
+
+```bash
+# 現在の状態を確認
+node .claude/skills/spec-mesh/scripts/state.cjs query --all
+
+# Phase を更新
+node .claude/skills/spec-mesh/scripts/state.cjs repo --set-phase design
+
+# ブランチ作業開始
+node .claude/skills/spec-mesh/scripts/state.cjs branch --start feature/123-auth
+
+# ブランチ作業完了
+node .claude/skills/spec-mesh/scripts/state.cjs branch --complete feature/123-auth
+```
+
+### 使い分けの原則
+
+1. **同期は不要**: TodoWrite と state.cjs は独立して動作
+2. **TodoWrite**: 「今このセッションで何をしているか」
+3. **state.cjs**: 「プロジェクト全体の状態」
+4. **新セッション開始時**: `state.cjs query --all` で前回の状態を確認
 
 ## Core Rules
 
