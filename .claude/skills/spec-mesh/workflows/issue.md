@@ -58,7 +58,7 @@ TodoWrite:
     - content: "Step 7: Multi-Review 実行"
       status: "pending"
       activeForm: "Executing Multi-Review"
-    - content: "Step 8: Lint 実行"
+    - content: "Step 8: Lint + CLARIFY GATE"
       status: "pending"
       activeForm: "Running Lint"
     - content: "Step 9: サマリー・状態更新"
@@ -172,7 +172,7 @@ Spec 作成後、品質を担保するため Multi-Review を実行：
    - 曖昧点あり → clarify ワークフロー を推奨
    - Critical 未解決 → 問題をリストし対応を促す
 
-### Step 8: Run Lint
+### Step 8: Run Lint + CLARIFY GATE
 
 ```bash
 node .claude/skills/spec-mesh/scripts/spec-lint.cjs

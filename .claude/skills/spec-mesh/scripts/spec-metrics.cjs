@@ -207,7 +207,7 @@ for (const spec of featureSpecs) {
   // Check if feature is older than domain
   if (domainMtime > 0 && spec.lastModified.getTime() < domainMtime) {
     const daysDiff = Math.floor((domainMtime - spec.lastModified.getTime()) / (1000 * 60 * 60 * 24));
-    if (daysDiff > 7 && !['DEPRECATED', 'SUPERSEDED', 'COMPLETED'].includes(spec.status)) {
+    if (daysDiff > 7 && !['DEPRECATED', 'SUPERSEDED', 'IMPLEMENTED'].includes(spec.status)) {
       metrics.staleness.featuresOlderThanOverview.push({
         id: spec.specIds[0] || spec.relFile,
         daysBehind: daysDiff,
@@ -259,12 +259,12 @@ if (metrics.staleness.specsInDraftOver30Days.length > 0) {
 }
 
 // Deduct for features without plans (if in Implementing status)
-const implementingWithoutPlan = featureSpecs.filter(
-  (s) => s.status === 'IMPLEMENTING' && !checkForPlanAndTasks(s.file).hasPlan
+const approvedOrImplementedWithoutPlan = featureSpecs.filter(
+  (s) => ['APPROVED', 'IMPLEMENTED'].includes(s.status) && !checkForPlanAndTasks(s.file).hasPlan
 );
-if (implementingWithoutPlan.length > 0) {
-  healthDeductions += implementingWithoutPlan.length * 5;
-  healthIssues.push(`${implementingWithoutPlan.length} implementing spec(s) without plan`);
+if (approvedOrImplementedWithoutPlan.length > 0) {
+  healthDeductions += approvedOrImplementedWithoutPlan.length * 5;
+  healthIssues.push(`${approvedOrImplementedWithoutPlan.length} approved/implemented spec(s) without plan`);
 }
 
 metrics.health.score = Math.max(0, 100 - healthDeductions);

@@ -94,12 +94,7 @@ git status
 Show changes and confirm with user.
 
 ```bash
-git commit -m "{type}: {description}
-
-Fixes #{issue_num}
-Implements {Spec IDs}
-
-🤖 Generated with Claude Code"
+git commit -m "{type}: {description}" -m "Fixes #{issue_num}" -m "Implements {Spec IDs}" -m "Generated with Claude Code"
 ```
 
 ### Step 4: Push and Create PR
@@ -207,8 +202,8 @@ node .claude/skills/spec-mesh/scripts/post-merge.cjs --feature S-AUTH-001 --dele
 ### What it does:
 
 1. **Update Screen Spec status**: `Planned` → `Implemented` for all SCR-* referenced
-2. **Update Feature Index status**: `IMPLEMENTING` → `COMPLETED`
-3. **Update Feature Spec status**: `IMPLEMENTING` → `COMPLETED`
+2. **Update Feature Index status**: `Status` -> `Implemented`
+3. **Update Feature Spec status**: `Status` -> `Implemented`
 4. **Clean up branch state**: Remove from `branch-state.cjson`
 5. **Delete git branch** (if `--delete-branch` specified)
 

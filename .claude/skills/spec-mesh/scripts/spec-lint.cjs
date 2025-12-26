@@ -118,11 +118,10 @@ function updateCacheEntry(filePath, cache) {
 const specsRoot = path.join(root, '.specify', 'specs');
 const allowedStatus = new Set([
   'DRAFT',
-  'BACKLOG',
   'IN REVIEW',
+  'CLARIFIED',
   'APPROVED',
-  'IMPLEMENTING',
-  'COMPLETED',
+  'IMPLEMENTED',
   'DEPRECATED',
   'SUPERSEDED',
 ]);
@@ -546,7 +545,7 @@ for (const spec of featureSpecs) {
   }
 
   // Check for Functional Requirements section in approved+ specs (## 5. in new, ## 7. in old)
-  if (['APPROVED', 'IMPLEMENTING', 'COMPLETED'].includes(spec.status)) {
+  if (['APPROVED', 'IMPLEMENTED'].includes(spec.status)) {
     const hasFRSection =
       content.includes('## 5. Functional Requirements') ||
       content.includes('## 7. Functional Requirements');
@@ -615,7 +614,7 @@ if (domainSpecs.length > 0) {
 
   for (const spec of featureSpecs) {
     // Skip deprecated/superseded/completed specs
-    if (['DEPRECATED', 'SUPERSEDED', 'COMPLETED'].includes(spec.status)) continue;
+    if (['DEPRECATED', 'SUPERSEDED', 'IMPLEMENTED'].includes(spec.status)) continue;
 
     const featureMtime = fs.statSync(spec.file).mtime.getTime();
     if (featureMtime < latestDomainMtime) {
