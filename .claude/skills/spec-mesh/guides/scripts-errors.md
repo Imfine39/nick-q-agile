@@ -137,7 +137,7 @@ Validates spec consistency across the project.
 
 | Warning Message | Cause | Recommendation |
 |----------------|-------|----------------|
-| `Unexpected Status "X"` | Status not in allowed list | Use: DRAFT, BACKLOG, IN REVIEW, APPROVED, IMPLEMENTING, COMPLETED, DEPRECATED, SUPERSEDED |
+| `Unexpected Status "X"` | Status not in allowed list | Use: DRAFT, IN REVIEW, CLARIFIED, APPROVED, IMPLEMENTED, DEPRECATED, SUPERSEDED |
 | `Master "M-X" not referenced by any feature` | Unused master defined | Consider removing or implement feature using it |
 | `API "API-X" not referenced by any feature` | Unused API defined | Consider removing or implement feature using it |
 | `Screen "SCR-X" not referenced by any feature` | Unused screen defined | Consider removing or implement feature using it |

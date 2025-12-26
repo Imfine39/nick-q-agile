@@ -27,6 +27,7 @@
 | 「画面設計」「Design を作成」 | `workflows/design.md` |
 | 「機能を追加」「〇〇機能を作りたい」 | `workflows/add.md` |
 | 「バグを修正」「エラーを直して」 | `workflows/fix.md` |
+| "Quick Mode" / "small change" | `workflows/quick.md` |
 | 「Issue #N から開始」 | `workflows/issue.md` |
 | 「Spec を変更」「M-* を修正」 | `workflows/change.md` |
 | 「実装計画」「Plan を作成」 | `workflows/plan.md` |
@@ -166,7 +167,10 @@ node .claude/skills/spec-mesh/scripts/state.cjs init
 
 # Quick Input
 node .claude/skills/spec-mesh/scripts/reset-input.cjs vision|add|fix
-node .claude/skills/spec-mesh/scripts/preserve-input.cjs <type>
+node .claude/skills/spec-mesh/scripts/preserve-input.cjs vision
+node .claude/skills/spec-mesh/scripts/preserve-input.cjs add --feature {feature-id}
+node .claude/skills/spec-mesh/scripts/preserve-input.cjs fix --fix {fix-id}
+node .claude/skills/spec-mesh/scripts/preserve-input.cjs design
 
 # Lint・検証
 node .claude/skills/spec-mesh/scripts/spec-lint.cjs
