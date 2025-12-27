@@ -10,8 +10,12 @@ SSD-MESH は「仕様駆動開発（Spec-Driven Development）」を実現する
 すべての変更は仕様から始まり、仕様に基づいて実装されます。
 
 ```
-仕様（Spec）→ 計画（Plan）→ 実装（Implement）→ 検証（Test）→ PR
+Entry → Spec作成 → Multi-Review → [CLARIFY GATE] → Plan → Tasks → Implement → PR
 ```
+
+**重要なゲート:**
+- **CLARIFY GATE**: `[NEEDS CLARIFICATION]` = 0 が Plan の前提条件
+- **[HUMAN_CHECKPOINT]**: 重要な判断ポイントで人間の承認が必須
 
 ---
 
@@ -22,28 +26,43 @@ SSD-MESH は「仕様駆動開発（Spec-Driven Development）」を実現する
 ```
 ┌─────────────────────────────────────────┐
 │           Vision Spec                    │  プロジェクト全体の目的・ゴール
-│  (プロジェクトの北極星)                   │
+│  (.specify/specs/overview/vision/)       │
 └────────────────┬────────────────────────┘
                  │
      ┌───────────┴───────────┐
      ▼                       ▼
 ┌─────────────┐       ┌─────────────┐
 │ Screen Spec │ ←───→ │ Domain Spec │  設計層（相互参照）
-│ (画面設計)   │       │ (データ・API) │
+│ (overview/  │       │ (overview/  │
+│  screen/)   │       │  domain/)   │
 └──────┬──────┘       └──────┬──────┘
        │                     │
        └──────────┬──────────┘
                   ▼
          ┌───────────────┐
          │ Feature Spec  │  個別機能の詳細仕様
-         │ (機能仕様)     │
+         │ (features/    │
+         │  {id}/)       │
          └───────┬───────┘
                  ▼
          ┌───────────────┐
          │ Test Scenario │  テストケース定義
-         │    Spec       │
+         │ (features/    │
+         │  {id}/)       │
          └───────────────┘
 ```
+
+**Spec パス一覧:**
+
+| Spec Type | パス |
+|-----------|------|
+| Vision | `.specify/specs/overview/vision/spec.md` |
+| Screen | `.specify/specs/overview/screen/spec.md` |
+| Domain | `.specify/specs/overview/domain/spec.md` |
+| Matrix | `.specify/specs/overview/matrix/cross-reference.json` |
+| Feature | `.specify/specs/features/{id}/spec.md` |
+| Fix | `.specify/specs/fixes/{id}/spec.md` |
+| Test Scenario | `.specify/specs/features/{id}/test-scenarios.md` |
 
 ---
 
@@ -74,7 +93,7 @@ Vision 承認
 ```
 
 **成果物:**
-- `.specify/specs/{project}/overview/vision/spec.md`
+- `.specify/specs/overview/vision/spec.md`
 
 ### 1.2 Design（Screen + Domain）
 
@@ -87,19 +106,23 @@ Claude: Screen Spec + Domain Spec + Matrix を作成
 
 **フロー:**
 ```
-Vision Spec 読み込み
+Vision Spec + Vision Input 読み込み
     ↓
-Screen Spec 作成（画面一覧・遷移・ワイヤーフレーム）
+Screen Spec 作成（SCR-* ID、画面一覧・遷移・ワイヤーフレーム）
     ↓
-Domain Spec 作成（M-*、API-*、BR-*/VR-*）
+Domain Spec 作成（M-*、API-*、BR-*/VR-*/CR-*）
     ↓
 Cross-Reference Matrix 作成
     ↓
-Multi-Review
+Multi-Review（3観点並列）
+    ↓
+Lint + validate-matrix
+    ↓
+[CLARIFY GATE] ← 曖昧点チェック
+    ├── 曖昧点あり → clarify → Multi-Review へ戻る
+    └── 曖昧点なし → 次へ
     ↓
 [HUMAN_CHECKPOINT] 確認
-    ↓
-Clarify
     ↓
 Feature Issues 作成
     ↓
@@ -107,9 +130,9 @@ Foundation Issue 作成
 ```
 
 **成果物:**
-- `.specify/specs/{project}/overview/screen/spec.md`
-- `.specify/specs/{project}/overview/domain/spec.md`
-- `.specify/specs/{project}/overview/matrix/cross-reference.json`
+- `.specify/specs/overview/screen/spec.md`
+- `.specify/specs/overview/domain/spec.md`
+- `.specify/specs/overview/matrix/cross-reference.json`
 - GitHub Issues（Feature ごと）
 
 ---
@@ -122,32 +145,43 @@ Foundation Issue 作成
 
 | 状況 | ワークフロー | 説明 |
 |------|-------------|------|
-| 新機能追加 | add | Issue 作成 → Feature Spec |
-| バグ修正 | fix | Issue 作成 → Fix Spec |
-| 既存 Issue から | issue | Issue 読み込み → Feature Spec |
+| 新機能追加 | add | Issue 作成 → Branch → Feature Spec |
+| バグ修正 | fix | Issue 作成 → Branch → Fix Spec |
+| 既存 Issue から | issue | Issue 選択 → Branch → Feature Spec |
+| 軽微な変更 | quick | Spec スキップ → 直接実装 |
 
 **フロー:**
 ```
 入力検証（必須項目確認）
     ↓
-Feature Spec 作成
+GitHub Issue 作成
+    ↓
+Branch 作成（feature/{issue}-{slug} / fix/{issue}-{slug}）
+    ↓
+Feature/Fix Spec 作成
     ↓
 Multi-Review（3観点並列）
     ↓
 Lint 実行
     ↓
-[HUMAN_CHECKPOINT] 確認
+★ CLARIFY GATE ★
+    [NEEDS CLARIFICATION] をカウント
+    ├── > 0 → clarify → Multi-Review へ戻る（ループ）
+    └── = 0 → GATE 通過
     ↓
-[NEEDS CLARIFICATION] あり?
-    ├── YES → Clarify → Multi-Review へ戻る
-    └── NO → CLARIFY GATE 通過
+[HUMAN_CHECKPOINT] Spec 承認
 ```
 
-**CLARIFY GATE:**
-- `[NEEDS CLARIFICATION]` が 0 件であることが Plan の前提条件
-- 曖昧点が残った状態で実装に進むことは禁止
+**CLARIFY GATE（必須）:**
+- `[NEEDS CLARIFICATION]` が **0 件** であることが Plan の前提条件
+- 曖昧点が残った状態で Plan に進むことは **禁止**
+- clarify → Multi-Review のループを曖昧点解消まで繰り返す
 
-### 2.2 Test Scenario 作成
+**成果物:**
+- Feature: `.specify/specs/features/{id}/spec.md`
+- Fix: `.specify/specs/fixes/{id}/spec.md`
+
+### 2.2 Test Scenario 作成（任意：UI機能の場合）
 
 **目的:** Feature Spec に基づいてテストケースを定義
 
@@ -160,8 +194,10 @@ Claude: Test Scenario Spec を作成
 ```
 Feature Spec 読み込み
     ↓
+Test Coverage Matrix 生成（UC/FR → TC マッピング）
+    ↓
 Test Scenario Spec 作成
-    - TC-*: 単体テストケース
+    - TC-*: 正常系テストケース
     - TC-N*: 異常系テストケース
     - TC-J*: ジャーニーテスト
     ↓
@@ -171,11 +207,15 @@ Multi-Review
 ```
 
 **成果物:**
-- `.specify/specs/{project}/features/{feature}/test-scenarios.md`
+- `.specify/specs/features/{id}/test-scenarios.md`
 
 ### 2.3 Plan 作成
 
 **目的:** 実装計画を立てる
+
+**前提条件:**
+- CLARIFY GATE 通過（`[NEEDS CLARIFICATION]` = 0）
+- Feature/Fix Spec が [HUMAN_CHECKPOINT] で承認済み
 
 ```
 人間: 「実装計画を作成して」
@@ -184,17 +224,24 @@ Claude: Plan を作成
 
 **フロー:**
 ```
-Feature Spec 読み込み
+CLARIFY GATE 確認（曖昧点 = 0 必須）
     ↓
-既存コード分析（analyze）
+Feature/Fix Spec 読み込み
+    ↓
+既存コード分析
     ↓
 Plan 作成
-    - 影響範囲分析
-    - 実装ステップ
-    - リスク評価
+    - High-Level Design
+    - Work Breakdown
+    - Testing Strategy
+    - Risks/Trade-offs
     ↓
-[HUMAN_CHECKPOINT] 承認
+[HUMAN_CHECKPOINT] Plan 承認
 ```
+
+**成果物:**
+- Feature: `.specify/specs/features/{id}/plan.md`
+- Fix: `.specify/specs/fixes/{id}/plan.md`
 
 ### 2.4 Tasks 分割
 
@@ -207,13 +254,22 @@ Claude: Tasks を作成
 
 **フロー:**
 ```
-Plan 読み込み
+Plan 読み込み（承認済み確認）
     ↓
 Tasks 作成
-    - 各タスクの詳細
-    - 依存関係
-    - 完了条件
+    - 各タスクの詳細（1-2時間単位）
+    - Spec ID との紐付け（UC/FR）
+    - Acceptance Criteria
+    - 必要なテスト
+    ↓
+TodoWrite でタスク登録
+    ↓
+state.cjs で進捗初期化
 ```
+
+**成果物:**
+- Feature: `.specify/specs/features/{id}/tasks.md`
+- Fix: `.specify/specs/fixes/{id}/tasks.md`
 
 ### 2.5 Implement
 
@@ -226,18 +282,23 @@ Claude: コードを実装
 
 **フロー:**
 ```
-Tasks 読み込み
+Spec + Plan + Tasks 読み込み
     ↓
-タスクごとに実装
+各タスクを順次実装
+    - テストファースト開発
     - Context7 でライブラリドキュメント参照
     - Serena で既存コード解析
     ↓
-Lint・TypeCheck 実行
+タスク完了ごとに進捗更新（TodoWrite + state.cjs）
     ↓
-実装完了
+実装中の発見があれば → feedback ワークフロー
+    ↓
+全タスク完了
+    ↓
+npm test + npm run lint
 ```
 
-### 2.6 E2E テスト
+### 2.6 E2E テスト（任意：UI機能の場合）
 
 **目的:** ブラウザ操作で実動作を検証
 
@@ -277,14 +338,21 @@ Claude: PR を作成
 
 **フロー:**
 ```
-変更内容分析
+整合性チェック
+    - spec-lint
+    - validate-matrix
+    - npm test
+    - npm run lint
     ↓
-PR 作成
-    - タイトル
-    - 本文（Feature Spec へのリンク）
+[HUMAN_CHECKPOINT] Push/PR 確認
+    ↓
+git push + gh pr create
+    - Spec ID 参照
     - テスト結果
     ↓
-レビュー依頼
+PR URL 表示
+    ↓
+（マージ後）post-merge.cjs でステータス更新
 ```
 
 ---
@@ -358,11 +426,12 @@ Claude: checklist を実行
 │                         Phase 1: Initialization                          │
 ├─────────────────────────────────────────────────────────────────────────┤
 │                                                                          │
-│  Vision → Multi-Review → [HUMAN] → Clarify → ✅ Vision 承認             │
+│  vision → Spec作成 → Multi-Review → Lint → [CLARIFY GATE]               │
+│        → [HUMAN_CHECKPOINT] → ✅ Vision 承認                             │
 │                                                                          │
-│  Design → Screen Spec ←→ Domain Spec → Matrix                           │
-│       → Multi-Review → [HUMAN] → Clarify → ✅ Design 承認               │
-│       → Feature Issues 作成                                              │
+│  design → Screen Spec + Domain Spec + Matrix                             │
+│        → Multi-Review → Lint → [CLARIFY GATE]                            │
+│        → [HUMAN_CHECKPOINT] → Feature Issues 作成                        │
 │                                                                          │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
@@ -371,36 +440,55 @@ Claude: checklist を実行
 │                      Phase 2: Feature Development                        │
 ├─────────────────────────────────────────────────────────────────────────┤
 │                                                                          │
-│  add/fix/issue → Feature Spec → Multi-Review → Lint                     │
-│              → [HUMAN] → Clarify Loop → ✅ CLARIFY GATE 通過            │
+│  add/fix/issue → Spec作成 → Multi-Review → Lint                         │
+│               → ★ CLARIFY GATE ★ ← 必須（曖昧点 = 0）                   │
+│               → [HUMAN_CHECKPOINT] Spec 承認                             │
 │                                                                          │
-│  test-scenario → Test Scenario Spec → Multi-Review → [HUMAN]            │
+│  ════════════════════════════════════════════════════════════════════   │
 │                                                                          │
-│  plan → Plan 作成 → [HUMAN] 承認                                         │
+│  plan → CLARIFY GATE 確認 → Plan 作成 → [HUMAN_CHECKPOINT] 承認         │
 │                                                                          │
-│  tasks → Tasks 分割                                                      │
+│  tasks → Tasks 分割 → TodoWrite 登録                                     │
 │                                                                          │
-│  implement → 実装 → Lint/TypeCheck                                       │
+│  implement → 各タスク実装 → 進捗更新 → テスト実行                        │
 │                                                                          │
-│  e2e → ブラウザテスト → GIF 記録 → 結果更新                              │
+│  test-scenario → Test Scenario Spec 作成（任意）                         │
 │                                                                          │
-│  pr → PR 作成                                                            │
+│  e2e → ブラウザテスト → スクリーンショット/GIF（任意）                   │
+│                                                                          │
+│  pr → 整合性チェック → [HUMAN_CHECKPOINT] → Push/PR 作成                │
 │                                                                          │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                      Phase 3: Quality Assurance                          │
+│                      Support Workflows（任意タイミング）                  │
 ├─────────────────────────────────────────────────────────────────────────┤
 │                                                                          │
-│  analyze → Spec vs 実装の差分分析                                        │
-│                                                                          │
-│  checklist → 品質スコア測定                                              │
-│                                                                          │
-│  feedback → フィードバック記録                                           │
+│  review   - Spec を 3 観点から並列レビュー                               │
+│  clarify  - 曖昧点を対話で解消                                           │
+│  lint     - Spec 構造・整合性チェック                                    │
+│  analyze  - Spec vs 実装の差分分析                                       │
+│  checklist - 品質スコア測定（50点満点）                                  │
+│  feedback - 実装中の発見を Spec に記録                                   │
+│  change   - 既存 Spec の変更（M-*/API-*/SCR-*）                          │
+│  quick    - 軽微な変更（Spec スキップ）                                  │
 │                                                                          │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
+
+**フロー選択ガイド:**
+
+| やりたいこと | ワークフロー |
+|-------------|-------------|
+| 新規プロジェクト開始 | vision → design |
+| 新機能追加 | add → plan → tasks → implement → pr |
+| バグ修正（標準） | fix → plan → tasks → implement → pr |
+| バグ修正（軽微） | fix → implement → pr（Trivial 判定時） |
+| 既存 Issue から | issue → plan → tasks → implement → pr |
+| UI テスト | implement → test-scenario → e2e → pr |
+| 軽微な変更 | quick（Spec スキップ） |
+| Spec 変更 | change |
 
 ---
 

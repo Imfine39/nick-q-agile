@@ -48,12 +48,12 @@ TodoWrite:
     - content: "Step 6: Multi-Review 実行"
       status: "pending"
       activeForm: "Executing Multi-Review"
-    - content: "Step 7: CLARIFY GATE チェック"
-      status: "pending"
-      activeForm: "Checking CLARIFY GATE"
-    - content: "Step 8: Lint 実行"
+    - content: "Step 7: Lint 実行"
       status: "pending"
       activeForm: "Running Lint"
+    - content: "Step 8: CLARIFY GATE チェック"
+      status: "pending"
+      activeForm: "Checking CLARIFY GATE"
     - content: "Step 9: 入力保存・リセット"
       status: "pending"
       activeForm: "Preserving input"
@@ -140,14 +140,19 @@ Fix Spec の品質を担保するため Multi-Review を実行：
 
 3. **Handle results:**
    - すべてパス → Step 7 へ
-   - 曖昧点あり → Step 7 でブロック
    - Critical 未解決 → 問題をリストし対応を促す
 
-### Step 7: CLARIFY GATE チェック（必須）
+### Step 7: Run Lint
+
+```bash
+node .claude/skills/spec-mesh/scripts/spec-lint.cjs
+```
+
+### Step 8: CLARIFY GATE チェック（必須）
 
 **★ このステップはスキップ禁止 ★**
 
-Multi-Review 後、Grep tool で `[NEEDS CLARIFICATION]` マーカーをカウント：
+Lint 後、Grep tool で `[NEEDS CLARIFICATION]` マーカーをカウント：
 
 ```
 Grep tool:
@@ -173,16 +178,10 @@ if clarify_count > 0:
     → clarify 完了後、Multi-Review からやり直し
 
 else:
-    → Step 8 (Lint) へ進む
+    → Step 9 (入力保存) へ進む
 ```
 
 **重要:** clarify_count > 0 の場合、実装への遷移は禁止。
-
-### Step 8: Run Lint
-
-```bash
-node .claude/skills/spec-mesh/scripts/spec-lint.cjs
-```
 
 ### Step 9: Preserve & Reset Input
 

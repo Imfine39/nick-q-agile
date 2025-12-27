@@ -180,9 +180,7 @@ Conventional Commit 形式でコミット：
 
 ```bash
 git add {changed_files}
-git commit -m "{type}: {description}
-
-Quick Mode change - no spec update required"
+git commit -m "{type}: {description}" -m "Quick Mode change - no spec update required"
 ```
 
 **type 選択:**

@@ -1,92 +1,44 @@
 # Issue Workflow
 
-Entry point for existing Issues. Lists Issues → User selects → Creates Branch → Feature Spec.
+既存の GitHub Issue から開発を開始するワークフロー。
+Issue を選択し、Feature（機能追加）または Fix（バグ修正）を判定して適切なワークフローへ引き継ぐ。
 
 ## Prerequisites
 
-**推奨フロー:**
-1. Vision Spec が存在すること（必須）
-2. Domain Spec + Screen Spec が存在すること（推奨）
-
-**新規プロジェクトの場合:**
-- Vision Spec がない → `vision ワークフロー` を先に実行
-- Domain/Screen Spec がない → `design ワークフロー` を先に実行
-
-**既存プロジェクトの場合:**
-- Domain Spec の M-*/API-* を参照して Feature Spec を作成
-
-**警告レベル:**
-| 状態 | レベル | アクション |
-|------|--------|-----------|
-| Vision なし | エラー | vision ワークフロー へ誘導 |
-| Domain なし | 警告 | design ワークフロー を推奨（続行可） |
-| Screen なし | 情報 | design ワークフロー を推奨（続行可） |
+- GitHub リポジトリに Issue が存在すること
 
 ## Use Cases
 
-- Issues from design ワークフロー
-- Human-created Issues
+- design ワークフロー で作成された Feature Issues
+- 人が手動で作成した Issues
 - Foundation Issue (S-FOUNDATION-001)
 
 ---
 
 ## Todo Template
 
-**IMPORTANT:** ワークフロー開始時に、以下の Todo を TodoWrite tool で作成すること。
-
 ```
 TodoWrite:
   todos:
-    - content: "Step 1: 前提条件確認"
-      status: "pending"
-      activeForm: "Checking prerequisites"
-    - content: "Step 2: Issue 一覧取得・選択"
+    - content: "Step 1: Issue 一覧取得・選択"
       status: "pending"
       activeForm: "Fetching and selecting Issue"
-    - content: "Step 3: Issue 詳細確認"
+    - content: "Step 2: Issue 種別判定"
       status: "pending"
-      activeForm: "Validating selection"
-    - content: "Step 4: ブランチ作成"
+      activeForm: "Determining Issue type"
+    - content: "Step 3: ブランチ作成"
       status: "pending"
       activeForm: "Creating branch"
-    - content: "Step 5: コードベース分析"
+    - content: "Step 4: 適切なワークフローへ引き継ぎ"
       status: "pending"
-      activeForm: "Analyzing codebase"
-    - content: "Step 6: Feature Spec 作成"
-      status: "pending"
-      activeForm: "Creating Feature Spec"
-    - content: "Step 7: Multi-Review 実行"
-      status: "pending"
-      activeForm: "Executing Multi-Review"
-    - content: "Step 8: Lint + CLARIFY GATE"
-      status: "pending"
-      activeForm: "Running Lint"
-    - content: "Step 9: サマリー・状態更新"
-      status: "pending"
-      activeForm: "Presenting summary"
+      activeForm: "Handing off to workflow"
 ```
 
 ---
 
 ## Steps
 
-### Step 1: Check Prerequisites
-
-1. **Check repo state:**
-   ```bash
-   node .claude/skills/spec-mesh/scripts/state.cjs query --repo
-   ```
-   - If Domain status not "clarified" → Warning
-
-2. **Verify Domain Spec:**
-   - Check `.specify/specs/overview/domain/spec.md`
-   - Must have M-* and API-* definitions
-   - If scaffold only → Recommend design ワークフロー
-
-3. **Check Screen Spec (optional):**
-   - If not found → Warning (can continue)
-
-### Step 2: Fetch and Display Issues
+### Step 1: Fetch and Display Issues
 
 ```bash
 gh issue list --state open --json number,title,labels --limit 20
@@ -104,132 +56,93 @@ Display:
 番号を選択してください:
 ```
 
-### Step 3: Validate Selection
+ユーザーが Issue 番号を選択したら、詳細を取得：
 
-1. Parse user input for issue number
-2. Fetch issue details:
-   ```bash
-   gh issue view {issue_num} --json number,title,body,labels
-   ```
-3. Confirm with user
+```bash
+gh issue view {issue_num} --json number,title,body,labels
+```
 
-### Step 4: Setup Branch
+### Step 2: Determine Issue Type
 
+Issue のラベルまたはタイトルから種別を判定：
+
+| 判定条件 | 種別 | ワークフロー |
+|---------|------|-------------|
+| `bug` ラベル or `[Bug]` タイトル | Fix | fix.md |
+| `feature` ラベル or `[Feature]` タイトル | Feature | add.md |
+| `[Foundation]` タイトル | Feature | add.md |
+| その他 | 不明 | ユーザーに確認 |
+
+**不明な場合:**
+```
+この Issue は Feature（機能追加）ですか？ Fix（バグ修正）ですか？
+```
+
+### Step 3: Setup Branch
+
+**Feature の場合:**
 ```bash
 node .claude/skills/spec-mesh/scripts/branch.cjs --type feature --slug {slug} --issue {issue_num}
 ```
 
-Or for Foundation:
+**Fix の場合:**
 ```bash
-node .claude/skills/spec-mesh/scripts/branch.cjs --type feature --slug foundation --issue {issue_num}
+node .claude/skills/spec-mesh/scripts/branch.cjs --type fix --slug {slug} --issue {issue_num}
 ```
 
-### Step 5: Analyze Codebase
+### Step 4: Handoff to Workflow
 
-- Read Domain Spec for M-*/API-* context
-- Read Screen Spec for SCR-* context
-- Identify relevant existing code
+**Feature の場合:**
+```
+Issue #{issue_num} を Feature として開始します。
+ブランチ: feature/{issue_num}-{slug}
 
-### Step 6: Create Feature Spec
-
-**6.1 Run scaffold:**
-```bash
-node .claude/skills/spec-mesh/scripts/scaffold-spec.cjs --kind feature --id {spec_id} --title "{Issue title}"
+→ add ワークフロー の Step 5（コードベース分析）から続行
 ```
 
-**6.2 Spec-First: Update Screen Spec** (if UI changes)
-- Add new screens to Screen Index with `Planned`
-- Add modifications to Modification Log
+Read tool で `workflows/add.md` を読み込み、Step 5 以降を実行。
+（Step 1-4 は issue ワークフローで完了済み）
 
-**6.3 Fill spec from Issue and Domain context**
+**Fix の場合:**
+```
+Issue #{issue_num} を Fix として開始します。
+ブランチ: fix/{issue_num}-{slug}
 
-**6.4 Check M-*/API-* requirements:**
-- Case 1: All exist → Reference only
-- Case 2: Need new → Add to Domain
-- Case 3: Need change → Recommend change ワークフロー
-
-**6.5 Update Domain Feature Index**
-
-**6.6 Update Cross-Reference Matrix**
-
-### Step 7: Multi-Review (3観点並列レビュー)
-
-Spec 作成後、品質を担保するため Multi-Review を実行：
-
-1. **Read review workflow:**
-   ```
-   Read tool: .claude/skills/spec-mesh/workflows/review.md
-   ```
-
-2. **Execute Multi-Review:**
-   - 3 つの reviewer agent を並列で起動
-   - フィードバック統合
-   - AI 修正可能な問題を修正
-   - Lint 実行
-
-3. **Handle results:**
-   - すべてパス → Step 8 (Summary) へ
-   - 曖昧点あり → clarify ワークフロー を推奨
-   - Critical 未解決 → 問題をリストし対応を促す
-
-### Step 8: Run Lint + CLARIFY GATE
-
-```bash
-node .claude/skills/spec-mesh/scripts/spec-lint.cjs
+→ fix ワークフロー の Step 4（原因調査）から続行
 ```
 
-### Step 9: Summary
+Read tool で `workflows/fix.md` を読み込み、Step 4 以降を実行。
+（Step 1-3 は issue ワークフローで完了済み）
 
-Display:
+---
+
+## Summary
+
 ```
-=== Feature Spec 作成完了 ===
+=== Issue ワークフロー完了 ===
 
 Issue: #{issue_num} - {title}
-Branch: feature/{issue_num}-{slug}
-Spec: .specify/specs/features/{id}/spec.md
+種別: {Feature | Fix}
+Branch: {feature|fix}/{issue_num}-{slug}
 
-Domain Dependencies:
-- Masters: {M-* list}
-- APIs: {API-* list}
-
-Screen References:
-- {SCR-* list}
-
-=== 曖昧点 ===
-[NEEDS CLARIFICATION]: {N} 箇所
-
-推奨: clarify ワークフロー で曖昧点を解消してください。
-```
-
-### Step 10: Update State
-
-```bash
-node .claude/skills/spec-mesh/scripts/state.cjs branch --set-step spec --set-feature {spec_id}
+→ {add | fix} ワークフロー へ引き継ぎ
 ```
 
 ---
 
 ## Self-Check
 
-- [ ] **TodoWrite で全ステップを登録したか**
 - [ ] gh issue list で Issues を取得したか
 - [ ] ユーザーに Issue 選択を求めたか
+- [ ] Issue 種別（Feature/Fix）を判定したか
 - [ ] branch.cjs でブランチを作成したか
-- [ ] Domain Spec を読み込んで M-*/API-* を確認したか
-- [ ] Screen Spec を更新したか（Spec-First）
-- [ ] **Impact Analysis を実行したか（Domain/Screen 変更時）** → [shared/impact-analysis.md](shared/impact-analysis.md)
-- [ ] Feature Spec を作成したか
-- [ ] **Multi-Review を実行したか（3観点並列）**
-- [ ] spec-lint.cjs を実行したか
-- [ ] **TodoWrite で全ステップを completed にしたか**
+- [ ] 適切なワークフロー（add/fix）へ引き継いだか
 
 ---
 
 ## Next Steps
 
-**[HUMAN_CHECKPOINT]** Feature Spec の内容を確認してから次のステップに進んでください。
-
-| Condition | Workflow | Description |
-|-----------|----------|-------------|
-| 曖昧点がある場合 | clarify | 曖昧点解消 |
-| 曖昧点が解消済み | plan | 実装計画作成 |
+| 種別 | Workflow | 開始ステップ |
+|------|----------|-------------|
+| Feature | add.md | Step 5: コードベース分析 |
+| Fix | fix.md | Step 4: 原因調査 |

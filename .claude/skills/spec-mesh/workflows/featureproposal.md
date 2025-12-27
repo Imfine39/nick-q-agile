@@ -87,7 +87,8 @@ Based on analysis, the following Features are recommended:
 For selected Features:
 
 ```bash
-gh issue create --title "[Feature] {Feature名}" --body "## Summary
+gh issue create --title "[Feature] {Feature名}" --body "$(cat <<'EOF'
+## Summary
 {概要}
 
 ## Gap Analysis
@@ -96,7 +97,9 @@ gh issue create --title "[Feature] {Feature名}" --body "## Summary
 - Screens: {関連SCR-*}
 
 ## Proposed by
-AI analysis via Feature 提案ワークフロー"
+AI analysis via Feature 提案ワークフロー
+EOF
+)"
 ```
 
 ### Step 5: Update Domain Feature Index

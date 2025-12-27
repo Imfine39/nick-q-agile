@@ -66,11 +66,11 @@ Multi-Review（3観点並列） → AI修正
     ↓
 Lint
     ↓
-[HUMAN_CHECKPOINT]
-    ↓
 [NEEDS CLARIFICATION] あり? → YES: Clarify → Multi-Review へ戻る
     ↓ NO
 ★ CLARIFY GATE 通過 ★
+    ↓
+[HUMAN_CHECKPOINT] Spec 承認
     ↓
 Plan → [HUMAN_CHECKPOINT]
     ↓
@@ -79,7 +79,8 @@ Tasks → Implement → E2E → PR
 
 ### CLARIFY GATE
 
-- **Plan に進む前提条件:** `[NEEDS CLARIFICATION]` = 0
+- **前提条件:** `[NEEDS CLARIFICATION]` = 0
+- **CLARIFY GATE を通過してから [HUMAN_CHECKPOINT] へ進む**
 - 曖昧点が残った状態での実装は禁止
 
 ---
@@ -132,9 +133,9 @@ tabs_context_mcp → tabs_create_mcp → navigate → find → form_input → co
 
 | タイミング | 確認内容 |
 |-----------|---------|
-| Vision Spec 作成後 | 目的・ゴールの妥当性 |
-| Design 完了後 | 画面・Domain 設計の妥当性 |
-| Feature Spec 作成後 | 要件の妥当性、CLARIFY GATE |
+| Vision Spec CLARIFY GATE 通過後 | 目的・ゴールの妥当性 |
+| Design CLARIFY GATE 通過後 | 画面・Domain 設計の妥当性 |
+| Feature/Fix Spec CLARIFY GATE 通過後 | 要件の妥当性 |
 | Plan 作成後 | 実装計画の承認 |
 | E2E テスト後 | テスト結果の確認 |
 
