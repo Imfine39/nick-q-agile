@@ -96,8 +96,8 @@ node .claude/skills/spec-mesh/scripts/state.cjs query --all
 node .claude/skills/spec-mesh/scripts/state.cjs init
 
 # Quick Input
-node .claude/skills/spec-mesh/scripts/reset-input.cjs vision|add|fix
-node .claude/skills/spec-mesh/scripts/preserve-input.cjs vision|add|fix|design
+node .claude/skills/spec-mesh/scripts/input.cjs reset vision|add|fix|all
+node .claude/skills/spec-mesh/scripts/input.cjs preserve vision|add|fix|design
 
 # Lint・検証
 node .claude/skills/spec-mesh/scripts/spec-lint.cjs

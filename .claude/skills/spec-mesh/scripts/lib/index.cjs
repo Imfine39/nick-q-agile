@@ -12,10 +12,10 @@
  */
 'use strict';
 
-const paths = require('./paths');
-const fileUtils = require('./file-utils');
-const cliUtils = require('./cli-utils');
-const specParser = require('./spec-parser');
+const paths = require('./paths.cjs');
+const fileUtils = require('./file-utils.cjs');
+const cliUtils = require('./cli-utils.cjs');
+const specParser = require('./spec-parser.cjs');
 
 module.exports = {
   // Re-export all paths
