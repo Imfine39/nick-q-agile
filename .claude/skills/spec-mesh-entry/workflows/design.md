@@ -35,27 +35,24 @@ TodoWrite:
     - content: "Step 5: Cross-Reference Matrix 作成"
       status: "pending"
       activeForm: "Creating Matrix"
-    - content: "Step 6: Multi-Review 実行"
+    - content: "Step 6: Deep Interview（質問数制限なし）"
+      status: "pending"
+      activeForm: "Conducting Deep Interview"
+    - content: "Step 7: Multi-Review 実行"
       status: "pending"
       activeForm: "Executing Multi-Review"
-    - content: "Step 7: CLARIFY GATE チェック"
+    - content: "Step 8: CLARIFY GATE チェック"
       status: "pending"
       activeForm: "Checking CLARIFY GATE"
-    - content: "Step 8: Lint 実行"
-      status: "pending"
-      activeForm: "Running Lint"
     - content: "Step 9: Design Input 保存"
       status: "pending"
       activeForm: "Preserving Design Input"
     - content: "Step 10: Foundation Issue 作成"
       status: "pending"
       activeForm: "Creating Foundation Issue"
-    - content: "Step 11: サマリー提示・状態更新"
+    - content: "Step 11: サマリー・[HUMAN_CHECKPOINT]"
       status: "pending"
-      activeForm: "Presenting summary"
-    - content: "Step 12: [HUMAN_CHECKPOINT] 提示"
-      status: "pending"
-      activeForm: "Presenting checkpoint"
+      activeForm: "Presenting summary and checkpoint"
 ```
 
 ---
@@ -153,10 +150,31 @@ Create `.specify/specs/overview/matrix/cross-reference.json`:
 
 Generate readable view:
 ```bash
-node .claude/skills/spec-mesh/scripts/generate-matrix-view.cjs
+node .claude/skills/spec-mesh/scripts/matrix-ops.cjs generate
 ```
 
-### Step 6: Multi-Review (3観点並列レビュー)
+### Step 6: Deep Interview（深掘りインタビュー）
+
+**★ このステップは必須・質問数制限なし ★**
+
+> **共通コンポーネント参照:** [shared/_interview.md](../spec-mesh/workflows/shared/_interview.md)
+
+Screen Spec と Domain Spec について徹底的にインタビューを行う：
+
+1. **両 Spec を読み込み、曖昧な箇所を特定**
+2. **AskUserQuestion で深掘り質問（完了するまで継続）**
+   - 画面遷移の詳細
+   - 各画面の操作フロー
+   - エラー状態の表示
+   - データモデルの詳細
+   - API 仕様の確認
+   - ビジネスルールの例外
+3. **回答を即座に Spec に反映**
+4. **すべての領域がカバーされるまで繰り返し**
+
+**40問以上になることもある。完璧な仕様を優先。**
+
+### Step 7: Multi-Review (3観点並列レビュー)
 
 Screen Spec と Domain Spec の品質を担保するため Multi-Review を実行：
 
@@ -176,58 +194,34 @@ Screen Spec と Domain Spec の品質を担保するため Multi-Review を実�
    - 曖昧点あり → Step 7 でブロック
    - Critical 未解決 → 問題をリストし対応を促す
 
-### Step 7: CLARIFY GATE チェック（必須）
+### Step 8: CLARIFY GATE チェック（必須）
 
 **★ このステップはスキップ禁止 ★**
 
-Multi-Review 後、Grep tool で以下をカウント：
+> **共通コンポーネント参照:** [shared/_clarify-gate.md](../spec-mesh/workflows/shared/_clarify-gate.md)
 
-```
-Grep tool (1): Screen Spec
-  pattern: "\[NEEDS CLARIFICATION\]"
-  path: .specify/specs/overview/screen/spec.md
-  output_mode: count
+1. **マーカーカウント:**
+   ```
+   Grep tool: pattern="\[NEEDS CLARIFICATION\]" path=.specify/specs/overview/screen/spec.md output_mode=count
+   Grep tool: pattern="\[NEEDS CLARIFICATION\]" path=.specify/specs/overview/domain/spec.md output_mode=count
+   ```
 
-Grep tool (2): Domain Spec
-  pattern: "\[NEEDS CLARIFICATION\]"
-  path: .specify/specs/overview/domain/spec.md
-  output_mode: count
-```
+2. **判定:**
+   - `clarify_count > 0` → BLOCKED（clarify 必須）
+   - `clarify_count = 0` → PASSED（Step 9 へ）
 
-**判定ロジック:**
-
-```
-clarify_count = Screen Spec の [NEEDS CLARIFICATION] 数 + Domain Spec の [NEEDS CLARIFICATION] 数
-
-if clarify_count > 0:
-    ┌─────────────────────────────────────────────────────────────┐
-    │ ★ CLARIFY GATE: 曖昧点が {clarify_count} 件あります         │
-    │                                                             │
-    │ 次のステップに進む前に clarify ワークフロー が必須です。     │
-    │                                                             │
-    │ 「clarify を実行して」と依頼してください。                   │
-    └─────────────────────────────────────────────────────────────┘
-    → clarify ワークフロー を実行（必須）
-    → clarify 完了後、Multi-Review からやり直し
-
-else:
-    → Step 8 (Lint) へ進む
-```
-
-**重要:** clarify_count > 0 の場合、次のステップへの遷移は禁止。
-
-### Step 8: Run Lint
+**BLOCKED の場合:** clarify 完了後、Step 7 (Multi-Review) からやり直し
 
 ```bash
 node .claude/skills/spec-mesh/scripts/spec-lint.cjs
-node .claude/skills/spec-mesh/scripts/validate-matrix.cjs
+node .claude/skills/spec-mesh/scripts/matrix-ops.cjs validate
 ```
 
 ### Step 9: Preserve Design Input
 
 If Vision input file was used (contains Part B screen information):
 ```bash
-node .claude/skills/spec-mesh/scripts/preserve-input.cjs design
+node .claude/skills/spec-mesh/scripts/input.cjs preserve design
 ```
 - Saves to: `.specify/specs/overview/domain/input.md`
 
@@ -239,7 +233,7 @@ gh issue create --title "[Foundation] S-FOUNDATION-001: 基盤実装" --body "..
 
 Foundation includes: 認証、DB接続、基本構造
 
-### Step 11: Summary & Update State
+### Step 11: Summary & [HUMAN_CHECKPOINT]
 
 1. **Update State:**
    ```bash
@@ -264,44 +258,32 @@ Foundation includes: 認証、DB接続、基本構造
    Foundation Issue: #{issue_num}
 
    === CLARIFY GATE ===
-   [NEEDS CLARIFICATION]: {N} 箇所
    Status: {PASSED | BLOCKED}
-
-   {if BLOCKED}
-   ★ clarify ワークフロー を実行してください。
-   {/if}
    ```
 
-### Step 12: [HUMAN_CHECKPOINT]
+3. **CLARIFY GATE が PASSED の場合のみ表示:**
+   ```
+   === [HUMAN_CHECKPOINT] ===
+   確認事項:
+   - [ ] Screen Spec の画面定義が要件を網羅しているか
+   - [ ] Domain Spec の M-*/API-* 定義が適切か
+   - [ ] Cross-Reference Matrix の整合性を確認したか
 
-**CLARIFY GATE が PASSED の場合のみ表示:**
-
-```
-=== [HUMAN_CHECKPOINT] ===
-確認事項:
-- [ ] Screen Spec の画面定義が要件を網羅しているか
-- [ ] Domain Spec の M-*/API-* 定義が適切か
-- [ ] Cross-Reference Matrix の整合性を確認したか
-
-承認後、次のステップへ進んでください。
-```
+   承認後、次のステップへ進んでください。
+   ```
 
 ---
 
 ## Self-Check
 
-- [ ] **TodoWrite で全ステップを登録したか**
 - [ ] Vision Spec を読み込んだか
 - [ ] Screen Spec を作成したか（SCR-* ID 付き）
 - [ ] Domain Spec を作成したか（M-*/API-* 定義）
 - [ ] Cross-Reference Matrix を作成したか
-- [ ] Feature Issues を作成したか
-- [ ] Foundation Issue を作成したか
+- [ ] **Deep Interview を完了するまで継続したか（質問数制限なし）**
 - [ ] **Multi-Review を実行したか（3観点並列）**
 - [ ] **CLARIFY GATE をチェックしたか**
-- [ ] spec-lint + validate-matrix を実行したか
-- [ ] Design Input を保存したか
-- [ ] **TodoWrite で全ステップを completed にしたか**
+- [ ] BLOCKED の場合、clarify を促したか
 
 ---
 

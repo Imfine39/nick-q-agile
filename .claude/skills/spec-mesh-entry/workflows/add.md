@@ -57,12 +57,12 @@ TodoWrite:
     - content: "Step 6: Feature Spec 作成"
       status: "pending"
       activeForm: "Creating Feature Spec"
-    - content: "Step 7: Multi-Review 実行"
+    - content: "Step 7: Deep Interview（質問数制限なし）"
+      status: "pending"
+      activeForm: "Conducting Deep Interview"
+    - content: "Step 8: Multi-Review 実行"
       status: "pending"
       activeForm: "Executing Multi-Review"
-    - content: "Step 8: Lint 実行"
-      status: "pending"
-      activeForm: "Running Lint"
     - content: "Step 9: CLARIFY GATE チェック"
       status: "pending"
       activeForm: "Checking CLARIFY GATE"
@@ -173,7 +173,27 @@ node .claude/skills/spec-mesh/scripts/branch.cjs --type feature --slug {slug} --
      --description "Feature Spec 作成: {機能名}"
    ```
 
-### Step 7: Multi-Review (3観点並列レビュー)
+### Step 7: Deep Interview（深掘りインタビュー）
+
+**★ このステップは必須・質問数制限なし ★**
+
+> **共通コンポーネント参照:** [shared/_interview.md](../spec-mesh/workflows/shared/_interview.md)
+
+Feature Spec について徹底的にインタビューを行う：
+
+1. **Spec を読み込み、曖昧な箇所を特定**
+2. **AskUserQuestion で深掘り質問（完了するまで継続）**
+   - User Stories の詳細
+   - Functional Requirements の具体的な動作
+   - Edge Cases と例外処理
+   - UI/UX の詳細
+   - 技術的実装の懸念事項
+3. **回答を即座に Spec に反映**
+4. **すべての領域がカバーされるまで繰り返し**
+
+**40問以上になることもある。完璧な仕様を優先。**
+
+### Step 8: Multi-Review (3観点並列レビュー)
 
 Feature Spec の品質を担保するため Multi-Review を実行：
 
@@ -191,59 +211,35 @@ Feature Spec の品質を担保するため Multi-Review を実行：
    - すべてパス → Step 8 へ
    - Critical 未解決 → 問題をリストし対応を促す
 
-### Step 8: Run Lint
-
-```bash
-node .claude/skills/spec-mesh/scripts/spec-lint.cjs
-```
-
 ### Step 9: CLARIFY GATE チェック（必須）
 
 **★ このステップはスキップ禁止 ★**
 
-Lint 後、Grep tool で `[NEEDS CLARIFICATION]` マーカーをカウント：
+> **共通コンポーネント参照:** [shared/_clarify-gate.md](../spec-mesh/workflows/shared/_clarify-gate.md)
 
-```
-Grep tool:
-  pattern: "\[NEEDS CLARIFICATION\]"
-  path: .specify/specs/features/{id}/spec.md
-  output_mode: count
-```
+1. **マーカーカウント:**
+   ```
+   Grep tool: pattern="\[NEEDS CLARIFICATION\]" path=.specify/specs/features/{id}/spec.md output_mode=count
+   ```
 
-**判定ロジック:**
+2. **判定:**
+   - `clarify_count > 0` → BLOCKED（clarify 必須、Plan 遷移禁止）
+   - `clarify_count = 0` → PASSED（Step 10 へ）
 
-```
-clarify_count = [NEEDS CLARIFICATION] マーカー数
-
-if clarify_count > 0:
-    ┌─────────────────────────────────────────────────────────────┐
-    │ ★ CLARIFY GATE: 曖昧点が {clarify_count} 件あります         │
-    │                                                             │
-    │ Plan に進む前に clarify ワークフロー が必須です。            │
-    │                                                             │
-    │ 「clarify を実行して」と依頼してください。                   │
-    └─────────────────────────────────────────────────────────────┘
-    → clarify ワークフロー を実行（必須）
-    → clarify 完了後、Multi-Review からやり直し
-
-else:
-    → Step 10 (入力保存) へ進む
-```
-
-**重要:** clarify_count > 0 の場合、Plan への遷移は禁止。
+**BLOCKED の場合:** clarify 完了後、Step 8 (Multi-Review) からやり直し
 
 ### Step 10: Preserve & Reset Input
 
 If input file was used:
 1. **Preserve input to spec directory:**
    ```bash
-   node .claude/skills/spec-mesh/scripts/preserve-input.cjs add --feature {feature-dir}
+   node .claude/skills/spec-mesh/scripts/input.cjs preserve add --feature {feature-dir}
    ```
    - Saves to: `.specify/specs/features/{feature-dir}/input.md`
 
 2. **Reset input file:**
    ```bash
-   node .claude/skills/spec-mesh/scripts/reset-input.cjs add
+   node .claude/skills/spec-mesh/scripts/input.cjs reset add
    ```
 
 ### Step 11: Summary & [HUMAN_CHECKPOINT]
@@ -281,18 +277,15 @@ If input file was used:
 
 ## Self-Check
 
-- [ ] **TodoWrite で全ステップを登録したか**
-- [ ] Read tool で入力ファイルを読み込んだか
+- [ ] 入力ファイルを読み込んだか
 - [ ] gh issue create を実行したか
 - [ ] branch.cjs でブランチを作成したか
-- [ ] scaffold-spec.cjs で spec を作成したか
-- [ ] Screen Spec を先に更新したか（Spec-First）
+- [ ] scaffold-spec.cjs で Spec を作成したか
 - [ ] M-*/API-* の Case 判定を行ったか
-- [ ] **Impact Analysis を実行したか（Case 2/3 の場合）**
+- [ ] **Deep Interview を完了するまで継続したか（質問数制限なし）**
 - [ ] **Multi-Review を実行したか（3観点並列）**
 - [ ] **CLARIFY GATE をチェックしたか**
-- [ ] spec-lint.cjs を実行したか
-- [ ] **TodoWrite で全ステップを completed にしたか**
+- [ ] BLOCKED の場合、clarify を促したか
 
 ---
 

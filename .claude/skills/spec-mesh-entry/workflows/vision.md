@@ -21,7 +21,6 @@ Unified Quick Input with 4 parts:
 ## Todo Template
 
 **IMPORTANT:** ワークフロー開始時に、以下の Todo を TodoWrite tool で作成すること。
-各ステップ完了時に status を更新し、スキップを防止する。
 
 ```
 TodoWrite:
@@ -38,13 +37,16 @@ TodoWrite:
     - content: "Step 4: 状態更新"
       status: "pending"
       activeForm: "Updating state"
-    - content: "Step 5: Multi-Review 実行"
+    - content: "Step 5: Deep Interview（質問数制限なし）"
+      status: "pending"
+      activeForm: "Conducting Deep Interview"
+    - content: "Step 6: Multi-Review 実行"
       status: "pending"
       activeForm: "Executing Multi-Review"
-    - content: "Step 6: CLARIFY GATE チェック"
+    - content: "Step 7: CLARIFY GATE チェック"
       status: "pending"
       activeForm: "Checking CLARIFY GATE"
-    - content: "Step 7: [HUMAN_CHECKPOINT] 提示"
+    - content: "Step 8: [HUMAN_CHECKPOINT] 提示"
       status: "pending"
       activeForm: "Presenting checkpoint"
 ```
@@ -99,13 +101,13 @@ TodoWrite:
 If input file was used:
 1. **Preserve input to spec directory:**
    ```bash
-   node .claude/skills/spec-mesh/scripts/preserve-input.cjs vision
+   node .claude/skills/spec-mesh/scripts/input.cjs preserve vision
    ```
    - Saves to: `.specify/specs/overview/vision/input.md`
 
 2. **Reset input file:**
    ```bash
-   node .claude/skills/spec-mesh/scripts/reset-input.cjs vision
+   node .claude/skills/spec-mesh/scripts/input.cjs reset vision
    ```
 
 ### Step 4: Update State
@@ -114,7 +116,32 @@ If input file was used:
 node .claude/skills/spec-mesh/scripts/state.cjs repo --set-vision-status draft --set-phase vision
 ```
 
-### Step 5: Multi-Review (3観点並列レビュー)
+### Step 5: Deep Interview（深掘りインタビュー）
+
+**★ このステップは必須・質問数制限なし ★**
+
+> **共通コンポーネント参照:** [shared/_interview.md](../spec-mesh/workflows/shared/_interview.md)
+
+Spec について徹底的にインタビューを行う：
+
+1. **Spec を読み込み、曖昧な箇所を特定**
+2. **AskUserQuestion で深掘り質問（完了するまで継続）**
+   - Technical Implementation
+   - UI/UX
+   - Business Logic
+   - Edge Cases
+   - Concerns & Tradeoffs
+3. **回答を即座に Spec に反映**
+4. **すべての領域がカバーされるまで繰り返し**
+
+**終了条件:**
+- すべての重点領域がカバーされた
+- 追加の曖昧点がなくなった
+- ユーザーが「十分です」と明示した
+
+**40問以上になることもある。完璧な仕様を優先。**
+
+### Step 6: Multi-Review (3観点並列レビュー)
 
 Spec 作成後、品質を担保するため Multi-Review を実行：
 
@@ -133,48 +160,29 @@ Spec 作成後、品質を担保するため Multi-Review を実行：
    - Critical/Major の AI 修正可能な問題を修正
    - Changelog を更新
 
-### Step 6: CLARIFY GATE（必須チェック）
+### Step 7: CLARIFY GATE（必須チェック）
 
 **★ このステップはスキップ禁止 ★**
 
-Multi-Review 後、Grep tool で以下をカウント：
+> **共通コンポーネント参照:** [shared/_clarify-gate.md](../spec-mesh/workflows/shared/_clarify-gate.md)
 
-```
-Grep tool (1): [NEEDS CLARIFICATION] マーカー
-  pattern: "\[NEEDS CLARIFICATION\]"
-  path: .specify/specs/overview/vision/spec.md
-  output_mode: count
+1. **マーカーカウント:**
+   ```
+   Grep tool: pattern="\[NEEDS CLARIFICATION\]" path=.specify/specs/overview/vision/spec.md output_mode=count
+   ```
 
-Grep tool (2): Open Questions の未解決項目（Section 8）
-  pattern: "^- \[ \]"
-  path: .specify/specs/overview/vision/spec.md
-  output_mode: count
-```
+2. **Open Questions カウント:**
+   ```
+   Grep tool: pattern="^- \[ \]" path=.specify/specs/overview/vision/spec.md output_mode=count
+   ```
 
-**判定ロジック:**
+3. **判定:**
+   - `clarify_count > 0` → BLOCKED（clarify 必須、Design 遷移禁止）
+   - `clarify_count = 0` → PASSED（Step 8 へ）
 
-```
-clarify_count = [NEEDS CLARIFICATION] マーカー数 + Open Questions 数
+**BLOCKED の場合:** clarify 完了後、Step 6 (Multi-Review) からやり直し
 
-if clarify_count > 0:
-    ┌─────────────────────────────────────────────────────────┐
-    │ ★ CLARIFY GATE: 曖昧点が {clarify_count} 件あります     │
-    │                                                         │
-    │ Design に進む前に clarify ワークフロー が必須です。      │
-    │                                                         │
-    │ 「clarify を実行して」と依頼してください。               │
-    └─────────────────────────────────────────────────────────┘
-    → clarify ワークフロー を実行（必須）
-    → clarify 完了後、Multi-Review からやり直し
-
-else:
-    → Step 7 (HUMAN_CHECKPOINT) へ進む
-```
-
-**重要:** clarify_count > 0 の場合、Design への遷移は禁止。
-ユーザーが「Design を作成して」と言っても、まず clarify を促すこと。
-
-### Step 7: Output Summary & HUMAN_CHECKPOINT
+### Step 8: Output Summary & HUMAN_CHECKPOINT
 
 Display:
 ```
@@ -216,16 +224,13 @@ Status: {PASSED | BLOCKED}
 
 ## Self-Check
 
-- [ ] **TodoWrite で全ステップを登録したか**
-- [ ] Read tool で入力ファイルを読み込んだか
-- [ ] Bash tool で scaffold-spec.cjs を実行したか
-- [ ] Write/Edit tool で spec を作成したか
-- [ ] Example データ（社内在庫管理システム等）を使用していないか
-- [ ] 曖昧点に `[NEEDS CLARIFICATION]` をマークしたか
+- [ ] 入力ファイルを読み込んだか
+- [ ] scaffold-spec.cjs で Spec を作成したか
+- [ ] Example データを使用していないか
+- [ ] **Deep Interview を完了するまで継続したか（質問数制限なし）**
 - [ ] **Multi-Review を実行したか（3観点並列）**
-- [ ] **Lint を実行したか**
 - [ ] **CLARIFY GATE をチェックしたか**
-- [ ] **TodoWrite で全ステップを completed にしたか**
+- [ ] BLOCKED の場合、clarify を促したか
 
 ---
 
