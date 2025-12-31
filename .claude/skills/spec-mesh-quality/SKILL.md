@@ -62,5 +62,6 @@ Lint（自動構造検証）
 
 | Resource | Path |
 |----------|------|
-| Interview Guide | `../spec-mesh/workflows/shared/_interview.md` |
+| Vision Interview | `../spec-mesh/workflows/shared/_vision-interview.md` |
+| Deep Interview | `../spec-mesh/workflows/shared/_deep-interview.md` |
 | Scripts | `../spec-mesh/scripts/` |

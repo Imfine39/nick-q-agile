@@ -97,22 +97,22 @@ node .claude/skills/spec-mesh/scripts/branch.cjs --type fix --slug {slug} --issu
 Issue #{issue_num} を Feature として開始します。
 ブランチ: feature/{issue_num}-{slug}
 
-→ add ワークフロー の Step 5（コードベース分析）から続行
+→ add ワークフロー の Step 3（コードベース分析）から続行
 ```
 
-Read tool で `.claude/skills/spec-mesh-entry/workflows/add.md` を読み込み、Step 5 以降を実行。
-（Step 1-4 は issue ワークフローで完了済み）
+Read tool で `.claude/skills/spec-mesh-entry/workflows/add.md` を読み込み、Step 3 以降を実行。
+（Step 1-2 は issue ワークフローで完了済み、Step 10-11 はスキップ）
 
 **Fix の場合:**
 ```
 Issue #{issue_num} を Fix として開始します。
 ブランチ: fix/{issue_num}-{slug}
 
-→ fix ワークフロー の Step 4（原因調査）から続行
+→ fix ワークフロー の Step 2（原因調査）から続行
 ```
 
-Read tool で `.claude/skills/spec-mesh-entry/workflows/fix.md` を読み込み、Step 4 以降を実行。
-（Step 1-3 は issue ワークフローで完了済み）
+Read tool で `.claude/skills/spec-mesh-entry/workflows/fix.md` を読み込み、Step 2 以降を実行。
+（Step 1 は issue ワークフローで完了済み、Step 9-10 はスキップ）
 
 ---
 
@@ -142,7 +142,7 @@ Branch: {feature|fix}/{issue_num}-{slug}
 
 ## Next Steps
 
-| 種別 | Workflow | 開始ステップ |
-|------|----------|-------------|
-| Feature | add.md | Step 5: コードベース分析 |
-| Fix | fix.md | Step 4: 原因調査 |
+| 種別 | Workflow | 開始ステップ | スキップ |
+|------|----------|-------------|---------|
+| Feature | add.md | Step 3: コードベース分析 | Step 10-11 |
+| Fix | fix.md | Step 2: 原因調査 | Step 9-10 |

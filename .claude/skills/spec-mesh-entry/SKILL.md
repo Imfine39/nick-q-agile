@@ -68,4 +68,5 @@ Multi-Review → Lint → CLARIFY GATE → Plan...
 | Templates | `../spec-mesh/templates/` |
 | Guides | `../spec-mesh/guides/` |
 | Scripts | `../spec-mesh/scripts/` |
-| Interview Guide | `../spec-mesh/workflows/shared/_interview.md` |
+| Vision Interview | `../spec-mesh/workflows/shared/_vision-interview.md` |
+| Deep Interview | `../spec-mesh/workflows/shared/_deep-interview.md` |

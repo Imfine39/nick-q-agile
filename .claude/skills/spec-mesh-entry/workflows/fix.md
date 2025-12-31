@@ -33,33 +33,33 @@ TodoWrite:
     - content: "Step 1: 入力収集"
       status: "pending"
       activeForm: "Collecting input"
-    - content: "Step 2: GitHub Issue 作成"
-      status: "pending"
-      activeForm: "Creating GitHub Issue"
-    - content: "Step 3: ブランチ作成"
-      status: "pending"
-      activeForm: "Creating branch"
-    - content: "Step 4: 原因調査"
+    - content: "Step 2: 原因調査"
       status: "pending"
       activeForm: "Investigating root cause"
-    - content: "Step 5: Fix Spec 作成"
+    - content: "Step 3: Fix Spec 作成"
       status: "pending"
       activeForm: "Creating Fix Spec"
-    - content: "Step 6: Deep Interview（質問数制限なし）"
+    - content: "Step 4: Deep Interview（質問数制限なし）"
       status: "pending"
       activeForm: "Conducting Deep Interview"
-    - content: "Step 7: Multi-Review 実行"
+    - content: "Step 5: Multi-Review 実行"
       status: "pending"
       activeForm: "Executing Multi-Review"
-    - content: "Step 8: CLARIFY GATE チェック"
+    - content: "Step 6: CLARIFY GATE チェック"
       status: "pending"
       activeForm: "Checking CLARIFY GATE"
-    - content: "Step 9: 入力保存・リセット"
+    - content: "Step 7: 入力保存・リセット"
       status: "pending"
       activeForm: "Preserving input"
-    - content: "Step 10: サマリー・[HUMAN_CHECKPOINT]"
+    - content: "Step 8: サマリー・[HUMAN_CHECKPOINT]"
       status: "pending"
       activeForm: "Presenting summary"
+    - content: "Step 9: GitHub Issue 作成"
+      status: "pending"
+      activeForm: "Creating GitHub Issue"
+    - content: "Step 10: ブランチ作成"
+      status: "pending"
+      activeForm: "Creating branch"
 ```
 
 ---
@@ -86,19 +86,7 @@ TodoWrite:
    | 影響範囲 | Fix Spec Section 2 |
    | 緊急度 | Issue label |
 
-### Step 2: Create GitHub Issue
-
-```bash
-gh issue create --title "[Bug] {概要}" --body "..." --label "bug"
-```
-
-### Step 3: Create Branch
-
-```bash
-node .claude/skills/spec-mesh/scripts/branch.cjs --type fix --slug {slug} --issue {issue_num}
-```
-
-### Step 4: Investigate Root Cause
+### Step 2: Investigate Root Cause
 
 Use codebase exploration to:
 - Identify affected files
@@ -108,7 +96,7 @@ Use codebase exploration to:
 
 Document findings in Fix Spec.
 
-### Step 5: Create Fix Spec
+### Step 3: Create Fix Spec
 
 1. **Run scaffold:**
    ```bash
@@ -124,11 +112,11 @@ Document findings in Fix Spec.
 3. **Check Screen impact** (if UI affected):
    - Add to Screen Modification Log with status `Planned`
 
-### Step 6: Deep Interview（深掘りインタビュー）
+### Step 4: Deep Interview（深掘りインタビュー）
 
 **★ このステップは必須・質問数制限なし ★**
 
-> **共通コンポーネント参照:** [shared/_interview.md](../../spec-mesh/workflows/shared/_interview.md)
+> **共通コンポーネント参照:** [shared/_deep-interview.md](../../spec-mesh/workflows/shared/_deep-interview.md)
 
 Fix Spec について徹底的にインタビューを行う：
 
@@ -144,7 +132,7 @@ Fix Spec について徹底的にインタビューを行う：
 
 **40問以上になることもある。完璧な仕様を優先。**
 
-### Step 7: Multi-Review (3観点並列レビュー)
+### Step 5: Multi-Review (3観点並列レビュー)
 
 Fix Spec の品質を担保するため Multi-Review を実行：
 
@@ -159,10 +147,10 @@ Fix Spec の品質を担保するため Multi-Review を実行：
    - AI 修正可能な問題を修正
 
 3. **Handle results:**
-   - すべてパス → Step 7 へ
+   - すべてパス → Step 6 へ
    - Critical 未解決 → 問題をリストし対応を促す
 
-### Step 8: CLARIFY GATE チェック（必須）
+### Step 6: CLARIFY GATE チェック（必須）
 
 **★ このステップはスキップ禁止 ★**
 
@@ -175,11 +163,11 @@ Fix Spec の品質を担保するため Multi-Review を実行：
 
 2. **判定:**
    - `clarify_count > 0` → BLOCKED（clarify 必須、実装遷移禁止）
-   - `clarify_count = 0` → PASSED（Step 9 へ）
+   - `clarify_count = 0` → PASSED（Step 7 へ）
 
-**BLOCKED の場合:** clarify 完了後、Step 7 (Multi-Review) からやり直し
+**BLOCKED の場合:** clarify 完了後、Step 5 (Multi-Review) からやり直し
 
-### Step 9: Preserve & Reset Input
+### Step 7: Preserve & Reset Input
 
 If input file was used:
 1. **Preserve input to spec directory:**
@@ -193,15 +181,13 @@ If input file was used:
    node .claude/skills/spec-mesh/scripts/input.cjs reset fix
    ```
 
-### Step 10: Summary & [HUMAN_CHECKPOINT]
+### Step 8: Summary & [HUMAN_CHECKPOINT]
 
 1. **Display Summary:**
    ```
    === Fix Spec 作成完了 ===
 
    Bug: {概要}
-   Issue: #{issue_num}
-   Branch: fix/{issue_num}-{slug}
    Spec: .specify/specs/fixes/{id}/spec.md
 
    Root Cause: {原因の要約}
@@ -225,8 +211,34 @@ If input file was used:
    - [ ] 影響範囲が適切に評価されているか
    - [ ] Verification Plan が十分か
 
-   承認後、次のステップへ進んでください。
+   ★ 承認後、GitHub Issue とブランチを作成します。
    ```
+
+### Step 9: Create GitHub Issue
+
+**★ CHECKPOINT 承認後に実行 ★**
+
+```bash
+gh issue create --title "[Bug] {概要}" --body "..." --label "bug"
+```
+
+### Step 10: Create Branch
+
+```bash
+node .claude/skills/spec-mesh/scripts/branch.cjs --type fix --slug {slug} --issue {issue_num}
+```
+
+**出力:**
+```
+=== Issue・ブランチ作成完了 ===
+
+Issue: #{issue_num}
+Branch: fix/{issue_num}-{slug}
+
+次のステップ:
+- Trivial → implement ワークフローで直接修正
+- Standard → plan ワークフローで修正計画を作成
+```
 
 ---
 
@@ -311,14 +323,15 @@ Root Cause: {概要}
 ## Self-Check
 
 - [ ] 入力ファイルを読み込んだか（--quick 以外）
-- [ ] gh issue create を実行したか
-- [ ] branch.cjs でブランチを作成したか
 - [ ] 原因調査を実施し、Root Cause を記載したか
 - [ ] Severity Classification を実行したか（Trivial/Standard）
 - [ ] **Deep Interview を完了するまで継続したか（質問数制限なし）**
 - [ ] **Multi-Review を実行したか（3観点並列）**
 - [ ] **CLARIFY GATE をチェックしたか**
 - [ ] BLOCKED の場合、clarify を促したか
+- [ ] **CHECKPOINT 承認後に Issue・ブランチを作成したか**
+  - [ ] gh issue create を実行したか
+  - [ ] branch.cjs でブランチを作成したか
 
 ---
 

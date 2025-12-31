@@ -37,9 +37,9 @@ TodoWrite:
     - content: "Step 4: 状態更新"
       status: "pending"
       activeForm: "Updating state"
-    - content: "Step 5: Deep Interview（質問数制限なし）"
+    - content: "Step 5: Vision Interview（3フェーズ構成）"
       status: "pending"
-      activeForm: "Conducting Deep Interview"
+      activeForm: "Conducting Vision Interview"
     - content: "Step 6: Multi-Review 実行"
       status: "pending"
       activeForm: "Executing Multi-Review"
@@ -116,30 +116,32 @@ If input file was used:
 node .claude/skills/spec-mesh/scripts/state.cjs repo --set-vision-status draft --set-phase vision
 ```
 
-### Step 5: Deep Interview（深掘りインタビュー）
+### Step 5: Vision Interview（ビジョンインタビュー）
 
-**★ このステップは必須・質問数制限なし ★**
+**★ このステップは必須・3フェーズ構成 ★**
 
-> **共通コンポーネント参照:** [shared/_interview.md](../../spec-mesh/workflows/shared/_interview.md)
+> **共通コンポーネント参照:** [shared/_vision-interview.md](../../spec-mesh/workflows/shared/_vision-interview.md)
 
-Spec について徹底的にインタビューを行う：
+3フェーズでインタビューを行う：
 
-1. **Spec を読み込み、曖昧な箇所を特定**
-2. **AskUserQuestion で深掘り質問（完了するまで継続）**
-   - Technical Implementation
-   - UI/UX
-   - Business Logic
-   - Edge Cases
-   - Concerns & Tradeoffs
-3. **回答を即座に Spec に反映**
-4. **すべての領域がカバーされるまで繰り返し**
+**Phase 1: 方向性確認（10問程度）**
+- ターゲットユーザー確認
+- 解決する課題の確認
+- スコープ境界の確認
 
-**終了条件:**
-- すべての重点領域がカバーされた
-- 追加の曖昧点がなくなった
-- ユーザーが「十分です」と明示した
+> **重要:** 方向性が確定するまで Phase 2 に進まない
 
-**40問以上になることもある。完璧な仕様を優先。**
+**Phase 2: 機能洗い出し（10問程度）**
+- Journey からの機能抽出
+- 機能リスト提案（Feature Hints）
+- ユーザー確認・調整
+
+**Phase 3: 優先順位・リスク確認（5問程度）**
+- MVP vs 将来機能の判断
+- 懸念・制約の確認
+- 成功指標の確認
+
+**方向性確認 → 機能洗い出し の順序を厳守。**
 
 ### Step 6: Multi-Review (3観点並列レビュー)
 
@@ -227,7 +229,10 @@ Status: {PASSED | BLOCKED}
 - [ ] 入力ファイルを読み込んだか
 - [ ] scaffold-spec.cjs で Spec を作成したか
 - [ ] Example データを使用していないか
-- [ ] **Deep Interview を完了するまで継続したか（質問数制限なし）**
+- [ ] **Vision Interview を 3フェーズで完了したか**
+  - [ ] Phase 1: 方向性確認（順序厳守）
+  - [ ] Phase 2: 機能洗い出し（Feature Hints）
+  - [ ] Phase 3: 優先順位・リスク確認
 - [ ] **Multi-Review を実行したか（3観点並列）**
 - [ ] **CLARIFY GATE をチェックしたか**
 - [ ] BLOCKED の場合、clarify を促したか

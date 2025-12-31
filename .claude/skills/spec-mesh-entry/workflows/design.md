@@ -47,12 +47,15 @@ TodoWrite:
     - content: "Step 9: Design Input 保存"
       status: "pending"
       activeForm: "Preserving Design Input"
-    - content: "Step 10: Foundation Issue 作成"
-      status: "pending"
-      activeForm: "Creating Foundation Issue"
-    - content: "Step 11: サマリー・[HUMAN_CHECKPOINT]"
+    - content: "Step 10: サマリー・[HUMAN_CHECKPOINT]"
       status: "pending"
       activeForm: "Presenting summary and checkpoint"
+    - content: "Step 11: Feature Issues 一括作成"
+      status: "pending"
+      activeForm: "Creating Feature Issues"
+    - content: "Step 12: Foundation Issue 作成"
+      status: "pending"
+      activeForm: "Creating Foundation Issue"
 ```
 
 ---
@@ -92,6 +95,9 @@ TodoWrite:
 ### Step 3: Feature Proposal
 
 1. **Analyze Vision Journeys** → Extract Feature candidates
+   - Vision Interview (Phase 2) で洗い出した Feature Hints を参照
+   - 機能粒度を確認（constitution/terminology.md 参照）
+
 2. **Present to user for approval:**
    ```
    提案する Features:
@@ -101,10 +107,10 @@ TodoWrite:
 
    採用する Features を選択してください（番号をカンマ区切り）
    ```
-3. **Create GitHub Issues for approved Features:**
-   ```bash
-   gh issue create --title "[Feature] {Feature名}" --body "..."
-   ```
+
+3. **Record approved Features:**
+   - 採用された Features を記録（Domain Spec Section 4 に含める）
+   - **GitHub Issue 作成は CHECKPOINT 後（Step 11）**
 
 ### Step 4: Simultaneous Screen + Domain Spec Creation
 
@@ -157,7 +163,7 @@ node .claude/skills/spec-mesh/scripts/matrix-ops.cjs generate
 
 **★ このステップは必須・質問数制限なし ★**
 
-> **共通コンポーネント参照:** [shared/_interview.md](../../spec-mesh/workflows/shared/_interview.md)
+> **共通コンポーネント参照:** [shared/_deep-interview.md](../../spec-mesh/workflows/shared/_deep-interview.md)
 
 Screen Spec と Domain Spec について徹底的にインタビューを行う：
 
@@ -225,15 +231,7 @@ node .claude/skills/spec-mesh/scripts/input.cjs preserve design
 ```
 - Saves to: `.specify/specs/overview/domain/input.md`
 
-### Step 10: Create Foundation Issue
-
-```bash
-gh issue create --title "[Foundation] S-FOUNDATION-001: 基盤実装" --body "..."
-```
-
-Foundation includes: 認証、DB接続、基本構造
-
-### Step 11: Summary & [HUMAN_CHECKPOINT]
+### Step 10: Summary & [HUMAN_CHECKPOINT]
 
 1. **Update State:**
    ```bash
@@ -254,8 +252,10 @@ Foundation includes: 認証、DB接続、基本構造
 
    Matrix: .specify/specs/overview/matrix/cross-reference.json
 
-   Feature Issues: {N} 件作成
-   Foundation Issue: #{issue_num}
+   採用した Features:
+   1. S-AUTH-001: ユーザー認証
+   2. S-DASH-001: ダッシュボード表示
+   ...
 
    === CLARIFY GATE ===
    Status: {PASSED | BLOCKED}
@@ -268,9 +268,44 @@ Foundation includes: 認証、DB接続、基本構造
    - [ ] Screen Spec の画面定義が要件を網羅しているか
    - [ ] Domain Spec の M-*/API-* 定義が適切か
    - [ ] Cross-Reference Matrix の整合性を確認したか
+   - [ ] 採用した Features が正しいか
 
-   承認後、次のステップへ進んでください。
+   ★ 承認後、Feature Issues と Foundation Issue を作成します。
    ```
+
+### Step 11: Create Feature Issues
+
+**★ CHECKPOINT 承認後に実行 ★**
+
+採用された Features に対して GitHub Issues を一括作成：
+
+```bash
+gh issue create --title "[Feature] S-AUTH-001: ユーザー認証" --body "..."
+gh issue create --title "[Feature] S-DASH-001: ダッシュボード表示" --body "..."
+...
+```
+
+### Step 12: Create Foundation Issue
+
+```bash
+gh issue create --title "[Foundation] S-FOUNDATION-001: 基盤実装" --body "..."
+```
+
+Foundation includes: 認証、DB接続、基本構造
+
+**出力:**
+```
+=== Issues 作成完了 ===
+
+Feature Issues: {N} 件作成
+  - #{num}: [Feature] S-AUTH-001: ユーザー認証
+  - #{num}: [Feature] S-DASH-001: ダッシュボード表示
+  ...
+
+Foundation Issue: #{issue_num}
+
+次のステップ: issue ワークフローで Foundation から開始
+```
 
 ---
 
@@ -284,6 +319,9 @@ Foundation includes: 認証、DB接続、基本構造
 - [ ] **Multi-Review を実行したか（3観点並列）**
 - [ ] **CLARIFY GATE をチェックしたか**
 - [ ] BLOCKED の場合、clarify を促したか
+- [ ] **CHECKPOINT 承認後に Issue を作成したか**
+  - [ ] Feature Issues を一括作成したか
+  - [ ] Foundation Issue を作成したか
 
 ---
 

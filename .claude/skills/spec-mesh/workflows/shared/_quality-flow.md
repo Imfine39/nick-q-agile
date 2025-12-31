@@ -58,7 +58,9 @@ Spec 作成完了
 
 **★ 必須ステップ・質問数制限なし ★**
 
-> **コンポーネント参照:** [_interview.md](_interview.md)
+> **コンポーネント参照:**
+> - Vision: [_vision-interview.md](_vision-interview.md)（3フェーズ構成）
+> - その他: [_deep-interview.md](_deep-interview.md)（完全網羅）
 
 ```markdown
 完了するまで徹底的にインタビューを行う（40問以上になることもある）
@@ -263,7 +265,7 @@ clarify 完了後、Multi-Review からやり直します。
 
 [shared/_quality-flow.md](shared/_quality-flow.md) を実行：
 
-1. **Deep Interview** - [_interview.md](_interview.md)
+1. **Deep Interview** - [_vision-interview.md](_vision-interview.md) or [_deep-interview.md](_deep-interview.md)
 2. **Multi-Review** - [review.md](review.md)
 3. **AI 修正**
 4. **Lint** - `spec-lint.cjs`

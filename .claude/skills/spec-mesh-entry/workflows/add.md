@@ -45,33 +45,33 @@ TodoWrite:
     - content: "Step 2: 前提条件確認"
       status: "pending"
       activeForm: "Checking prerequisites"
-    - content: "Step 3: GitHub Issue 作成"
-      status: "pending"
-      activeForm: "Creating GitHub Issue"
-    - content: "Step 4: ブランチ作成"
-      status: "pending"
-      activeForm: "Creating branch"
-    - content: "Step 5: コードベース分析"
+    - content: "Step 3: コードベース分析"
       status: "pending"
       activeForm: "Analyzing codebase"
-    - content: "Step 6: Feature Spec 作成"
+    - content: "Step 4: Feature Spec 作成"
       status: "pending"
       activeForm: "Creating Feature Spec"
-    - content: "Step 7: Deep Interview（質問数制限なし）"
+    - content: "Step 5: Deep Interview（質問数制限なし）"
       status: "pending"
       activeForm: "Conducting Deep Interview"
-    - content: "Step 8: Multi-Review 実行"
+    - content: "Step 6: Multi-Review 実行"
       status: "pending"
       activeForm: "Executing Multi-Review"
-    - content: "Step 9: CLARIFY GATE チェック"
+    - content: "Step 7: CLARIFY GATE チェック"
       status: "pending"
       activeForm: "Checking CLARIFY GATE"
-    - content: "Step 10: 入力保存・リセット"
+    - content: "Step 8: 入力保存・リセット"
       status: "pending"
       activeForm: "Preserving input"
-    - content: "Step 11: サマリー・[HUMAN_CHECKPOINT]"
+    - content: "Step 9: サマリー・[HUMAN_CHECKPOINT]"
       status: "pending"
       activeForm: "Presenting summary"
+    - content: "Step 10: GitHub Issue 作成"
+      status: "pending"
+      activeForm: "Creating GitHub Issue"
+    - content: "Step 11: ブランチ作成"
+      status: "pending"
+      activeForm: "Creating branch"
 ```
 
 ---
@@ -108,25 +108,13 @@ node .claude/skills/spec-mesh/scripts/state.cjs query --repo
 - Check Domain status → Warning if not clarified
 - Verify Domain has M-*/API-* definitions
 
-### Step 3: Create GitHub Issue
-
-```bash
-gh issue create --title "[Feature] {機能名}" --body "..."
-```
-
-### Step 4: Create Branch
-
-```bash
-node .claude/skills/spec-mesh/scripts/branch.cjs --type feature --slug {slug} --issue {issue_num}
-```
-
-### Step 5: Analyze Codebase
+### Step 3: Analyze Codebase
 
 - Identify existing patterns
 - Find related components
 - Note reusable code
 
-### Step 6: Create Feature Spec
+### Step 4: Create Feature Spec
 
 1. **Run scaffold:**
    ```bash
@@ -173,11 +161,11 @@ node .claude/skills/spec-mesh/scripts/branch.cjs --type feature --slug {slug} --
      --description "Feature Spec 作成: {機能名}"
    ```
 
-### Step 7: Deep Interview（深掘りインタビュー）
+### Step 5: Deep Interview（深掘りインタビュー）
 
 **★ このステップは必須・質問数制限なし ★**
 
-> **共通コンポーネント参照:** [shared/_interview.md](../../spec-mesh/workflows/shared/_interview.md)
+> **共通コンポーネント参照:** [shared/_deep-interview.md](../../spec-mesh/workflows/shared/_deep-interview.md)
 
 Feature Spec について徹底的にインタビューを行う：
 
@@ -193,7 +181,7 @@ Feature Spec について徹底的にインタビューを行う：
 
 **40問以上になることもある。完璧な仕様を優先。**
 
-### Step 8: Multi-Review (3観点並列レビュー)
+### Step 6: Multi-Review (3観点並列レビュー)
 
 Feature Spec の品質を担保するため Multi-Review を実行：
 
@@ -208,10 +196,10 @@ Feature Spec の品質を担保するため Multi-Review を実行：
    - AI 修正可能な問題を修正
 
 3. **Handle results:**
-   - すべてパス → Step 9 へ
+   - すべてパス → Step 7 へ
    - Critical 未解決 → 問題をリストし対応を促す
 
-### Step 9: CLARIFY GATE チェック（必須）
+### Step 7: CLARIFY GATE チェック（必須）
 
 **★ このステップはスキップ禁止 ★**
 
@@ -224,11 +212,11 @@ Feature Spec の品質を担保するため Multi-Review を実行：
 
 2. **判定:**
    - `clarify_count > 0` → BLOCKED（clarify 必須、Plan 遷移禁止）
-   - `clarify_count = 0` → PASSED（Step 10 へ）
+   - `clarify_count = 0` → PASSED（Step 8 へ）
 
-**BLOCKED の場合:** clarify 完了後、Step 8 (Multi-Review) からやり直し
+**BLOCKED の場合:** clarify 完了後、Step 6 (Multi-Review) からやり直し
 
-### Step 10: Preserve & Reset Input
+### Step 8: Preserve & Reset Input
 
 If input file was used:
 1. **Preserve input to spec directory:**
@@ -242,15 +230,13 @@ If input file was used:
    node .claude/skills/spec-mesh/scripts/input.cjs reset add
    ```
 
-### Step 11: Summary & [HUMAN_CHECKPOINT]
+### Step 9: Summary & [HUMAN_CHECKPOINT]
 
 1. **Display Summary:**
    ```
    === Feature Spec 作成完了 ===
 
    Feature: {機能名}
-   Issue: #{issue_num}
-   Branch: feature/{issue_num}-{slug}
    Spec: .specify/specs/features/{id}/spec.md
 
    === CLARIFY GATE ===
@@ -270,22 +256,47 @@ If input file was used:
    - [ ] Functional Requirements が適切に定義されているか
    - [ ] M-*/API-* の参照/追加が正しいか
 
-   承認後、plan ワークフロー へ進んでください。
+   ★ 承認後、GitHub Issue とブランチを作成します。
    ```
+
+### Step 10: Create GitHub Issue
+
+**★ CHECKPOINT 承認後に実行 ★**
+
+```bash
+gh issue create --title "[Feature] {機能名}" --body "..."
+```
+
+### Step 11: Create Branch
+
+```bash
+node .claude/skills/spec-mesh/scripts/branch.cjs --type feature --slug {slug} --issue {issue_num}
+```
+
+**出力:**
+```
+=== Issue・ブランチ作成完了 ===
+
+Issue: #{issue_num}
+Branch: feature/{issue_num}-{slug}
+
+次のステップ: plan ワークフローで実装計画を作成
+```
 
 ---
 
 ## Self-Check
 
 - [ ] 入力ファイルを読み込んだか
-- [ ] gh issue create を実行したか
-- [ ] branch.cjs でブランチを作成したか
 - [ ] scaffold-spec.cjs で Spec を作成したか
 - [ ] M-*/API-* の Case 判定を行ったか
 - [ ] **Deep Interview を完了するまで継続したか（質問数制限なし）**
 - [ ] **Multi-Review を実行したか（3観点並列）**
 - [ ] **CLARIFY GATE をチェックしたか**
 - [ ] BLOCKED の場合、clarify を促したか
+- [ ] **CHECKPOINT 承認後に Issue・ブランチを作成したか**
+  - [ ] gh issue create を実行したか
+  - [ ] branch.cjs でブランチを作成したか
 
 ---
 
