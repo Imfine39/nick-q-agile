@@ -83,11 +83,18 @@ Quick Input 記入（任意）
     ↓
 Vision Spec 作成
     ↓
+Vision Interview（3フェーズ構成）
+    - Phase 1: 方向性確認
+    - Phase 2: 機能洗い出し
+    - Phase 3: 優先順位・リスク
+    ↓
 Multi-Review（3観点並列）
     ↓
-[HUMAN_CHECKPOINT] 確認
+[CLARIFY GATE] ← 曖昧点チェック
+    ├── 曖昧点あり → clarify → Multi-Review へ戻る
+    └── 曖昧点なし → 次へ
     ↓
-Clarify（曖昧点があれば）
+[HUMAN_CHECKPOINT] 確認
     ↓
 Vision 承認
 ```
@@ -113,6 +120,8 @@ Screen Spec 作成（SCR-* ID、画面一覧・遷移・ワイヤーフレーム
 Domain Spec 作成（M-*、API-*、BR-*/VR-*/CR-*）
     ↓
 Cross-Reference Matrix 作成
+    ↓
+Deep Interview（質問数制限なし）
     ↓
 Multi-Review（3観点並列）
     ↓
@@ -145,20 +154,22 @@ Foundation Issue 作成
 
 | 状況 | ワークフロー | 説明 |
 |------|-------------|------|
-| 新機能追加 | add | Issue 作成 → Branch → Feature Spec |
-| バグ修正 | fix | Issue 作成 → Branch → Fix Spec |
-| 既存 Issue から | issue | Issue 選択 → Branch → Feature Spec |
+| 新機能追加 | add | Feature Spec → GATE 通過 → Issue → Branch |
+| バグ修正 | fix | Fix Spec → GATE 通過 → Issue → Branch |
+| 既存 Issue から | issue | Issue 選択 → Branch → Feature/Fix Spec |
 | 軽微な変更 | quick | Spec スキップ → 直接実装 |
 
 **フロー:**
 ```
 入力検証（必須項目確認）
     ↓
-GitHub Issue 作成
-    ↓
-Branch 作成（feature/{issue}-{slug} / fix/{issue}-{slug}）
+コードベース分析
     ↓
 Feature/Fix Spec 作成
+    ↓
+Deep Interview（質問数制限なし）
+    - 完了するまで徹底的にインタビュー
+    - 40問以上になることもある
     ↓
 Multi-Review（3観点並列）
     ↓
@@ -170,6 +181,10 @@ Lint 実行
     └── = 0 → GATE 通過
     ↓
 [HUMAN_CHECKPOINT] Spec 承認
+    ↓
+GitHub Issue 作成
+    ↓
+Branch 作成（feature/{issue}-{slug} / fix/{issue}-{slug}）
 ```
 
 **CLARIFY GATE（必須）:**
@@ -426,10 +441,11 @@ Claude: checklist を実行
 │                         Phase 1: Initialization                          │
 ├─────────────────────────────────────────────────────────────────────────┤
 │                                                                          │
-│  vision → Spec作成 → Multi-Review → Lint → [CLARIFY GATE]               │
+│  vision → Spec作成 → Vision Interview（3フェーズ）                      │
+│        → Multi-Review → Lint → [CLARIFY GATE]                            │
 │        → [HUMAN_CHECKPOINT] → ✅ Vision 承認                             │
 │                                                                          │
-│  design → Screen Spec + Domain Spec + Matrix                             │
+│  design → Screen Spec + Domain Spec + Matrix → Deep Interview            │
 │        → Multi-Review → Lint → [CLARIFY GATE]                            │
 │        → [HUMAN_CHECKPOINT] → Feature Issues 作成                        │
 │                                                                          │
@@ -440,9 +456,11 @@ Claude: checklist を実行
 │                      Phase 2: Feature Development                        │
 ├─────────────────────────────────────────────────────────────────────────┤
 │                                                                          │
-│  add/fix/issue → Spec作成 → Multi-Review → Lint                         │
-│               → ★ CLARIFY GATE ★ ← 必須（曖昧点 = 0）                   │
-│               → [HUMAN_CHECKPOINT] Spec 承認                             │
+│  add/fix → Spec作成 → Deep Interview → Multi-Review → Lint              │
+│         → ★ CLARIFY GATE ★ ← 必須（曖昧点 = 0）                         │
+│         → [HUMAN_CHECKPOINT] Spec 承認 → Issue作成 → Branch作成         │
+│                                                                          │
+│  issue → Issue選択 → Branch作成 → add/fix へ引き継ぎ（Step 3/2 から）   │
 │                                                                          │
 │  ════════════════════════════════════════════════════════════════════   │
 │                                                                          │

@@ -47,12 +47,16 @@ SSD-MESH の全ワークフロー詳細リファレンスです。
 **フロー:**
 1. Quick Input または対話で情報収集
 2. Vision Spec 作成
-3. Multi-Review（3観点並列）
-4. Lint 実行
-5. **[CLARIFY GATE]** ← 曖昧点チェック
-6. Clarify（曖昧点があれば → Multi-Review へ戻る）
-7. [HUMAN_CHECKPOINT]
-8. 状態更新
+3. Vision Interview（3フェーズ構成）
+   - Phase 1: 方向性確認
+   - Phase 2: 機能洗い出し
+   - Phase 3: 優先順位・リスク
+4. Multi-Review（3観点並列）
+5. Lint 実行
+6. **[CLARIFY GATE]** ← 曖昧点チェック
+7. Clarify（曖昧点があれば → Multi-Review へ戻る）
+8. [HUMAN_CHECKPOINT]
+9. 状態更新
 
 **依頼例:**
 ```
@@ -87,13 +91,14 @@ SSD-MESH の全ワークフロー詳細リファレンスです。
 3. Screen Spec 作成（SCR-* ID）
 4. Domain Spec 作成（M-*, API-*, BR-*, VR-*, CR-*）
 5. Cross-Reference Matrix 作成
-6. Multi-Review（各 Spec に 3観点）
-7. Lint + validate-matrix
-8. **[CLARIFY GATE]** ← 曖昧点チェック
-9. Clarify（曖昧点があれば → Multi-Review へ戻る）
-10. [HUMAN_CHECKPOINT]
-11. Feature Issues 作成
-12. Foundation Issue 作成
+6. Deep Interview（質問数制限なし）
+7. Multi-Review（各 Spec に 3観点）
+8. Lint + validate-matrix
+9. **[CLARIFY GATE]** ← 曖昧点チェック
+10. Clarify（曖昧点があれば → Multi-Review へ戻る）
+11. [HUMAN_CHECKPOINT]
+12. Feature Issues 作成
+13. Foundation Issue 作成
 
 **依頼例:**
 ```
@@ -120,14 +125,16 @@ SSD-MESH の全ワークフロー詳細リファレンスです。
 **フロー:**
 1. Quick Input または対話で情報収集
 2. 入力検証（必須項目確認）
-3. GitHub Issue 作成
-4. Branch 作成（feature/{issue}-{slug}）
-5. Feature Spec 作成
+3. コードベース分析
+4. Feature Spec 作成
+5. Deep Interview（質問数制限なし）
 6. Multi-Review（3観点並列）
 7. Lint 実行
 8. **★ CLARIFY GATE ★** ← 必須（曖昧点 = 0）
 9. Clarify（曖昧点があれば → Multi-Review へ戻る）
 10. [HUMAN_CHECKPOINT] Spec 承認
+11. GitHub Issue 作成
+12. Branch 作成（feature/{issue}-{slug}）
 
 **依頼例:**
 ```
@@ -152,16 +159,17 @@ SSD-MESH の全ワークフロー詳細リファレンスです。
 **フロー:**
 1. Quick Input または対話で情報収集
 2. 入力検証
-3. GitHub Issue 作成
-4. Branch 作成（fix/{issue}-{slug}）
-5. 原因調査
-6. Fix Spec 作成（原因・修正方針）
-7. Multi-Review（3観点並列）
-8. Lint 実行
-9. **★ CLARIFY GATE ★** ← 必須（曖昧点 = 0）
-10. Clarify（曖昧点があれば → Multi-Review へ戻る）
-11. [HUMAN_CHECKPOINT] Spec 承認
-12. Severity 判定（Trivial → implement 直行 / Standard → plan）
+3. 原因調査
+4. Fix Spec 作成（原因・修正方針）
+5. Deep Interview（質問数制限なし）
+6. Multi-Review（3観点並列）
+7. Lint 実行
+8. **★ CLARIFY GATE ★** ← 必須（曖昧点 = 0）
+9. Clarify（曖昧点があれば → Multi-Review へ戻る）
+10. [HUMAN_CHECKPOINT] Spec 承認
+11. GitHub Issue 作成
+12. Branch 作成（fix/{issue}-{slug}）
+13. Severity 判定（Trivial → implement 直行 / Standard → plan）
 
 **依頼例:**
 ```
@@ -193,8 +201,8 @@ SSD-MESH の全ワークフロー詳細リファレンスです。
 2. Issue 種別判定（Feature / Fix）
 3. Branch 作成
 4. 適切なワークフローへ引き継ぎ
-   - Feature → add.md (Step 5 から)
-   - Fix → fix.md (Step 4 から)
+   - Feature → add.md (Step 3 から、Step 11-12 はスキップ)
+   - Fix → fix.md (Step 2 から、Step 11-12 はスキップ)
 
 **依頼例:**
 ```
