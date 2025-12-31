@@ -11,7 +11,7 @@
     - [NEEDS CLARIFICATION] count must be 0 (CLARIFY GATE)
 
   See: .claude/skills/spec-mesh/guides/id-naming.md for ID formats
-  See: .claude/skills/spec-mesh/constitution.md for workflow rules
+  See: .claude/skills/spec-mesh/constitution/core.md for workflow rules
 -->
 
 Plan ID: PLAN-{AREA}-{NNN}

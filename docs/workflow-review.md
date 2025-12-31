@@ -58,8 +58,7 @@
    - 参照: `CLAUDE.md:33`, `.claude/skills/spec-mesh/templates/CLAUDE.template.md:24`
    - 影響: update実行後に `quick` ルーティングが消える可能性
 
-4. preserve-input の案内が実際の引数要件と一致しない
-   - 参照: `.claude/skills/spec-mesh/templates/CLAUDE.template.md:167`, `.claude/skills/spec-mesh/scripts/preserve-input.cjs:39`
+4. ~~preserve-input の案内が実際の引数要件と一致しない~~ ✅ 解決済み（input.cjs に統合）
 
 5. CLARIFY GATE の流れがCore Flowと各workflowで順序が不一致
    - 参照: `CLAUDE.md:56`, `.claude/skills/spec-mesh/workflows/vision.md:129`

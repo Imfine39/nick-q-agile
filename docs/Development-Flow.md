@@ -517,7 +517,7 @@ Claude: checklist を実行
 事前に入力ファイルを記入することで、より精度の高い Spec が生成されます。
 
 ```bash
-node .claude/skills/spec-mesh/scripts/reset-input.cjs vision
+node .claude/skills/spec-mesh/scripts/input.cjs reset vision
 # .specify/input/vision-input.md を編集
 ```
 

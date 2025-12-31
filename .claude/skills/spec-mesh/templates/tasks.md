@@ -8,7 +8,7 @@
 
   Task ID Format: T-{NNN} (e.g., T-001, T-002)
   See: .claude/skills/spec-mesh/guides/id-naming.md for ID formats
-  See: .claude/skills/spec-mesh/constitution.md for workflow rules
+  See: .claude/skills/spec-mesh/constitution/core.md for workflow rules
 
   Prerequisites:
     - Implementation Plan must exist and be approved

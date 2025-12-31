@@ -179,8 +179,10 @@
 | ファイルシステム操作 | 5箇所以上 | `lib/file-utils.cjs` |
 | Git 操作 | state, branch, changelog | `lib/git-utils.cjs` |
 
+**統合済み:**
+- `reset-input.cjs` + `preserve-input.cjs` → `input.cjs` ✅
+
 **統合候補:**
-- `reset-input.cjs` + `preserve-input.cjs` → `input.cjs`
 - `post-merge.cjs` → `state.cjs` のサブコマンド化
 - `changelog.cjs` → `state.cjs` のサブコマンド化
 

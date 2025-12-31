@@ -6,7 +6,7 @@
   ID Format: S-DOMAIN-001 (one per project)
   See: .claude/skills/spec-mesh/guides/id-naming.md
 
-  Status Values (from constitution.md - Status Values section):
+  Status Values (from constitution/terminology.md - Status Values section):
     Spec Status:
     - Draft: Initial creation, not reviewed
     - In Review: Under Multi-Review or stakeholder review
@@ -262,7 +262,7 @@ All features that implement this domain. Updated as features are added.
 |------------|-------|------|--------|-------------------|
 | S-{AREA}-001 | {Title} | `.specify/specs/features/s-xxx-001/` | {Status} | {M-*, API-*} |
 
-**Status values (see constitution.md):** Draft | In Review | Clarified | Approved | Implemented
+**Status values (see constitution/terminology.md):** Draft | In Review | Clarified | Approved | Implemented
 
 ---
 

@@ -8,7 +8,7 @@
   Component IDs: COMP-{NNN} (e.g., COMP-001, COMP-002)
   See: .claude/skills/spec-mesh/guides/id-naming.md
 
-  Status Values (from constitution.md - Status Values section):
+  Status Values (from constitution/terminology.md - Status Values section):
     Spec Status:
     - Draft: Initial creation, not reviewed
     - In Review: Under Multi-Review or stakeholder review
@@ -69,7 +69,7 @@ Related Domain: S-DOMAIN-001
 | SCR-001 | [画面名] | J-1 | Planned |
 | SCR-002 | [画面名] | J-1,J-2 | Planned |
 
-**Screen Status values (see constitution.md):**
+**Screen Status values (see constitution/terminology.md):**
 - `Planned` - 仕様定義済み、未実装
 - `In Progress` - 実装中
 - `Implemented` - 実装完了、本番稼働中
