@@ -120,7 +120,7 @@ node .claude/skills/spec-mesh/scripts/state.cjs repo --set-vision-status draft -
 
 **★ このステップは必須・質問数制限なし ★**
 
-> **共通コンポーネント参照:** [shared/_interview.md](../spec-mesh/workflows/shared/_interview.md)
+> **共通コンポーネント参照:** [shared/_interview.md](../../spec-mesh/workflows/shared/_interview.md)
 
 Spec について徹底的にインタビューを行う：
 
@@ -164,7 +164,7 @@ Spec 作成後、品質を担保するため Multi-Review を実行：
 
 **★ このステップはスキップ禁止 ★**
 
-> **共通コンポーネント参照:** [shared/_clarify-gate.md](../spec-mesh/workflows/shared/_clarify-gate.md)
+> **共通コンポーネント参照:** [shared/_clarify-gate.md](../../spec-mesh/workflows/shared/_clarify-gate.md)
 
 1. **マーカーカウント:**
    ```

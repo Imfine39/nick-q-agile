@@ -128,7 +128,7 @@ Document findings in Fix Spec.
 
 **★ このステップは必須・質問数制限なし ★**
 
-> **共通コンポーネント参照:** [shared/_interview.md](../spec-mesh/workflows/shared/_interview.md)
+> **共通コンポーネント参照:** [shared/_interview.md](../../spec-mesh/workflows/shared/_interview.md)
 
 Fix Spec について徹底的にインタビューを行う：
 
@@ -166,7 +166,7 @@ Fix Spec の品質を担保するため Multi-Review を実行：
 
 **★ このステップはスキップ禁止 ★**
 
-> **共通コンポーネント参照:** [shared/_clarify-gate.md](../spec-mesh/workflows/shared/_clarify-gate.md)
+> **共通コンポーネント参照:** [shared/_clarify-gate.md](../../spec-mesh/workflows/shared/_clarify-gate.md)
 
 1. **マーカーカウント:**
    ```

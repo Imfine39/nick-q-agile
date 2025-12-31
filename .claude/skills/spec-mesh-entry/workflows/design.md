@@ -157,7 +157,7 @@ node .claude/skills/spec-mesh/scripts/matrix-ops.cjs generate
 
 **★ このステップは必須・質問数制限なし ★**
 
-> **共通コンポーネント参照:** [shared/_interview.md](../spec-mesh/workflows/shared/_interview.md)
+> **共通コンポーネント参照:** [shared/_interview.md](../../spec-mesh/workflows/shared/_interview.md)
 
 Screen Spec と Domain Spec について徹底的にインタビューを行う：
 
@@ -190,15 +190,15 @@ Screen Spec と Domain Spec の品質を担保するため Multi-Review を実�
    - AI 修正可能な問題を修正
 
 3. **Handle results:**
-   - すべてパス → Step 7 へ
-   - 曖昧点あり → Step 7 でブロック
+   - すべてパス → Step 8 へ
+   - 曖昧点あり → Step 8 でブロック
    - Critical 未解決 → 問題をリストし対応を促す
 
 ### Step 8: CLARIFY GATE チェック（必須）
 
 **★ このステップはスキップ禁止 ★**
 
-> **共通コンポーネント参照:** [shared/_clarify-gate.md](../spec-mesh/workflows/shared/_clarify-gate.md)
+> **共通コンポーネント参照:** [shared/_clarify-gate.md](../../spec-mesh/workflows/shared/_clarify-gate.md)
 
 1. **マーカーカウント:**
    ```

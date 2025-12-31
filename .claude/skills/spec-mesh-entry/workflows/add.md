@@ -146,7 +146,7 @@ node .claude/skills/spec-mesh/scripts/branch.cjs --type feature --slug {slug} --
 
 5. **Impact Analysis (Case 2/3 の場合)**
 
-   > **共通コンポーネント参照:** [shared/impact-analysis.md](shared/impact-analysis.md) を **STANDARD モード** で実行
+   > **共通コンポーネント参照:** [shared/impact-analysis.md](../../spec-mesh/workflows/shared/impact-analysis.md) を **STANDARD モード** で実行
 
    Domain への追加/変更が必要な場合、影響範囲を確認：
    ```
@@ -177,7 +177,7 @@ node .claude/skills/spec-mesh/scripts/branch.cjs --type feature --slug {slug} --
 
 **★ このステップは必須・質問数制限なし ★**
 
-> **共通コンポーネント参照:** [shared/_interview.md](../spec-mesh/workflows/shared/_interview.md)
+> **共通コンポーネント参照:** [shared/_interview.md](../../spec-mesh/workflows/shared/_interview.md)
 
 Feature Spec について徹底的にインタビューを行う：
 
@@ -208,14 +208,14 @@ Feature Spec の品質を担保するため Multi-Review を実行：
    - AI 修正可能な問題を修正
 
 3. **Handle results:**
-   - すべてパス → Step 8 へ
+   - すべてパス → Step 9 へ
    - Critical 未解決 → 問題をリストし対応を促す
 
 ### Step 9: CLARIFY GATE チェック（必須）
 
 **★ このステップはスキップ禁止 ★**
 
-> **共通コンポーネント参照:** [shared/_clarify-gate.md](../spec-mesh/workflows/shared/_clarify-gate.md)
+> **共通コンポーネント参照:** [shared/_clarify-gate.md](../../spec-mesh/workflows/shared/_clarify-gate.md)
 
 1. **マーカーカウント:**
    ```
