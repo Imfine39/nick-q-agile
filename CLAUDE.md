@@ -11,7 +11,7 @@
 
 | 優先度 | ルール |
 |--------|--------|
-| 1 | [Engineering Constitution](.claude/skills/spec-mesh/constitution.md) |
+| 1 | [Core Constitution](.claude/skills/spec-mesh/constitution/core.md) |
 | 2 | Vision / Domain / Screen / Feature Spec |
 | 3 | 不明点は Clarify でエスカレーション（推測禁止） |
 
@@ -62,15 +62,19 @@ Entry (vision/add/fix/issue)
     ↓
 Spec 作成
     ↓
+深掘りインタビュー（必須）← AskUserQuestion で潜在課題を発掘
+    ↓
 Multi-Review（3観点並列） → AI修正
     ↓
 Lint
     ↓
-[HUMAN_CHECKPOINT]
-    ↓
 [NEEDS CLARIFICATION] あり? → YES: Clarify → Multi-Review へ戻る
     ↓ NO
-★ CLARIFY GATE 通過 ★
+★ CLARIFY GATE ★
+    │
+    ├─ [DEFERRED] = 0 → PASSED → [HUMAN_CHECKPOINT]
+    │
+    └─ [DEFERRED] ≥ 1 → PASSED_WITH_DEFERRED → [HUMAN_CHECKPOINT]（リスク確認）
     ↓
 Plan → [HUMAN_CHECKPOINT]
     ↓
@@ -140,11 +144,9 @@ tabs_context_mcp → tabs_create_mcp → navigate → find → form_input → co
 
 ### Multi-Review 観点
 
-| Reviewer | 観点 |
-|----------|------|
-| A | 構造・形式（Template 準拠、ID 命名） |
-| B | 内容・整合性（矛盾、用語統一） |
-| C | 完全性・網羅性（スコープ欠落） |
+> **SSOT:** [quality-gates.md#multi-review](.claude/skills/spec-mesh/constitution/quality-gates.md#multi-review) 参照
+
+A: 構造・形式 | B: 内容・整合性 | C: 完全性・網羅性
 
 ---
 
@@ -209,7 +211,7 @@ node .claude/skills/spec-mesh/scripts/update.cjs          # 更新実行
 
 | Document | Description |
 |----------|-------------|
-| [constitution.md](.claude/skills/spec-mesh/constitution.md) | Engineering Constitution |
+| [constitution/](.claude/skills/spec-mesh/constitution/) | Engineering Constitution（core.md, quality-gates.md 等） |
 | [SKILL.md](.claude/skills/spec-mesh/SKILL.md) | Skill 定義・ルーティング |
 | [docs/](docs/) | 詳細ドキュメント |
 

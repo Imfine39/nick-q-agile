@@ -99,13 +99,10 @@ Spec 作成は以下のフローで品質を担保：
 
 ### Multi-Review (Spec 作成後に自動実行)
 
-Spec 作成後、`workflows/review.md` を実行して 3 つの観点から並列レビュー：
+> **SSOT:** [quality-gates.md#multi-review](constitution/quality-gates.md#multi-review) 参照
 
-| Reviewer | 観点 | チェック内容 |
-|----------|------|-------------|
-| A | 構造・形式 | Template準拠、ID命名、Markdown構文 |
-| B | 内容・整合性 | 入力との一致、矛盾、用語統一 |
-| C | 完全性・網羅性 | 入力網羅、スコープ欠落、カバレッジ |
+Spec 作成後、`workflows/review.md` を実行して 3 観点から並列レビュー：
+A: 構造・形式 | B: 内容・整合性 | C: 完全性・網羅性
 
 ## Agent Delegation
 
@@ -180,13 +177,13 @@ node .claude/skills/spec-mesh/scripts/state.cjs branch --complete feature/123-au
 ## Core Rules
 
 1. **Spec-First**: 画面変更は Screen Spec 更新後に Feature Spec
-2. **Constitution 遵守**: constitution.md の Engineering Constitution が最優先
+2. **Constitution 遵守**: constitution/ の Engineering Constitution が最優先
 3. **Multi-Review 必須**: Spec 作成後は必ず 3観点レビューを実行
 4. **HUMAN_CHECKPOINT**: Plan 承認、Spec 承認は必ず人間確認
 
 ## Quick Reference
 
-- Constitution: [constitution.md](constitution.md)
+- Constitution: [constitution/core.md](constitution/core.md)
 - Templates: `templates/` ディレクトリ
 - Guides: `guides/` ディレクトリ
 - Agents: `.claude/agents/` ディレクトリ

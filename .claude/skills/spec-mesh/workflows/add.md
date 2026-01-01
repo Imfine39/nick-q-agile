@@ -9,8 +9,7 @@ Entry point for new features when no Issue exists. Creates Issue → Branch → 
 2. Domain Spec + Screen Spec が存在すること（推奨）
 
 **新規プロジェクトの場合:**
-- Vision Spec がない → `vision ワークフロー` を先に実行
-- Domain/Screen Spec がない → `design ワークフロー` を先に実行
+- Vision Spec がない → `project-setup ワークフロー` を先に実行
 
 **既存プロジェクトの場合:**
 - Domain Spec の M-*/API-* を参照して Feature Spec を作成
@@ -18,9 +17,9 @@ Entry point for new features when no Issue exists. Creates Issue → Branch → 
 **警告レベル:**
 | 状態 | レベル | アクション |
 |------|--------|-----------|
-| Vision なし | エラー | vision ワークフロー へ誘導 |
-| Domain なし | 警告 | design ワークフロー を推奨（続行可） |
-| Screen なし | 情報 | design ワークフロー を推奨（続行可） |
+| Vision なし | エラー | project-setup ワークフロー へ誘導 |
+| Domain なし | 警告 | project-setup ワークフロー を推奨（続行可） |
+| Screen なし | 情報 | project-setup ワークフロー を推奨（続行可） |
 
 ## Quick Input
 
@@ -45,15 +44,15 @@ TodoWrite:
     - content: "Step 2: 前提条件確認"
       status: "pending"
       activeForm: "Checking prerequisites"
-    - content: "Step 3: GitHub Issue 作成"
-      status: "pending"
-      activeForm: "Creating GitHub Issue"
-    - content: "Step 4: ブランチ作成"
-      status: "pending"
-      activeForm: "Creating branch"
-    - content: "Step 5: コードベース分析"
+    - content: "Step 3: コードベース分析"
       status: "pending"
       activeForm: "Analyzing codebase"
+    - content: "Step 4: QA ドキュメント生成"
+      status: "pending"
+      activeForm: "Generating QA document"
+    - content: "Step 5: QA 回答分析"
+      status: "pending"
+      activeForm: "Analyzing QA responses"
     - content: "Step 6: Feature Spec 作成"
       status: "pending"
       activeForm: "Creating Feature Spec"
@@ -66,12 +65,15 @@ TodoWrite:
     - content: "Step 9: Lint 実行"
       status: "pending"
       activeForm: "Running Lint"
-    - content: "Step 10: 入力保存・リセット"
-      status: "pending"
-      activeForm: "Preserving input"
-    - content: "Step 11: サマリー・[HUMAN_CHECKPOINT]"
+    - content: "Step 10: サマリー・[HUMAN_CHECKPOINT]"
       status: "pending"
       activeForm: "Presenting summary"
+    - content: "Step 11: GitHub Issue & ブランチ作成"
+      status: "pending"
+      activeForm: "Creating Issue and branch"
+    - content: "Step 12: 入力保存"
+      status: "pending"
+      activeForm: "Preserving input"
 ```
 
 ---
@@ -108,23 +110,39 @@ node .claude/skills/spec-mesh/scripts/state.cjs query --repo
 - Check Domain status → Warning if not clarified
 - Verify Domain has M-*/API-* definitions
 
-### Step 3: Create GitHub Issue
-
-```bash
-gh issue create --title "[Feature] {機能名}" --body "..."
-```
-
-### Step 4: Create Branch
-
-```bash
-node .claude/skills/spec-mesh/scripts/branch.cjs --type feature --slug {slug} --issue {issue_num}
-```
-
-### Step 5: Analyze Codebase
+### Step 3: Analyze Codebase
 
 - Identify existing patterns
 - Find related components
 - Note reusable code
+
+### Step 4: QA ドキュメント生成
+
+> **参照:** [shared/_qa-generation.md](shared/_qa-generation.md)
+
+1. Input の記入状況を分析
+2. 未記入・不明瞭な項目を特定
+3. AI の推測を生成
+4. 提案事項を生成（_professional-proposals.md 参照）
+5. QA ドキュメントを生成:
+
+```
+Write tool: .specify/specs/features/{feature-id}/qa.md
+  - 質問バンクから動的に生成（_qa-generation.md 参照）
+  - Input から抽出した情報を埋め込み
+```
+
+6. ユーザーに QA 回答を依頼
+
+### Step 5: QA 回答分析
+
+> **参照:** [shared/_qa-analysis.md](shared/_qa-analysis.md)
+
+1. QA ドキュメントの回答を読み込み
+2. 未回答項目をチェック
+3. 未回答の [必須] があれば AskUserQuestion で確認
+4. [確認] で「いいえ」の項目を修正
+5. [提案] の採否を記録（理由付き）
 
 ### Step 6: Create Feature Spec
 
@@ -173,7 +191,7 @@ node .claude/skills/spec-mesh/scripts/branch.cjs --type feature --slug {slug} --
      --description "Feature Spec 作成: {機能名}"
    ```
 
-### Step 7: Multi-Review (3観点並列レビュー)
+### Step 7: Multi-Review
 
 Feature Spec の品質を担保するため Multi-Review を実行：
 
@@ -233,29 +251,13 @@ else:
 node .claude/skills/spec-mesh/scripts/spec-lint.cjs
 ```
 
-### Step 10: Preserve & Reset Input
-
-If input file was used:
-1. **Preserve input to spec directory:**
-   ```bash
-   node .claude/skills/spec-mesh/scripts/preserve-input.cjs add --feature {feature-dir}
-   ```
-   - Saves to: `.specify/specs/features/{feature-dir}/input.md`
-
-2. **Reset input file:**
-   ```bash
-   node .claude/skills/spec-mesh/scripts/reset-input.cjs add
-   ```
-
-### Step 11: Summary & [HUMAN_CHECKPOINT]
+### Step 10: Summary & [HUMAN_CHECKPOINT]
 
 1. **Display Summary:**
    ```
    === Feature Spec 作成完了 ===
 
    Feature: {機能名}
-   Issue: #{issue_num}
-   Branch: feature/{issue_num}-{slug}
    Spec: .specify/specs/features/{id}/spec.md
 
    === CLARIFY GATE ===
@@ -275,8 +277,42 @@ If input file was used:
    - [ ] Functional Requirements が適切に定義されているか
    - [ ] M-*/API-* の参照/追加が正しいか
 
-   承認後、plan ワークフロー へ進んでください。
+   承認後、GitHub Issue とブランチを作成します。
    ```
+
+### Step 11: Create GitHub Issue & Branch
+
+**[HUMAN_CHECKPOINT] 承認後に実行:**
+
+1. **Create GitHub Issue:**
+   ```bash
+   gh issue create --title "[Feature] {機能名}" --body "..."
+   ```
+
+2. **Create Branch:**
+   ```bash
+   node .claude/skills/spec-mesh/scripts/branch.cjs --type feature --slug {slug} --issue {issue_num}
+   ```
+
+3. **Display result:**
+   ```
+   === Issue & Branch 作成完了 ===
+
+   Issue: #{issue_num}
+   Branch: feature/{issue_num}-{slug}
+
+   次のステップ: plan ワークフロー へ進んでください。
+   ```
+
+### Step 12: Preserve Input
+
+If input file was used:
+```bash
+node .claude/skills/spec-mesh/scripts/preserve-input.cjs add --feature {feature-dir}
+```
+- Saves to: `.specify/specs/features/{feature-dir}/input.md`
+
+> **Note:** Input のリセットは PR マージ後に post-merge.cjs で自動実行されます。
 
 ---
 
@@ -284,8 +320,8 @@ If input file was used:
 
 - [ ] **TodoWrite で全ステップを登録したか**
 - [ ] Read tool で入力ファイルを読み込んだか
-- [ ] gh issue create を実行したか
-- [ ] branch.cjs でブランチを作成したか
+- [ ] QA ドキュメントを生成したか
+- [ ] QA 回答を分析したか
 - [ ] scaffold-spec.cjs で spec を作成したか
 - [ ] Screen Spec を先に更新したか（Spec-First）
 - [ ] M-*/API-* の Case 判定を行ったか
@@ -293,6 +329,10 @@ If input file was used:
 - [ ] **Multi-Review を実行したか（3観点並列）**
 - [ ] **CLARIFY GATE をチェックしたか**
 - [ ] spec-lint.cjs を実行したか
+- [ ] **[HUMAN_CHECKPOINT] で承認を得たか**
+- [ ] gh issue create を実行したか（承認後）
+- [ ] branch.cjs でブランチを作成したか（承認後）
+- [ ] Input を保存したか（リセットは PR マージ後）
 - [ ] **TodoWrite で全ステップを completed にしたか**
 
 ---
