@@ -33,12 +33,12 @@ TodoWrite:
     - content: "Step 1: 入力収集"
       status: "pending"
       activeForm: "Collecting input"
-    - content: "Step 2: GitHub Issue 作成"
+    - content: "Step 2: QA ドキュメント生成"
       status: "pending"
-      activeForm: "Creating GitHub Issue"
-    - content: "Step 3: ブランチ作成"
+      activeForm: "Generating QA document"
+    - content: "Step 3: QA 回答分析"
       status: "pending"
-      activeForm: "Creating branch"
+      activeForm: "Analyzing QA responses"
     - content: "Step 4: 原因調査"
       status: "pending"
       activeForm: "Investigating root cause"
@@ -54,12 +54,15 @@ TodoWrite:
     - content: "Step 8: Lint 実行"
       status: "pending"
       activeForm: "Running Lint"
-    - content: "Step 9: 入力保存・リセット"
-      status: "pending"
-      activeForm: "Preserving input"
-    - content: "Step 10: サマリー・[HUMAN_CHECKPOINT]"
+    - content: "Step 9: サマリー・[HUMAN_CHECKPOINT]"
       status: "pending"
       activeForm: "Presenting summary"
+    - content: "Step 10: GitHub Issue & ブランチ作成"
+      status: "pending"
+      activeForm: "Creating Issue and branch"
+    - content: "Step 11: 入力保存"
+      status: "pending"
+      activeForm: "Preserving input"
 ```
 
 ---
@@ -86,17 +89,32 @@ TodoWrite:
    | 影響範囲 | Fix Spec Section 2 |
    | 緊急度 | Issue label |
 
-### Step 2: Create GitHub Issue
+### Step 2: QA ドキュメント生成
 
-```bash
-gh issue create --title "[Bug] {概要}" --body "..." --label "bug"
+> **参照:** [shared/_qa-generation.md](shared/_qa-generation.md)
+
+1. Input の記入状況を分析
+2. 未記入・不明瞭な項目を特定
+3. AI の推測を生成
+4. QA ドキュメントを生成:
+
+```
+Write tool: .specify/specs/fixes/{fix-id}/qa.md
+  - 質問バンクから動的に生成（_qa-generation.md 参照）
+  - Input から抽出した情報を埋め込み
 ```
 
-### Step 3: Create Branch
+5. ユーザーに QA 回答を依頼
 
-```bash
-node .claude/skills/spec-mesh/scripts/branch.cjs --type fix --slug {slug} --issue {issue_num}
-```
+### Step 3: QA 回答分析
+
+> **参照:** [shared/_qa-analysis.md](shared/_qa-analysis.md)
+
+1. QA ドキュメントの回答を読み込み
+2. 未回答項目をチェック
+3. 未回答の [必須] があれば AskUserQuestion で確認
+4. [確認] で「いいえ」の項目を修正
+5. [提案] の採否を記録（理由付き）
 
 ### Step 4: Investigate Root Cause
 
@@ -184,29 +202,13 @@ else:
 node .claude/skills/spec-mesh/scripts/spec-lint.cjs
 ```
 
-### Step 9: Preserve & Reset Input
-
-If input file was used:
-1. **Preserve input to spec directory:**
-   ```bash
-   node .claude/skills/spec-mesh/scripts/preserve-input.cjs fix --fix {fix-dir}
-   ```
-   - Saves to: `.specify/specs/fixes/{fix-dir}/input.md`
-
-2. **Reset input file:**
-   ```bash
-   node .claude/skills/spec-mesh/scripts/reset-input.cjs fix
-   ```
-
-### Step 10: Summary & [HUMAN_CHECKPOINT]
+### Step 9: Summary & [HUMAN_CHECKPOINT]
 
 1. **Display Summary:**
    ```
    === Fix Spec 作成完了 ===
 
    Bug: {概要}
-   Issue: #{issue_num}
-   Branch: fix/{issue_num}-{slug}
    Spec: .specify/specs/fixes/{id}/spec.md
 
    Root Cause: {原因の要約}
@@ -230,8 +232,42 @@ If input file was used:
    - [ ] 影響範囲が適切に評価されているか
    - [ ] Verification Plan が十分か
 
-   承認後、次のステップへ進んでください。
+   承認後、GitHub Issue とブランチを作成します。
    ```
+
+### Step 10: Create GitHub Issue & Branch
+
+**[HUMAN_CHECKPOINT] 承認後に実行:**
+
+1. **Create GitHub Issue:**
+   ```bash
+   gh issue create --title "[Bug] {概要}" --body "..." --label "bug"
+   ```
+
+2. **Create Branch:**
+   ```bash
+   node .claude/skills/spec-mesh/scripts/branch.cjs --type fix --slug {slug} --issue {issue_num}
+   ```
+
+3. **Display result:**
+   ```
+   === Issue & Branch 作成完了 ===
+
+   Issue: #{issue_num}
+   Branch: fix/{issue_num}-{slug}
+
+   次のステップ: Severity に応じて plan または implement へ進んでください。
+   ```
+
+### Step 11: Preserve Input
+
+If input file was used:
+```bash
+node .claude/skills/spec-mesh/scripts/preserve-input.cjs fix --fix {fix-dir}
+```
+- Saves to: `.specify/specs/fixes/{fix-dir}/input.md`
+
+> **Note:** Input のリセットは PR マージ後に post-merge.cjs で自動実行されます。
 
 ---
 
@@ -317,8 +353,8 @@ Root Cause: {概要}
 
 - [ ] **TodoWrite で全ステップを登録したか**
 - [ ] Read tool で入力ファイルを読み込んだか（--quick 以外）
-- [ ] gh issue create を実行したか
-- [ ] branch.cjs でブランチを作成したか
+- [ ] QA ドキュメントを生成したか
+- [ ] QA 回答を分析したか
 - [ ] 原因調査を実施したか
 - [ ] Fix Spec に Root Cause を記載したか
 - [ ] **Impact Analysis を実行したか（Screen 変更時）** → [shared/impact-analysis.md](shared/impact-analysis.md)
@@ -326,6 +362,10 @@ Root Cause: {概要}
 - [ ] **Multi-Review を実行したか（3観点並列）**
 - [ ] **CLARIFY GATE をチェックしたか**
 - [ ] spec-lint.cjs を実行したか
+- [ ] **[HUMAN_CHECKPOINT] で承認を得たか**
+- [ ] gh issue create を実行したか（承認後）
+- [ ] branch.cjs でブランチを作成したか（承認後）
+- [ ] Input を保存したか（リセットは PR マージ後）
 - [ ] **TodoWrite で全ステップを completed にしたか**
 
 ---

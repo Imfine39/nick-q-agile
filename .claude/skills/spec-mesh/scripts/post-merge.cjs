@@ -211,9 +211,50 @@ if (branchName && fs.existsSync(statePath)) {
   }
 }
 
-// 6. Delete git branch if requested
+// 6. Reset Input files
+console.log(`\n6. Resetting Input files...`);
+const inputDir = path.join(root, '.specify', 'input');
+const resetInputScript = path.join(root, '.claude', 'skills', 'spec-mesh', 'scripts', 'reset-input.cjs');
+
+if (fs.existsSync(resetInputScript)) {
+  try {
+    // Determine input type from feature/branch
+    let inputType = null;
+    if (branchName) {
+      if (branchName.startsWith('feature/')) {
+        inputType = 'add';
+      } else if (branchName.startsWith('fix/')) {
+        inputType = 'fix';
+      } else if (branchName.startsWith('spec/')) {
+        // Could be project-setup or change
+        inputType = 'vision'; // Default to vision for spec branches
+      }
+    } else if (featureId) {
+      // Infer from ID pattern
+      if (featureId.startsWith('F-') || featureId.startsWith('S-')) {
+        inputType = 'add';
+      } else if (featureId.startsWith('X-') || featureId.startsWith('FIX-')) {
+        inputType = 'fix';
+      }
+    }
+
+    if (inputType) {
+      execSync(`node "${resetInputScript}" ${inputType}`, { stdio: 'pipe', cwd: root });
+      updates.push(`Input reset: ${inputType}-input.md`);
+      console.log(`   Reset ${inputType}-input.md`);
+    } else {
+      console.log(`   Could not determine input type to reset`);
+    }
+  } catch (e) {
+    console.warn(`   Warning: Could not reset input: ${e.message}`);
+  }
+} else {
+  console.log(`   Skipped (reset-input.cjs not found)`);
+}
+
+// 7. Delete git branch if requested
 if (deleteBranch && branchName) {
-  console.log(`\n6. Deleting git branch...`);
+  console.log(`\n7. Deleting git branch...`);
   try {
     execSync(`git branch -d "${branchName}"`, { stdio: 'pipe' });
     updates.push(`Git branch ${branchName}: Deleted`);

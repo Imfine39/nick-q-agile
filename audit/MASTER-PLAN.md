@@ -77,11 +77,12 @@
 
 ## 3. 実行フェーズ
 
-### [PHASE-0] 準備・SSOT 確立 [PENDING]
+### [PHASE-0] 準備・SSOT 確立 [DONE]
 
 **目的:** 改訂で新たな重複を防ぐため、最低限の SSOT を先に確立
+**完了日:** 2026-01-01
 
-#### [STEP-0.1] SSOT 確立 [PENDING]
+#### [STEP-0.1] SSOT 確立 [DONE]
 
 | 概念 | SSOT 場所 | 作業内容 |
 |------|----------|---------|
@@ -90,9 +91,10 @@
 | Spec Creation Flow | core.md | 定義を一元化 |
 | HUMAN_CHECKPOINT | quality-gates.md | 定義を一元化 |
 
-#### [STEP-0.2] 複合変更の定量基準追加 [PENDING]
+#### [STEP-0.2] 複合変更の定量基準追加 [DONE]
 
 **対象:** judgment-criteria.md
+**実施結果:** judgment-criteria.md に「複合変更の判定基準」セクションを追加済み
 
 ```markdown
 ## 複合変更の判定基準
@@ -104,80 +106,88 @@
 | 大規模 | 新規 Master 追加、API 変更、3+ Spec に影響 | 必ず分離 |
 ```
 
-#### [STEP-0.3] バックアップ作成 [PENDING]
+#### [STEP-0.3] バックアップ作成 [DONE]
 
-```bash
-mkdir -p audit/backup/phase0
-cp -r .claude/skills/spec-mesh/workflows audit/backup/phase0/
-cp -r .claude/skills/spec-mesh/templates audit/backup/phase0/
-```
+**実施結果:** audit/backup/phase0/ に workflows/, templates/, constitution/, guides/ をバックアップ済み
 
 ---
 
-### [PHASE-1] AI SIer 改訂（共通コンポーネント） [PENDING]
+### [PHASE-1] AI SIer 改訂（共通コンポーネント） [DONE]
 
-#### [STEP-1.1] _qa-generation.md 更新 [PENDING]
+**完了日:** 2026-01-01
 
-- QA 出力先を Feature ディレクトリ内に変更
-  - 旧: `.specify/qa/{feature-id}-qa.md`
-  - 新: `.specify/specs/features/{feature-id}/qa.md`
-- 動的生成ロジックの強化
+#### [STEP-1.1] _qa-generation.md 更新 [DONE]
 
-#### [STEP-1.2] _qa-analysis.md 更新 [PENDING]
+- QA 出力先を Spec ディレクトリ内に変更
+  - project-setup: `.specify/docs/project-setup-qa.md`
+  - add: `.specify/specs/features/{feature-id}/qa.md`
+  - fix: `.specify/specs/fixes/{fix-id}/qa.md`
 
-- 採否フラグに「理由」欄を追加
-  ```markdown
-  採否: [x] 採用 / [ ] 不採用 / [ ] 要検討
-  理由: {採用/不採用/検討の理由を記載}
-  ```
+#### [STEP-1.2] _qa-analysis.md 更新 [DONE]
 
-#### [STEP-1.3] _professional-proposals.md 更新 [PENDING]
+- 採否フラグに「理由」欄を追加（必須化）
+- 採否のビジュアル表示（✅/❌/🔶）を追加
 
-- 提案の追跡性を強化
+#### [STEP-1.3] _professional-proposals.md 更新 [DONE]
 
-#### [STEP-1.4] _cascade-update.md 更新 [PENDING]
+- 提案 ID 命名規則（P-{context}-{number}）を追加
+- 提案追跡ログ（.specify/docs/proposal-log.md）を追加
+- 理由欄の必須化
 
-- 複合変更対応を強化
+#### [STEP-1.4] _cascade-update.md 更新 [DONE]
 
----
-
-### [PHASE-2] AI SIer 改訂（テンプレート） [PENDING]
-
-#### [STEP-2.1] QA テンプレート動的生成化 [PENDING]
-
-- templates/qa/*.md を削除
-- _qa-generation.md 内で動的に質問を生成
-- 文脈（project-setup / add / fix）に応じて質問を選択
-
-#### [STEP-2.2] Input テンプレート更新 [PENDING]
-
-- project-setup-input.md: 機能ベースに整理
-- add-input.md: 簡素化
-- fix-input.md: 簡素化
+- 複合変更の判定フローを追加（judgment-criteria.md 参照）
+- 規模別の分離判定（小/中/大）を追加
+- 分離時の処理フローを追加
 
 ---
 
-### [PHASE-3] AI SIer 改訂（ワークフロー） [PENDING]
+### [PHASE-2] AI SIer 改訂（テンプレート） [DONE]
 
-#### [STEP-3.1] project-setup.md 更新 [PENDING]
+**完了日:** 2026-01-01
 
-- Issue 作成を [HUMAN_CHECKPOINT] 通過後に移動
-- QA 出力先を Feature ディレクトリに変更
+#### [STEP-2.1] QA テンプレート動的生成化 [DONE]
 
-#### [STEP-3.2] add.md 更新 [PENDING]
+- _qa-generation.md に質問バンク（project-setup/add/fix 別）を追加
+- 動的生成ロジックを文書化
+- templates/qa/*.md は参考例として保持
 
-- Issue 作成タイミングを変更
-- QA 出力先を変更
+#### [STEP-2.2] Input テンプレート更新 [DONE]
 
-#### [STEP-3.3] fix.md 更新 [PENDING]
+- QA 動的生成との連携を明確化
+- 最低限の入力項目を明示（機能名のみで開始可能）
+- 空欄は QA で補完されることを説明
 
-- Issue 作成タイミングを変更
-- QA 出力先を変更
+---
 
-#### [STEP-3.4] Input リセット処理の変更 [PENDING]
+### [PHASE-3] AI SIer 改訂（ワークフロー） [DONE]
 
-- post-merge.cjs に Input リセット処理を追加
-- ワークフロー完了時のリセットを削除
+**完了日:** 2026-01-01
+
+#### [STEP-3.1] project-setup.md 更新 [DONE]
+
+- QA 出力先を `.specify/docs/project-setup-qa.md` に変更
+- Input リセットを削除（PR マージ後に実行）
+- Issue 作成タイミングは既に [HUMAN_CHECKPOINT] 後
+
+#### [STEP-3.2] add.md 更新 [DONE]
+
+- Issue 作成を [HUMAN_CHECKPOINT] 承認後に移動
+- QA 生成/分析ステップを追加
+- QA 出力先を `.specify/specs/features/{id}/qa.md` に変更
+- Input リセットを削除
+
+#### [STEP-3.3] fix.md 更新 [DONE]
+
+- Issue 作成を [HUMAN_CHECKPOINT] 承認後に移動
+- QA 生成/分析ステップを追加
+- QA 出力先を `.specify/specs/fixes/{id}/qa.md` に変更
+- Input リセットを削除
+
+#### [STEP-3.4] Input リセット処理の変更 [DONE]
+
+- post-merge.cjs に Input リセット処理を追加（Step 6）
+- ブランチ名/Feature ID から input type を推測してリセット
 
 ---
 
@@ -324,10 +334,10 @@ node .claude/skills/spec-mesh/scripts/spec-lint.cjs
 
 | Phase | ステータス | 完了日 |
 |-------|----------|--------|
-| PHASE-0 | [PENDING] | - |
-| PHASE-1 | [PENDING] | - |
-| PHASE-2 | [PENDING] | - |
-| PHASE-3 | [PENDING] | - |
+| PHASE-0 | [DONE] | 2026-01-01 |
+| PHASE-1 | [DONE] | 2026-01-01 |
+| PHASE-2 | [DONE] | 2026-01-01 |
+| PHASE-3 | [DONE] | 2026-01-01 |
 | PHASE-4 | [PENDING] | - |
 | PHASE-5 | [PENDING] | - |
 | PHASE-6 | [PENDING] | - |

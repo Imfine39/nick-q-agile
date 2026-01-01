@@ -55,7 +55,7 @@ TodoWrite:
     - content: "Step 13: Feature Issues 作成"
       status: "pending"
       activeForm: "Creating Feature Issues"
-    - content: "Step 14: Input 保存・リセット"
+    - content: "Step 14: Input 保存"
       status: "pending"
       activeForm: "Preserving input"
 ```
@@ -102,8 +102,8 @@ Glob tool: .specify/assets/wireframes/*
 5. QA ドキュメントを生成:
 
 ```
-Write tool: .specify/qa/project-setup-qa.md
-  - 基づくテンプレート: templates/qa/project-setup-qa.md
+Write tool: .specify/docs/project-setup-qa.md
+  - 質問バンクから動的に生成（_qa-generation.md 参照）
   - Input から抽出した情報を埋め込み
 ```
 
@@ -112,7 +112,7 @@ Write tool: .specify/qa/project-setup-qa.md
 ```
 === QA ドキュメントを生成しました ===
 
-.specify/qa/project-setup-qa.md を確認し、
+.specify/docs/project-setup-qa.md を確認し、
 各項目に回答してください。
 
 完了したら「QA 回答完了」と伝えてください。
@@ -258,12 +258,14 @@ gh issue create --title "[Feature] {機能名}" --body "{説明}" --label "featu
 
 Issue 作成後、ユーザーに一覧を表示。
 
-### Step 14: Input 保存・リセット
+### Step 14: Input 保存
 
 ```bash
 node .claude/skills/spec-mesh/scripts/preserve-input.cjs project-setup
-node .claude/skills/spec-mesh/scripts/reset-input.cjs project-setup
 ```
+
+> **Note:** Input のリセットは PR マージ後に post-merge.cjs で自動実行されます。
+> ワークフロー完了時点ではリセットしません。
 
 ---
 
@@ -282,7 +284,7 @@ node .claude/skills/spec-mesh/scripts/reset-input.cjs project-setup
 - [ ] CLARIFY GATE をチェックしたか
 - [ ] [HUMAN_CHECKPOINT] で承認を得たか
 - [ ] Feature Issues を作成したか
-- [ ] Input を保存・リセットしたか
+- [ ] Input を保存したか（リセットは PR マージ後）
 - [ ] **TodoWrite で全ステップを completed にしたか**
 
 ---
