@@ -1,6 +1,3 @@
-<!-- SSD-MESH-TEMPLATE-START -->
-<!-- このセクションは update.cjs で自動更新されます。直接編集しないでください。 -->
-
 # Claude Code Development Guide
 
 このリポジトリで動作する Claude Code の行動指針です。
@@ -33,7 +30,7 @@ SKILL.md を読み込んで指示に従ってください。
 | 小さな変更 | 不要 | implement.md or 誘導 |
 | 新規プロジェクト | 必須 | project-setup.md |
 
-> **詳細:** [SKILL.md](.claude/skills/nick-q/SKILL.md) Section 1 (Entry) を参照
+> **詳細:** [SKILL.md](.claude/skills/nick-q/SKILL.md) Section 2 (Entry) を参照
 
 ワークフローファイルは `.claude/skills/nick-q/workflows/` にあります。
 
@@ -205,24 +202,3 @@ node .claude/skills/nick-q/scripts/update.cjs          # 更新実行
 | [constitution/](.claude/skills/nick-q/constitution/) | Engineering Constitution（core.md, quality-gates.md 等） |
 | [SKILL.md](.claude/skills/nick-q/SKILL.md) | Skill 定義・ルーティング |
 | [docs/](docs/) | 詳細ドキュメント |
-
-<!-- SSD-MESH-TEMPLATE-END -->
-
----
-
-## Project-Specific Rules
-
-このセクション以降はプロジェクト固有の設定です。
-テンプレート更新時も保持されます。
-
-### Additional Rules
-
-<!-- プロジェクト固有のルールをここに追加 -->
-
-### Custom Workflows
-
-<!-- プロジェクト固有のワークフローをここに追加 -->
-
-### Notes
-
-<!-- その他のメモ -->

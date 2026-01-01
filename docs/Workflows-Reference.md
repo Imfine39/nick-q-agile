@@ -420,8 +420,8 @@ SSD-MESH の全ワークフロー詳細リファレンスです。
 
 **スクリプト:**
 ```bash
-node .claude/skills/spec-mesh/scripts/spec-lint.cjs
-node .claude/skills/spec-mesh/scripts/validate-matrix.cjs
+node .claude/skills/nick-q/scripts/spec-lint.cjs
+node .claude/skills/nick-q/scripts/validate-matrix.cjs
 ```
 
 **依頼例:**

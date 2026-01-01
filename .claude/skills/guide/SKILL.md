@@ -22,7 +22,7 @@ description: |
 ### Step 1: 状態を取得
 
 ```bash
-node .claude/skills/spec-mesh/scripts/state.cjs query --all
+node .claude/skills/nick-q/scripts/state.cjs query --all
 ```
 
 ### Step 2: 状態を分析して次のアクションを提案
@@ -147,4 +147,4 @@ node .claude/skills/spec-mesh/scripts/state.cjs query --all
 
 - 状態は `.specify/state/` に保存されている
 - 手動でファイルを確認したい場合は `.specify/specs/` を参照
-- 詳細なワークフローは `.claude/skills/spec-mesh/workflows/` にある
+- 詳細なワークフローは `.claude/skills/nick-q/workflows/` にある

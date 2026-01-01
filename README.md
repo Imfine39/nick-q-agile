@@ -98,7 +98,7 @@ npm install
 gh auth login
 
 # 状態初期化
-node .claude/skills/spec-mesh/scripts/state.cjs init
+node .claude/skills/nick-q/scripts/state.cjs init
 ```
 
 ### 2. 使い方
@@ -120,7 +120,7 @@ Claude Code に自然言語で依頼するだけです：
 
 ```bash
 # テンプレートを作業用ディレクトリにコピー
-node .claude/skills/spec-mesh/scripts/reset-input.cjs vision
+node .claude/skills/nick-q/scripts/reset-input.cjs vision
 
 # .specify/input/vision-input.md を編集
 # その後 Claude に「Vision を作成して」と依頼
@@ -193,7 +193,7 @@ Vision 作成 → Design（Screen + Domain）→ Foundation Issue → 実装
 ```
 .claude/
 ├── skills/
-│   └── spec-mesh/
+│   └── nick-q/
 │       ├── SKILL.md              # スキル定義（Claude が読む）
 │       ├── constitution/         # Engineering Constitution（最上位ルール）
 │       │   ├── core.md           # コアルール
@@ -280,7 +280,7 @@ Claude が内部で使用するワークフロー一覧です。
 3. **HUMAN_CHECKPOINT** - 重要な判断は人間が確認
 4. **推測禁止** - 不明点は Clarify で解消
 
-詳細は [Engineering Constitution](.claude/skills/spec-mesh/constitution/core.md) を参照。
+詳細は [Engineering Constitution](.claude/skills/nick-q/constitution/core.md) を参照。
 
 ---
 
@@ -288,29 +288,29 @@ Claude が内部で使用するワークフロー一覧です。
 
 ```bash
 # 状態管理
-node .claude/skills/spec-mesh/scripts/state.cjs query --all
-node .claude/skills/spec-mesh/scripts/state.cjs init
+node .claude/skills/nick-q/scripts/state.cjs query --all
+node .claude/skills/nick-q/scripts/state.cjs init
 
 # Quick Input
-node .claude/skills/spec-mesh/scripts/reset-input.cjs vision|add|fix
-node .claude/skills/spec-mesh/scripts/preserve-input.cjs <type>
+node .claude/skills/nick-q/scripts/reset-input.cjs vision|add|fix
+node .claude/skills/nick-q/scripts/preserve-input.cjs <type>
 
 # Lint・検証
-node .claude/skills/spec-mesh/scripts/spec-lint.cjs
-node .claude/skills/spec-mesh/scripts/validate-matrix.cjs
-node .claude/skills/spec-mesh/scripts/spec-metrics.cjs
+node .claude/skills/nick-q/scripts/spec-lint.cjs
+node .claude/skills/nick-q/scripts/validate-matrix.cjs
+node .claude/skills/nick-q/scripts/spec-metrics.cjs
 
 # Spec・Matrix 生成
-node .claude/skills/spec-mesh/scripts/scaffold-spec.cjs --kind <type> --id <id> --title <title>
-node .claude/skills/spec-mesh/scripts/generate-matrix-view.cjs
+node .claude/skills/nick-q/scripts/scaffold-spec.cjs --kind <type> --id <id> --title <title>
+node .claude/skills/nick-q/scripts/generate-matrix-view.cjs
 
 # Git・PR
-node .claude/skills/spec-mesh/scripts/branch.cjs --type <type> --slug <slug> --issue <num>
-node .claude/skills/spec-mesh/scripts/pr.cjs
+node .claude/skills/nick-q/scripts/branch.cjs --type <type> --slug <slug> --issue <num>
+node .claude/skills/nick-q/scripts/pr.cjs
 
 # テンプレート更新
-node .claude/skills/spec-mesh/scripts/update.cjs --check  # 更新確認
-node .claude/skills/spec-mesh/scripts/update.cjs          # 更新実行
+node .claude/skills/nick-q/scripts/update.cjs --check  # 更新確認
+node .claude/skills/nick-q/scripts/update.cjs          # 更新実行
 ```
 
 ---
@@ -321,17 +321,17 @@ node .claude/skills/spec-mesh/scripts/update.cjs          # 更新実行
 
 ```bash
 # 更新があるか確認
-node .claude/skills/spec-mesh/scripts/update.cjs --check
+node .claude/skills/nick-q/scripts/update.cjs --check
 
 # 更新を実行
-node .claude/skills/spec-mesh/scripts/update.cjs
+node .claude/skills/nick-q/scripts/update.cjs
 ```
 
 ### 更新対象
 
 | ファイル/ディレクトリ | 説明 |
 |---------------------|------|
-| `.claude/skills/spec-mesh/` | フレームワーク本体 |
+| `.claude/skills/nick-q/` | フレームワーク本体 |
 | `.claude/agents/reviewer.md` | Reviewer Agent |
 | `.claude/agents/developer.md` | Developer Agent |
 | `.github/workflows/` | CI/CD |
@@ -365,12 +365,12 @@ node .claude/skills/spec-mesh/scripts/update.cjs
 
 | Document | Description |
 |----------|-------------|
-| [SKILL.md](.claude/skills/spec-mesh/SKILL.md) | スキル定義（Claude 向け） |
-| [constitution/](.claude/skills/spec-mesh/constitution/) | Engineering Constitution（core.md, quality-gates.md 等） |
-| [id-naming.md](.claude/skills/spec-mesh/guides/id-naming.md) | ID 命名規則 |
-| [error-recovery.md](.claude/skills/spec-mesh/guides/error-recovery.md) | エラー回復ガイド |
-| [parallel-development.md](.claude/skills/spec-mesh/guides/parallel-development.md) | 並行開発ガイド |
-| [scripts-errors.md](.claude/skills/spec-mesh/guides/scripts-errors.md) | スクリプトエラーガイド |
+| [SKILL.md](.claude/skills/nick-q/SKILL.md) | スキル定義（Claude 向け） |
+| [constitution/](.claude/skills/nick-q/constitution/) | Engineering Constitution（core.md, quality-gates.md 等） |
+| [id-naming.md](.claude/skills/nick-q/guides/id-naming.md) | ID 命名規則 |
+| [error-recovery.md](.claude/skills/nick-q/guides/error-recovery.md) | エラー回復ガイド |
+| [parallel-development.md](.claude/skills/nick-q/guides/parallel-development.md) | 並行開発ガイド |
+| [scripts-errors.md](.claude/skills/nick-q/guides/scripts-errors.md) | スクリプトエラーガイド |
 
 ---
 

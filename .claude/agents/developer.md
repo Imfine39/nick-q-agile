@@ -6,7 +6,7 @@ description: |
   adherence to specifications, and proper Git workflow.
 tools: Read, Write, Edit, Glob, Grep, Bash
 model: inherit
-skills: spec-mesh
+skills: nick-q
 ---
 
 # Developer Agent
@@ -129,7 +129,7 @@ Before creating PR:
 1. Run integrity checks:
    - `npm run lint`
    - `npm run test`
-   - `node .claude/skills/spec-mesh/scripts/spec-lint.cjs`
+   - `node .claude/skills/nick-q/scripts/spec-lint.cjs`
 
 2. Create PR with:
    - Issue reference (`Fixes #123`)
@@ -168,10 +168,10 @@ When tests fail, determine root cause:
 
 ## Scripts
 
-- `node .claude/skills/spec-mesh/scripts/spec-lint.cjs` - Validate specs
-- `node .claude/skills/spec-mesh/scripts/validate-matrix.cjs` - Validate Matrix
-- `node .claude/skills/spec-mesh/scripts/state.cjs` - Update progress
-- `node .claude/skills/spec-mesh/scripts/branch.cjs` - Create branches
+- `node .claude/skills/nick-q/scripts/spec-lint.cjs` - Validate specs
+- `node .claude/skills/nick-q/scripts/validate-matrix.cjs` - Validate Matrix
+- `node .claude/skills/nick-q/scripts/state.cjs` - Update progress
+- `node .claude/skills/nick-q/scripts/branch.cjs` - Create branches
 
 ---
 

@@ -270,9 +270,9 @@ Q4: ...
 
 ## Scripts
 
-- `node .claude/skills/spec-mesh/scripts/spec-lint.cjs` - Spec 検証
-- `node .claude/skills/spec-mesh/scripts/validate-matrix.cjs` - Matrix 検証
-- `node .claude/skills/spec-mesh/scripts/spec-metrics.cjs` - メトリクス生成
+- `node .claude/skills/nick-q/scripts/spec-lint.cjs` - Spec 検証
+- `node .claude/skills/nick-q/scripts/validate-matrix.cjs` - Matrix 検証
+- `node .claude/skills/nick-q/scripts/spec-metrics.cjs` - メトリクス生成
 
 ---
 

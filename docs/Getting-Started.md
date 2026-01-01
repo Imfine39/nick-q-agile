@@ -54,7 +54,7 @@ gh auth login
 ### 4. 状態の初期化
 
 ```bash
-node .claude/skills/spec-mesh/scripts/state.cjs init
+node .claude/skills/nick-q/scripts/state.cjs init
 ```
 
 ---
@@ -114,7 +114,7 @@ Serena は LSP（Language Server Protocol）を通じてコード解析を行う
 
 ```bash
 # テンプレートをコピー
-node .claude/skills/spec-mesh/scripts/reset-input.cjs vision
+node .claude/skills/nick-q/scripts/reset-input.cjs vision
 
 # エディタで編集
 # .specify/input/vision-input.md
@@ -163,7 +163,7 @@ Claude が以下を実行：
 your-project/
 ├── .claude/
 │   ├── skills/
-│   │   └── spec-mesh/         # SSD フレームワーク
+│   │   └── nick-q/         # SSD フレームワーク
 │   │       ├── SKILL.md       # スキル定義
 │   │       ├── constitution.md # 最上位ルール
 │   │       ├── workflows/     # ワークフロー定義
@@ -189,10 +189,10 @@ your-project/
 
 ```bash
 # 状態確認
-node .claude/skills/spec-mesh/scripts/state.cjs query --all
+node .claude/skills/nick-q/scripts/state.cjs query --all
 
 # Lint 実行
-node .claude/skills/spec-mesh/scripts/spec-lint.cjs
+node .claude/skills/nick-q/scripts/spec-lint.cjs
 ```
 
 ---
