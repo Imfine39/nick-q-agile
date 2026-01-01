@@ -12,7 +12,7 @@ Pre-Input を分析し、ユーザー向け QA ドキュメントを生成する
 
 | ワークフロー | トリガー | 出力先 |
 |--------------|----------|--------|
-| project-setup | Input 読み込み後 | `.specify/docs/project-setup-qa.md` |
+| project-setup | Input 読み込み後 | `.specify/specs/overview/qa.md` |
 | add | Input 読み込み後 | `.specify/specs/features/{feature-id}/qa.md` |
 | fix | Input 読み込み後 | `.specify/specs/fixes/{fix-id}/qa.md` |
 
@@ -126,7 +126,7 @@ _professional-proposals.md を参照
 
 ```
 対応するディレクトリに出力:
-- project-setup: .specify/docs/project-setup-qa.md
+- project-setup: .specify/specs/overview/qa.md
 - add: .specify/specs/features/{feature-id}/qa.md
 - fix: .specify/specs/fixes/{fix-id}/qa.md
 

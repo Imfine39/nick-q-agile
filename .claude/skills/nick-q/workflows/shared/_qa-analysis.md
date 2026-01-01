@@ -27,7 +27,7 @@ Spec 作成に渡す
 ```
 Grep tool:
   pattern: "\[必須\]"
-  path: .specify/qa/{qa-file}.md
+  path: {qa-file-path}  # e.g., .specify/specs/overview/qa.md or .specify/specs/features/{id}/qa.md
   output_mode: count
 ```
 

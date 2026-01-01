@@ -121,7 +121,7 @@ Input または wireframes ディレクトリにワイヤーフレームファ�
 5. QA ドキュメントを生成:
 
 ```
-Write tool: .specify/docs/project-setup-qa.md
+Write tool: .specify/specs/overview/qa.md
   - 質問バンクから動的に生成（_qa-generation.md 参照）
   - Input から抽出した情報を埋め込み
 ```
@@ -131,7 +131,7 @@ Write tool: .specify/docs/project-setup-qa.md
 ```
 === QA ドキュメントを生成しました ===
 
-.specify/docs/project-setup-qa.md を確認し、
+.specify/specs/overview/qa.md を確認し、
 各項目に回答してください。
 
 完了したら「QA 回答完了」と伝えてください。
