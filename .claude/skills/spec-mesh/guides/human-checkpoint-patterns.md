@@ -58,10 +58,12 @@ HUMAN_CHECKPOINT は人間の明示的な承認を必要とするゲートです
 承認後、{next_step} へ進みます。
 ```
 
-### 承認後処理
+### 承認後処理（将来機能）
+
+> **Note:** このコマンドは未実装。承認は会話履歴で管理されます。
 
 ```bash
-node .claude/skills/spec-mesh/scripts/state.cjs branch --add-checkpoint spec_approval
+# [FUTURE] node .claude/skills/spec-mesh/scripts/state.cjs branch --add-checkpoint spec_approval
 ```
 
 ---
@@ -88,10 +90,10 @@ node .claude/skills/spec-mesh/scripts/state.cjs branch --add-checkpoint spec_app
 承認後、Tasks 分割へ進みます。
 ```
 
-### 承認後処理
+### 承認後処理（将来機能）
 
 ```bash
-node .claude/skills/spec-mesh/scripts/state.cjs branch --add-checkpoint plan_approval
+# [FUTURE] node .claude/skills/spec-mesh/scripts/state.cjs branch --add-checkpoint plan_approval
 ```
 
 ---
@@ -153,10 +155,10 @@ node .claude/skills/spec-mesh/scripts/state.cjs branch --add-checkpoint plan_app
 選択を入力してください: [1/2/other]
 ```
 
-### 承認後処理
+### 承認後処理（将来機能）
 
 ```bash
-node .claude/skills/spec-mesh/scripts/state.cjs branch --add-checkpoint decision_{type}
+# [FUTURE] node .claude/skills/spec-mesh/scripts/state.cjs branch --add-checkpoint decision_{type}
 ```
 
 ---
@@ -227,12 +229,14 @@ node .claude/skills/spec-mesh/scripts/state.cjs branch --add-checkpoint decision
 
 ---
 
-## Checkpoint Recording
+## Checkpoint Recording（将来機能）
+
+> **Note:** 以下のコマンドは将来機能として設計されており、現時点では未実装です。承認の記録は会話履歴で管理されます。
 
 **全ての CHECKPOINT 承認後に記録を実行:**
 
 ```bash
-node .claude/skills/spec-mesh/scripts/state.cjs branch --add-checkpoint {checkpoint_type}
+# [FUTURE] node .claude/skills/spec-mesh/scripts/state.cjs branch --add-checkpoint {checkpoint_type}
 ```
 
 ### Checkpoint Types

@@ -82,17 +82,33 @@ Read tool: .specify/input/project-setup-input.md
 | Part D: データ項目 | Domain Spec |
 | Part E: 非機能要件 | Vision Spec Section 4 |
 
-### Step 2: ワイヤーフレーム分析
+### Step 2: ワイヤーフレーム処理
 
-```
-Glob tool: .specify/assets/wireframes/*
-```
+> **参照:** [shared/_wireframe-processing.md](shared/_wireframe-processing.md)
 
-ファイルがあれば：
-1. 画像を読み込み（Read tool）
-2. 画面構成を抽出
-3. UI 要素を特定
-4. Screen Spec の参考情報として記録
+Input または wireframes ディレクトリにワイヤーフレームファイルがある場合に処理。
+
+1. **ファイル検出:**
+   ```
+   Glob tool: .specify/input/wireframes/*
+   ```
+
+2. **処理実行（ファイルがある場合）:**
+   - 画像/ファイルを読み込み（Read tool）
+   - AI が内容を解釈（レイアウト、コンポーネント、テキストラベル）
+   - 構造化ワイヤーフレームを生成（ASCII + Components table + Interactions）
+
+3. **アセット保存:**
+   ```bash
+   mkdir -p .specify/assets/wireframes/
+   cp {input_file} .specify/assets/wireframes/{SCR-ID}-{descriptive-name}.{ext}
+   ```
+
+4. **Screen Spec への統合準備:**
+   - WF-SCR-* 形式で構造化データを準備
+   - Step 7 で Screen Spec に統合
+
+**Note:** ワイヤーフレームがない場合はスキップ。テキスト説明のみでも Screen Spec は作成可能。
 
 ### Step 3: QA ドキュメント生成
 
@@ -173,6 +189,33 @@ QA Q3.1-Q3.2 を元に画面を定義：
 |--------|--------|--------|-------------|
 | SCR-001 | {画面名} | Planned | {説明} |
 ```
+
+**ワイヤーフレーム統合（Step 2 で処理した場合）:**
+
+各画面の詳細セクションに構造化ワイヤーフレームを追加：
+
+```markdown
+### SCR-001: {画面名}
+
+#### Wireframe: WF-SCR-001
+
+**Source:** `.specify/assets/wireframes/SCR-001-original.png`
+**Interpreted:** {date}
+**Status:** Initial
+
+**Layout Structure:**
+[ASCII art layout]
+
+**Components:**
+| ID | Type | Location | Description | Behavior |
+|----|------|----------|-------------|----------|
+| WF-SCR-001-HDR | Header | top | ... | 固定表示 |
+
+**Interactions:**
+| Trigger | Component | Action | Target |
+```
+
+> **参照:** [templates/screen-spec.md](../templates/screen-spec.md) の Wireframe セクション
 
 ### Step 8: Domain Spec 作成
 
@@ -359,6 +402,7 @@ node .claude/skills/spec-mesh/scripts/preserve-input.cjs project-setup
 
 - [ ] **TodoWrite で全ステップを登録したか**
 - [ ] Input ファイルを読み込んだか
+- [ ] ワイヤーフレームを処理したか（ある場合）
 - [ ] QA ドキュメントを生成したか
 - [ ] QA 回答を分析したか
 - [ ] AI SIer 提案を行ったか

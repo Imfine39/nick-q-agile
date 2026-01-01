@@ -155,7 +155,7 @@ node .claude/skills/spec-mesh/scripts/branch.cjs --type spec --slug {slug} --iss
    ```bash
    node .claude/skills/spec-mesh/scripts/generate-matrix-view.cjs
    ```
-3. **Update affected Feature Specs** (if needed)
+3. **Update affected Feature Specs** (Impact Analysis で特定された Spec のみ)
 4. **Record Changelog:**
    ```bash
    node .claude/skills/spec-mesh/scripts/changelog.cjs record \

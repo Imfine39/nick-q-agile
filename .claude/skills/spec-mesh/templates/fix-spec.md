@@ -1,4 +1,4 @@
-# Fix Specification: [BUG TITLE]
+# Fix Spec: [BUG TITLE]
 
 <!--
   Template: Fix Spec

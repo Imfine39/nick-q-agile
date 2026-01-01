@@ -140,9 +140,10 @@ Q4: ...
    | {section} | {item} | {reason} | {impact} | {when} |
    ```
 
-4. **state.cjs 更新**:
+4. **state.cjs 更新** (将来機能 - 現時点ではスキップ可):
    ```bash
-   node .claude/skills/spec-mesh/scripts/state.cjs --add-deferred-item {spec_type} {description}
+   # [FUTURE] このコマンドは未実装。DEFERRED の記録は Spec マーカーで管理
+   # node .claude/skills/spec-mesh/scripts/state.cjs --add-deferred-item {spec_type} {description}
    ```
 
 #### Handling More Than 4 Ambiguities

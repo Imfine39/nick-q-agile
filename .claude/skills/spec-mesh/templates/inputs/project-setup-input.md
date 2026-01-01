@@ -10,7 +10,7 @@ Vision + Screen + Domain を一括で作成し、Feature Drafts を生成する�
 
 <!--
   設計思想（MASTER-PLAN-v2.md Section 1.1）:
-  ユーザーは「書くのが面倒」ではなく「知らないことがある」
+  ユーザーは「書くのが面倒」ではなく「分からないことがある」
   → Per-feature で詳細に書ける構造を提供し、QA で補完する
 
   Input → Spec Mapping:
@@ -24,7 +24,14 @@ Vision + Screen + Domain を一括で作成し、Feature Drafts を生成する�
   | 機能リスト.各機能.概要 | Feature Draft 1.1 | 機能の目的 |
   | 機能リスト.各機能.データ | Domain Spec (M-*) | エンティティ参照 |
   | 機能リスト.各機能.画面イメージ | Screen Spec (SCR-*) | 画面参照 |
+  | 機能リスト.各機能.ワイヤーフレーム | Screen Spec (WF-SCR-*) | 構造化して統合 |
+  | 共通ワイヤーフレーム | Screen Spec (WF-SCR-*) | 全画面共通レイアウト |
   | 技術的な制約 | Vision Spec 4.1 | 技術スタック |
+
+  Wireframe Processing:
+  ワイヤーフレーム添付セクションのファイルは _wireframe-processing.md で処理。
+  AI が構造化して Screen Spec に WF-* 形式で統合。
+  QA/Change で更新時は構造化データを編集（元画像の再作成不要）。
 -->
 
 ---
@@ -57,6 +64,12 @@ Vision + Screen + Domain を一括で作成し、Feature Drafts を生成する�
 - **メイン画面の要素**:
 - **操作フロー**:
 
+#### ワイヤーフレーム（任意）
+<!-- ファイルパスと説明。形式: pptx, png, jpg, pdf, Figma export -->
+| ファイル | 説明 |
+|---------|------|
+| | |
+
 #### 備考
 
 
@@ -77,6 +90,12 @@ Vision + Screen + Domain を一括で作成し、Feature Drafts を生成する�
 #### 画面イメージ
 - **メイン画面の要素**:
 - **操作フロー**:
+
+#### ワイヤーフレーム（任意）
+<!-- ファイルパスと説明。形式: pptx, png, jpg, pdf, Figma export -->
+| ファイル | 説明 |
+|---------|------|
+| | |
 
 #### 備考
 
@@ -99,8 +118,33 @@ Vision + Screen + Domain を一括で作成し、Feature Drafts を生成する�
 - **メイン画面の要素**:
 - **操作フロー**:
 
+#### ワイヤーフレーム（任意）
+<!-- ファイルパスと説明。形式: pptx, png, jpg, pdf, Figma export -->
+| ファイル | 説明 |
+|---------|------|
+| | |
+
 #### 備考
 
+
+---
+
+## 共通ワイヤーフレーム（任意）
+
+全画面で共通のレイアウト（ヘッダー、サイドバー、フッター等）があれば添付してください。
+AI が構造化して Screen Spec に統合します。
+
+**対応形式:** pptx, png, jpg, pdf, Figma export, 手書きスケッチ写真
+
+| ファイル | 説明 | 対応画面 |
+|---------|------|---------|
+| `.specify/input/wireframes/xxx.png` | [説明] | 全画面共通 / SCR-001 等 |
+| | | |
+
+**注意:**
+- ファイルは `.specify/input/wireframes/` に配置してください
+- AI が構造化するため、ピクセルパーフェクトである必要はありません
+- 後から QA/Change で調整しても、元ファイルの再作成は不要です
 
 ---
 

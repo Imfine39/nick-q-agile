@@ -252,10 +252,12 @@ node .claude/skills/spec-mesh/scripts/state.cjs repo \
 node .claude/skills/spec-mesh/scripts/state.cjs repo --list-cascade
 ```
 
+> **Note:** 上記コマンド (`--add-cascade`, `--list-cascade`) は将来機能として設計されており、現時点では未実装です。Cascade 更新の記録は Spec ファイル内のコメントで管理してください。
+
 **パラメータ:**
 | パラメータ | 説明 | 例 |
 |-----------|------|-----|
-| trigger | 更新を引き起こした Spec ID | `F-AUTH-001`, `FIX-001` |
+| trigger | 更新を引き起こした Spec ID | `S-AUTH-001`, `F-AUTH-001` |
 | affected | 影響を受けた Spec (カンマ区切り) | `domain,SCR-001,SCR-002` |
 | description | 更新の説明（任意） | `認証機能追加による更新` |
 

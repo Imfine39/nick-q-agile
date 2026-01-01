@@ -134,13 +134,17 @@ All changes MUST be driven by specifications.
 <!-- 他のファイルはこの Flow を参照すること。完全な複製禁止。 -->
 <!-- アンカー: #spec-driven-workflow -->
 ```
-Entry (vision/add/fix/issue)
+Entry (add/fix/change/issue/quick/setup)
     ↓
-入力検証（必須項目確認）
+Input 読み込み・検証（必須項目確認）
     ↓
-Spec 作成
+ワイヤーフレーム処理（画像/ファイルあれば）← _wireframe-processing.md
     ↓
-深掘りインタビュー（必須）← AskUserQuestion で潜在課題を発掘
+QA ドキュメント生成（必須）← _qa-generation.md
+    ↓
+QA 回答分析 + AskUserQuestion（残り不明点を対話解消）← _qa-analysis.md
+    ↓
+Spec 作成（QA 結果を反映）
     ↓
 Multi-Review（3観点並列） → AI修正
     ↓
@@ -164,6 +168,11 @@ Lint
     ↓
 Plan → Tasks → Implement（[DEFERRED] 遭遇時は Clarify へ戻る） → PR
 ```
+
+**Flow の重要ポイント:**
+1. **QA は Spec 作成の前** - ユーザーの知識ギャップを先に発見
+2. **AskUserQuestion は QA 後** - QA で発見した不明点を対話で解消
+3. **ワイヤーフレームは構造化保存** - 後続の変更でユーザーに再作成させない
 
 ### 5. Git Discipline
 Version control MUST ensure traceability.

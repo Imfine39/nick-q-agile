@@ -117,7 +117,7 @@ Before starting work that will modify the Domain:
 
 1. **Check for conflicts**:
    - Review open Issues and PRs that mention the same masters/APIs.
-   - Check the Feature index for features in `Implementing` status.
+   - Check the Feature index for features in `Approved` status (active implementation).
 
 2. **Announce in the Issue**:
    ```markdown
@@ -298,7 +298,7 @@ Keep the Domain's Feature index up to date:
 ```markdown
 | Feature ID | Title | Path | Status | Owner | Depends On |
 |------------|-------|------|--------|-------|------------|
-| S-AUTH-001 | Authentication | .specify/specs/features/auth/spec.md | Implementing | @alice | - |
+| S-AUTH-001 | Authentication | .specify/specs/features/auth/spec.md | Approved | @alice | - |
 | S-ORDERS-001 | Order Management | .specify/specs/features/orders/spec.md | Approved | @bob | S-AUTH-001 |
 | S-DASHBOARD-001 | Dashboard | .specify/specs/features/dashboard/spec.md | Draft | @carol | S-ORDERS-001 |
 ```
@@ -310,7 +310,7 @@ When working in parallel, follow this procedure to update the Feature Index:
 **When to update**:
 1. **Creating new Feature Spec**: Add entry with `Draft` status
 2. **Spec approval**: Update status to `Approved`
-3. **Starting implementation**: Update status to `Implementing`
+3. **Starting implementation**: Status remains `Approved` (implementation tracked in tasks.md)
 4. **PR merged**: Update status to `Implemented`
 
 **Update procedure**:

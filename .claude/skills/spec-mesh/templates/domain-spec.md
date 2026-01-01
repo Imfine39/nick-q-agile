@@ -1,4 +1,4 @@
-# Domain Specification: [PROJECT_NAME]
+# Domain Spec: [PROJECT_NAME]
 
 <!--
   Template: Domain Spec

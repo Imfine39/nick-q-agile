@@ -1,10 +1,12 @@
-# Screen Specification: [PROJECT_NAME]
+# Screen Spec: [PROJECT_NAME]
 
 <!--
   Template: Screen Spec
 
   ID Format: S-SCREEN-001 (one per project)
   Screen IDs: SCR-{NNN} (e.g., SCR-001, SCR-002)
+  Wireframe IDs: WF-{SCR-ID} (e.g., WF-SCR-001)
+  Wireframe Component IDs: WF-{SCR-ID}-{COMP} (e.g., WF-SCR-001-HDR)
   Component IDs: COMP-{NNN} (e.g., COMP-001, COMP-002)
   See: .claude/skills/spec-mesh/guides/id-naming.md
 
@@ -137,25 +139,62 @@ stateDiagram-v2
 
 **Domain References:** See `../matrix/cross-reference.json` for API/Master mappings.
 
-**Layout Overview:**
+#### Wireframe: WF-SCR-001
+
+**Source:** `.specify/assets/wireframes/SCR-001-original.png` or "Text description"
+**Interpreted:** {date}
+**Status:** [Initial | Updated | Approved]
+
+**Layout Structure:**
 ```
 ┌─────────────────────────────────────────┐
-│  Header / Navigation                     │
+│  [Header]                                │
+│  Logo | Navigation | UserMenu            │
 ├─────────────────────────────────────────┤
-│                                         │
-│  Main Content Area                      │
-│                                         │
-│  ┌─────────┐  ┌─────────┐              │
-│  │ Element │  │ Element │              │
-│  └─────────┘  └─────────┘              │
-│                                         │
+│  [Sidebar]  │  [Main Content]            │
+│             │                            │
+│  - Menu 1   │  ┌─────────────────┐       │
+│  - Menu 2   │  │ Component A     │       │
+│  - Menu 3   │  └─────────────────┘       │
+│             │                            │
+│             │  ┌─────────────────┐       │
+│             │  │ Component B     │       │
+│             │  └─────────────────┘       │
 ├─────────────────────────────────────────┤
-│  Footer / Actions                        │
+│  [Footer]                                │
 └─────────────────────────────────────────┘
 ```
 
-**Reference Images:**
-- [参考画像パスまたはURL]
+**Components:**
+
+| ID | Type | Location | Description | Behavior |
+|----|------|----------|-------------|----------|
+| WF-SCR-001-HDR | Header | top | ナビゲーションヘッダー | 固定表示 |
+| WF-SCR-001-NAV | Navigation | header | メインメニュー | ホバーでドロップダウン |
+| WF-SCR-001-SB | Sidebar | left | サイドメニュー | 折りたたみ可能 |
+| WF-SCR-001-MAIN | Content | center | メインコンテンツ領域 | スクロール可能 |
+| WF-SCR-001-FTR | Footer | bottom | フッター | 固定表示 |
+
+**Interactions:**
+
+| Trigger | Component | Action | Target |
+|---------|-----------|--------|--------|
+| Click | Logo | Navigate | SCR-001 (Home) |
+| Click | Menu Item | Navigate | Corresponding screen |
+| Hover | Navigation | Show | Dropdown menu |
+
+**Responsive Behavior:**
+
+| Breakpoint | Layout Change |
+|------------|---------------|
+| < 768px | Sidebar 非表示、ハンバーガーメニュー |
+| < 480px | 単一カラムレイアウト |
+
+**Wireframe Change Log:**
+
+| Date | Type | Description | Source |
+|------|------|-------------|--------|
+| {date} | Created | Initial wireframe | {original file or "Text"} |
 
 **States:**
 | State | Description | Visual |

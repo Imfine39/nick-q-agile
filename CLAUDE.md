@@ -19,35 +19,21 @@
 
 ## Workflow Routing
 
-ユーザーの依頼に応じて、適切なワークフローを選択して実行してください。
-対応するワークフローファイルを Read tool で読み込み、指示に従って実行します。
+開発依頼の処理は [SKILL.md](.claude/skills/spec-mesh/SKILL.md) の Entry セクションで行われます。
+SKILL.md を読み込んで指示に従ってください。
 
-### 依頼 → ワークフロー対応表
+### クイックリファレンス
 
-| ユーザーの依頼 | ワークフロー |
-|---------------|-------------|
-| 「プロジェクトを始めたい」「Vision を作成」 | `workflows/vision.md` |
-| 「画面設計」「Design を作成」 | `workflows/design.md` |
-| 「機能を追加」「〇〇機能を作りたい」 | `workflows/add.md` |
-| 「バグを修正」「エラーを直して」 | `workflows/fix.md` |
-| "Quick Mode" / "small change" | `workflows/quick.md` |
-| 「Issue #N から開始」 | `workflows/issue.md` |
-| 「Spec を変更」「M-* を修正」 | `workflows/change.md` |
-| 「実装計画」「Plan を作成」 | `workflows/plan.md` |
-| 「タスク分割」 | `workflows/tasks.md` |
-| 「実装して」 | `workflows/implement.md` |
-| 「PR を作成」 | `workflows/pr.md` |
-| 「テストシナリオを作成」 | `workflows/test-scenario.md` |
-| 「E2E テスト実行」 | `workflows/e2e.md` |
-| 「品質チェック」「レビュー」 | `workflows/review.md` |
-| 「曖昧点を解消」 | `workflows/clarify.md` |
-| 「Lint 実行」 | `workflows/lint.md` |
-| 「実装と Spec を比較」 | `workflows/analyze.md` |
-| 「品質スコアを測定」 | `workflows/checklist.md` |
-| 「フィードバックを記録」 | `workflows/feedback.md` |
-| 「Feature を提案して」 | `workflows/featureproposal.md` |
-| 「Spec を直接編集」 | `workflows/spec.md` |
-| 「テンプレートを更新」 | `update.cjs` を実行 |
+| 依頼タイプ | Input | 処理先 |
+|-----------|-------|--------|
+| 機能追加 | 必須 | feature.md |
+| バグ修正 | 必須 | fix.md |
+| Spec 変更 | 必須 | change.md |
+| Issue 実装 | 状態依存 | SKILL.md で判定 |
+| 小さな変更 | 不要 | implement.md or 誘導 |
+| 新規プロジェクト | 必須 | project-setup.md |
+
+> **詳細:** [SKILL.md](.claude/skills/spec-mesh/SKILL.md) Section 1 (Entry) を参照
 
 ワークフローファイルは `.claude/skills/spec-mesh/workflows/` にあります。
 
@@ -56,13 +42,17 @@
 ## Core Flow
 
 ```
-Entry (vision/add/fix/issue)
+Entry (vision/add/fix/change/issue/quick/setup)
     ↓
 入力検証（必須項目確認）
     ↓
-Spec 作成
+ワイヤーフレーム処理（画像/ファイルあれば）
     ↓
-深掘りインタビュー（必須）← AskUserQuestion で潜在課題を発掘
+QA ドキュメント生成（必須）
+    ↓
+QA 回答分析 + AskUserQuestion（残り不明点を対話解消）
+    ↓
+Spec 作成（QA 結果を反映）
     ↓
 Multi-Review（3観点並列） → AI修正
     ↓
@@ -94,9 +84,10 @@ Tasks → Implement → E2E → PR
 
 | ファイル | タイミング |
 |----------|-----------|
-| `.specify/input/vision-input.md` | vision ワークフロー |
-| `.specify/input/add-input.md` | add ワークフロー |
-| `.specify/input/fix-input.md` | fix ワークフロー |
+| `.specify/input/project-setup-input.md` | setup ワークフロー |
+| `.specify/input/add-input.md` | add ワークフロー (feature.md) |
+| `.specify/input/fix-input.md` | fix ワークフロー (fix.md) |
+| `.specify/input/change-input.md` | change ワークフロー (change.md) |
 
 **存在すれば読み込んで活用してください。**
 
@@ -136,9 +127,9 @@ tabs_context_mcp → tabs_create_mcp → navigate → find → form_input → co
 
 | タイミング | 確認内容 |
 |-----------|---------|
-| Vision Spec 作成後 | 目的・ゴールの妥当性 |
-| Design 完了後 | 画面・Domain 設計の妥当性 |
+| project-setup 完了後 | Overview Specs（Vision/Domain/Screen）の妥当性 |
 | Feature Spec 作成後 | 要件の妥当性、CLARIFY GATE |
+| Fix Spec 作成後 | 修正方針の妥当性、CLARIFY GATE |
 | Plan 作成後 | 実装計画の承認 |
 | E2E テスト後 | テスト結果の確認 |
 

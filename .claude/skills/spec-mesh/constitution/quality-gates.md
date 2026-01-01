@@ -124,12 +124,15 @@ Workflow Completion 用:
 **[HUMAN_CHECKPOINT]** {結果}を確認してから次のステップに進んでください。
 ```
 
-### Recording
+### Recording（将来機能）
 
 **承認後に記録を実行:**
 
+> **Note:** このコマンドは将来機能として設計されており、現時点では未実装です。承認の記録は会話履歴で管理されます。
+
 ```bash
-node .claude/skills/spec-mesh/scripts/state.cjs branch --add-checkpoint {type}
+# [FUTURE] このコマンドは未実装
+# node .claude/skills/spec-mesh/scripts/state.cjs branch --add-checkpoint {type}
 ```
 
 ### Checkpoint Details

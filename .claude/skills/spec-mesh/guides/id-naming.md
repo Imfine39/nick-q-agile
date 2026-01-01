@@ -423,6 +423,79 @@ IMG-{NNN}
 
 ---
 
+## 15. Wireframe IDs (WF-*)
+
+```
+WF-{SCR-ID}
+WF-{SCR-ID}-{COMPONENT}
+```
+
+画面ワイヤーフレームおよびコンポーネント識別子。
+
+**形式:**
+- `WF-{SCR-ID}`: 画面全体のワイヤーフレーム
+- `WF-{SCR-ID}-{COMPONENT}`: ワイヤーフレーム内のコンポーネント
+
+**コンポーネント略称:**
+| 略称 | 意味 |
+|------|------|
+| `HDR` | Header |
+| `NAV` | Navigation |
+| `SB` | Sidebar |
+| `MAIN` | Main Content |
+| `FTR` | Footer |
+| `FLT` | Filter |
+| `TBL` | Table |
+| `FRM` | Form |
+| `BTN` | Button |
+| `MDL` | Modal |
+
+**例:**
+| ID | 説明 |
+|----|------|
+| `WF-SCR-001` | SCR-001 のワイヤーフレーム全体 |
+| `WF-SCR-001-HDR` | SCR-001 のヘッダーコンポーネント |
+| `WF-SCR-001-SB` | SCR-001 のサイドバー |
+| `WF-SCR-002-TBL` | SCR-002 のテーブル |
+
+---
+
+## 16. QA Question IDs (Q-*)
+
+```
+Q-{CATEGORY}-{NNN}
+```
+
+QA ドキュメント内の質問識別子。
+
+**形式:**
+- `CATEGORY`: 質問カテゴリ（大文字、2-10文字）
+- `NNN`: カテゴリ内連番（3桁）
+
+**標準カテゴリ:**
+| Category | 説明 |
+|----------|------|
+| `VISION` | ビジョン・目的に関する質問 |
+| `DOMAIN` | ドメイン・データモデルに関する質問 |
+| `SCREEN` | 画面・UI に関する質問 |
+| `FUNC` | 機能要件に関する質問 |
+| `TECH` | 技術・実装に関する質問 |
+| `BIZ` | ビジネスルールに関する質問 |
+
+**例:**
+| ID | 説明 |
+|----|------|
+| `Q-VISION-001` | プロジェクトの主要目的は？ |
+| `Q-DOMAIN-001` | ユーザーの属性は何が必要？ |
+| `Q-FUNC-001` | 検索機能の絞り込み条件は？ |
+| `Q-TECH-001` | 認証方式は何を使う？ |
+
+**命名規則:**
+- 各 QA ドキュメント内でカテゴリごとに連番
+- 質問の追加・削除時は番号を再利用しない
+
+---
+
 ## クイックリファレンス
 
 | カテゴリ | 形式 | 例 |
@@ -451,3 +524,6 @@ IMG-{NNN}
 | Checklist (Domain) | `CHK-{DOMAIN}-{NNN}` | CHK-UX-001 |
 | Success Criteria | `SC-{AREA}-{NNN}` | SC-AUTH-001 |
 | Image | `IMG-{NNN}` | IMG-001 |
+| Wireframe | `WF-{SCR-ID}` | WF-SCR-001 |
+| Wireframe Component | `WF-{SCR-ID}-{COMP}` | WF-SCR-001-HDR |
+| QA Question | `Q-{CATEGORY}-{NNN}` | Q-FUNC-001 |

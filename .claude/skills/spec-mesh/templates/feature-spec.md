@@ -1,4 +1,4 @@
-# Feature Specification: [TITLE]
+# Feature Spec: [TITLE]
 
 <!--
   Template: Feature Spec

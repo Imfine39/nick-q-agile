@@ -26,9 +26,15 @@
   | データと処理.保存するデータ | 2. Domain Reference (M-*) | エンティティ参照 |
   | データと処理.主な処理ロジック | 5. Functional Requirements (Processing) | 処理フロー |
   | 画面イメージ | 8. Screen Dependencies | SCR-* 参照 |
+  | ワイヤーフレーム | Screen Spec (WF-SCR-*) | 構造化して Screen Spec に統合 |
   | 関連する既存機能 | 2.4 Feature Dependencies | Hard/Soft 依存関係 |
   | 制約・注意点 | 9. Feature-Specific Rules | FR-RULE-* |
   | 補足情報 | 14. Original Input | 原文保存 |
+
+  Wireframe Processing:
+  ワイヤーフレーム添付セクションのファイルは _wireframe-processing.md で処理。
+  AI が構造化して Screen Spec に WF-* 形式で統合。
+  QA/Change で更新時は構造化データを編集（元画像の再作成不要）。
 -->
 
 ---
@@ -73,6 +79,23 @@
 - **メイン画面の要素**:
 - **操作フロー**:
 - **参考にしたいUI**:
+
+### ワイヤーフレーム添付（任意）
+
+画像やファイルでワイヤーフレームを提供する場合は、以下に記入してください。
+AI が内容を解釈し、編集可能な構造化データとして Screen Spec に統合します。
+
+**対応形式:** pptx, png, jpg, pdf, Figma export, 手書きスケッチ写真
+
+| ファイル | 説明 | 対応画面 |
+|---------|------|---------|
+| `.specify/input/wireframes/xxx.png` | [このワイヤーフレームの説明] | [画面名] |
+| | | |
+
+**注意:**
+- ファイルは `.specify/input/wireframes/` に配置してください
+- AI が構造化するため、ピクセルパーフェクトである必要はありません
+- 後から QA/Change で調整しても、元ファイルの再作成は不要です
 
 ---
 

@@ -262,10 +262,13 @@ Grep tool: pattern="{identifier}" path=".specify/specs/overview/matrix"
 
 ## 自動化オプション
 
-### スクリプトによる事前チェック
+> **Note:** このセクションは将来機能の設計案です。`impact-check.cjs` は現時点では未実装であり、Impact Analysis は AI が手動で実行します。
+
+### スクリプトによる事前チェック（将来機能）
 
 ```bash
-# 将来的に自動化する場合のインターフェース案
+# [FUTURE] 将来的に自動化する場合のインターフェース案
+# このスクリプトは現時点では存在しません
 node .claude/skills/spec-mesh/scripts/impact-check.cjs \
   --target "{変更対象ID}" \
   --mode {full|standard|light} \

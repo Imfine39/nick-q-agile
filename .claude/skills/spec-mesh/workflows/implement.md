@@ -314,21 +314,24 @@ implement.md Step 3 へ戻る
 
 > **Note:** サイクル回数に上限はありません。Spec に問題がなくなるまで続けてください。
 
-### サイクル回数のトラッキング
+### サイクル回数のトラッキング（将来機能）
+
+> **Note:** 以下のコマンドは将来機能として設計されており、現時点では未実装です。サイクル回数は AI が会話内で手動追跡してください。
 
 ```bash
+# [FUTURE] これらのコマンドは未実装
 # サイクル開始時（Step 3 へ戻る時）
-node .claude/skills/spec-mesh/scripts/state.cjs branch --increment-cycle
+# node .claude/skills/spec-mesh/scripts/state.cjs branch --increment-cycle
 
 # サイクル回数確認
-node .claude/skills/spec-mesh/scripts/state.cjs branch --get-cycle
+# node .claude/skills/spec-mesh/scripts/state.cjs branch --get-cycle
 
 # 完了時にリセット
-node .claude/skills/spec-mesh/scripts/state.cjs branch --reset-cycle
+# node .claude/skills/spec-mesh/scripts/state.cjs branch --reset-cycle
 ```
 
-**警告表示（制限なし）:**
-- サイクル 5回以上: ⚠️ Spec に問題がないか確認を促す警告
+**警告の目安（手動確認）:**
+- サイクル 5回以上: ⚠️ Spec に問題がないか確認を促す
 - サイクル 10回以上: ⚠️ Spec の Clarify が必要な可能性を示唆
 
 これらは警告のみで、サイクルを停止することはありません。問題が解決するまで続行してください。

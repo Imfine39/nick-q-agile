@@ -125,7 +125,7 @@ Impact: {Spec への影響}
    - Affected Items: {影響を受ける M-*/API-*/SCR-* ID}
    ```
 
-3. **Update affected sections** if needed
+3. **Update affected sections** (技術制約→Domain、UI関連→Screen、ロジック→Feature)
 
 4. **Cross-update related Specs** based on Impact Analysis results:
    - Impact Analysis で特定された全 Spec を更新

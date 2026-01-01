@@ -4,6 +4,20 @@
 
 ---
 
+## Scope
+
+This guide is the **authoritative reference** for judgment criteria when workflows use ambiguous expressions like "適切に" or "必要に応じて".
+
+**Related guides:**
+- `input-qa-spec-mapping.md` - Input → QA → Spec data flow
+- `human-checkpoint-patterns.md` - HUMAN_CHECKPOINT usage patterns
+
+**Related constitution:**
+- `constitution/terminology.md` - Term definitions and granularity guidelines
+- `constitution/quality-gates.md` - Quality gate definitions
+
+---
+
 ## Purpose
 
 「適切に」「妥当か」等の曖昧表現を、具体的なチェックリストや数値基準で判断可能にする。

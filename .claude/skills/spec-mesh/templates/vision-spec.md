@@ -1,4 +1,4 @@
-# Vision Specification: [PROJECT_NAME]
+# Vision Spec: [PROJECT_NAME]
 
 <!--
   Template: Vision Spec

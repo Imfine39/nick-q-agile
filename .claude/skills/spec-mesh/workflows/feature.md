@@ -68,6 +68,9 @@ TodoWrite:
     - content: "Step 1: コードベース分析"
       status: "pending"
       activeForm: "Analyzing codebase"
+    - content: "Step 1.5: ワイヤーフレーム処理"
+      status: "pending"
+      activeForm: "Processing wireframes"
     - content: "Step 2: QA ドキュメント生成"
       status: "pending"
       activeForm: "Generating QA document"
@@ -165,6 +168,28 @@ Draft の空欄セクションに対応する QA を生成：
 - Identify existing patterns
 - Find related components
 - Note reusable code
+
+### Step 1.5: ワイヤーフレーム処理（新規作成モードのみ）
+
+> **参照:** [shared/_wireframe-processing.md](shared/_wireframe-processing.md)
+
+Input にワイヤーフレームファイルが添付されている場合：
+
+1. **ファイル検出:**
+   ```
+   Glob tool: .specify/input/wireframes/*
+   ```
+
+2. **処理実行:**
+   - 画像/ファイルを読み込み（Read tool）
+   - AI が内容を解釈
+   - 構造化ワイヤーフレームを生成（ASCII + Components table）
+
+3. **Screen Spec に統合:**
+   - WF-SCR-* 形式で保存
+   - 元ファイルを `.specify/assets/wireframes/` に保存
+
+**Note:** ワイヤーフレームがない場合はスキップ。
 
 ### Step 2: QA ドキュメント生成（新規作成モードのみ）
 
@@ -373,6 +398,7 @@ node .claude/skills/spec-mesh/scripts/preserve-input.cjs add --feature {feature-
 ### 共通
 - [ ] **TodoWrite で全ステップを登録したか**
 - [ ] **モード判定を行ったか（Draft 詳細化 or 新規作成）**
+- [ ] ワイヤーフレームを処理したか（ある場合）
 - [ ] QA ドキュメントを生成したか
 - [ ] QA 回答を分析したか
 - [ ] Screen Spec を先に更新したか（Spec-First）

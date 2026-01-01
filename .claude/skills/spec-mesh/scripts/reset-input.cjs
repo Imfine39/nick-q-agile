@@ -11,7 +11,7 @@
  *     - Template file not found
  *
  * Common Errors:
- *   - "ERROR: Unknown input type X" - Use one of: vision, add, fix, all
+ *   - "ERROR: Unknown input type X" - Use one of: vision, add, fix, change, project-setup, all
  *   - "ERROR: Template not found: X" - Template file missing from templates/inputs/
  *
  * Usage:
@@ -44,6 +44,16 @@ const INPUT_TYPES = {
     template: 'fix-input.md',
     input: 'fix-input.md',
     description: 'Bug Fix の入力'
+  },
+  change: {
+    template: 'change-input.md',
+    input: 'change-input.md',
+    description: 'Spec 変更の入力'
+  },
+  'project-setup': {
+    template: 'project-setup-input.md',
+    input: 'project-setup-input.md',
+    description: 'プロジェクト初期設定の入力'
   }
 };
 
@@ -51,11 +61,13 @@ function showHelp() {
   console.log('Usage: node .claude/skills/spec-mesh/scripts/reset-input.cjs <type>');
   console.log('');
   console.log('Types:');
-  console.log('  vision  - Reset vision input file (unified: vision + screen hints + design)');
-  console.log('  add     - Reset add (feature) input file');
-  console.log('  fix     - Reset fix (bug) input file');
-  console.log('  all     - Reset all input files');
-  console.log('  --list  - Show available input types');
+  console.log('  vision        - Reset vision input file (unified: vision + screen hints + design)');
+  console.log('  add           - Reset add (feature) input file');
+  console.log('  fix           - Reset fix (bug) input file');
+  console.log('  change        - Reset change (spec modification) input file');
+  console.log('  project-setup - Reset project setup input file');
+  console.log('  all           - Reset all input files');
+  console.log('  --list        - Show available input types');
   console.log('');
   console.log('Examples:');
   console.log('  node .claude/skills/spec-mesh/scripts/reset-input.cjs vision');
@@ -77,7 +89,7 @@ function resetInput(type) {
   const info = INPUT_TYPES[type];
   if (!info) {
     console.error(`ERROR: Unknown input type '${type}'`);
-    console.error('Valid types: vision, add, fix, all');
+    console.error('Valid types: vision, add, fix, change, project-setup, all');
     process.exit(1);
   }
 

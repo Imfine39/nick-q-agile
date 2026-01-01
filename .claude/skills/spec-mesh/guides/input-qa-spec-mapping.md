@@ -4,6 +4,20 @@
 
 ---
 
+## Scope
+
+This guide is the **authoritative reference** for the data flow from Input files through QA documents to Specs.
+
+**Related guides:**
+- `id-naming.md` - QA Question ID (Q-*) naming conventions
+- `judgment-criteria.md` - Judgment criteria for ambiguous expressions
+
+**Related workflows:**
+- `workflows/shared/_qa-generation.md` - QA document generation logic
+- `workflows/shared/_qa-analysis.md` - QA response analysis logic
+
+---
+
 ## 設計思想
 
 > **Core Insight:** ユーザーは「書くのが面倒」ではなく「知らないことがある」

@@ -94,12 +94,15 @@ Spec: {spec_path}
 ★ 承認後、GitHub Issue とブランチを作成します。
 ```
 
-### Step 3.5: Checkpoint 記録
+### Step 3.5: Checkpoint 記録（将来機能）
 
 **★ CHECKPOINT 承認後に実行 ★**
 
+> **Note:** このコマンドは将来機能として設計されており、現時点では未実装です。承認の記録は会話履歴で管理されます。
+
 ```bash
-node .claude/skills/spec-mesh/scripts/state.cjs branch --add-checkpoint spec_approval
+# [FUTURE] このコマンドは未実装
+# node .claude/skills/spec-mesh/scripts/state.cjs branch --add-checkpoint spec_approval
 ```
 
 ### Step 4: GitHub Issue 作成

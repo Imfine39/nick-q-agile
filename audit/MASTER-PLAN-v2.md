@@ -269,7 +269,7 @@ spec.md               # Spec 直接編集
 │       ├── _impact-guard.md        # Impact Guard / Quick 判定
 │       ├── _cascade-update.md      # 連鎖更新
 │       ├── _professional-proposals.md
-│       └── _deep-interview.md
+│       └── _wireframe-processing.md # ワイヤーフレーム処理（画像→構造化）
 │
 ├── templates/
 │   ├── inputs/
@@ -434,6 +434,11 @@ ls .specify/specs/features/*/spec.md
 - **操作フロー**:
 - **参考にしたいUI**:
 
+### ワイヤーフレーム添付（任意）
+| ファイル | 説明 | 対応画面 |
+|---------|------|---------|
+| `.specify/input/wireframes/xxx.png` | [説明] | [画面名] |
+
 ## 関連する既存機能
 - **依存する機能**:
 - **影響を受ける機能**:
@@ -525,6 +530,11 @@ ls .specify/specs/features/*/spec.md
 - **メイン画面の要素**:
 - **操作フロー**:
 
+#### ワイヤーフレーム（任意）
+| ファイル | 説明 |
+|---------|------|
+| | |
+
 #### 備考
 
 ---
@@ -556,10 +566,16 @@ project-setup.md
 Input 読み取り（project-setup-input.md）
     │
     ↓
+ワイヤーフレーム処理（_wireframe-processing.md）
+├── 画像/ファイルを読み取り
+├── AI が構造化（ASCII + Components table）
+└── Screen Spec 用データを準備
+    │
+    ↓
 QA 生成・回答（_qa-generation.md, _qa-analysis.md）
     │
     ↓
-Overview Specs 生成
+Overview Specs 生成（ワイヤーフレームを Screen Spec に統合）
 ├── Vision Spec（Status: Clarified）
 ├── Screen Spec（Status: Clarified）
 └── Domain Spec（Status: Clarified）

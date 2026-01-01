@@ -80,8 +80,8 @@ context:
 
 例:
 - P-SETUP-001: プロジェクト初期設定時の提案 #1
-- P-ADD-F001-003: Feature F-XXX-001 追加時の提案 #3
-- P-FIX-X001-001: Fix X-XXX-001 修正時の提案 #1
+- P-ADD-S001-003: Feature S-XXX-001 追加時の提案 #3
+- P-FIX-F001-001: Fix F-XXX-001 修正時の提案 #1
 ```
 
 ### 提案の追跡ログ

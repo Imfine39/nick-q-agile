@@ -39,13 +39,17 @@ SKILL.md を読み込んで指示に従ってください。
 ## Core Flow
 
 ```
-Entry (vision/add/fix/issue)
+Entry (vision/add/fix/change/issue/quick/setup)
     ↓
 入力検証（必須項目確認）
     ↓
-Spec 作成
+ワイヤーフレーム処理（画像/ファイルあれば）
     ↓
-深掘りインタビュー（必須）← AskUserQuestion で潜在課題を発掘
+QA ドキュメント生成（必須）
+    ↓
+QA 回答分析 + AskUserQuestion（残り不明点を対話解消）
+    ↓
+Spec 作成（QA 結果を反映）
     ↓
 Multi-Review（3観点並列） → AI修正
     ↓
@@ -77,9 +81,10 @@ Tasks → Implement → E2E → PR
 
 | ファイル | タイミング |
 |----------|-----------|
-| `.specify/input/vision-input.md` | vision ワークフロー |
-| `.specify/input/add-input.md` | add ワークフロー |
-| `.specify/input/fix-input.md` | fix ワークフロー |
+| `.specify/input/project-setup-input.md` | setup ワークフロー |
+| `.specify/input/add-input.md` | add ワークフロー (feature.md) |
+| `.specify/input/fix-input.md` | fix ワークフロー (fix.md) |
+| `.specify/input/change-input.md` | change ワークフロー (change.md) |
 
 **存在すれば読み込んで活用してください。**
 
@@ -119,9 +124,9 @@ tabs_context_mcp → tabs_create_mcp → navigate → find → form_input → co
 
 | タイミング | 確認内容 |
 |-----------|---------|
-| Vision Spec 作成後 | 目的・ゴールの妥当性 |
-| Design 完了後 | 画面・Domain 設計の妥当性 |
+| project-setup 完了後 | Overview Specs（Vision/Domain/Screen）の妥当性 |
 | Feature Spec 作成後 | 要件の妥当性、CLARIFY GATE |
+| Fix Spec 作成後 | 修正方針の妥当性、CLARIFY GATE |
 | Plan 作成後 | 実装計画の承認 |
 | E2E テスト後 | テスト結果の確認 |
 
