@@ -314,26 +314,6 @@ node .claude/skills/spec-mesh/scripts/spec-lint.cjs
 - [phase-c-report.md](./phase-c-report.md) - QA 方式検証
 - [phase-d-report.md](./phase-d-report.md) - 回帰テスト
 
-#### [STEP-7.2.1] Critical/Major 問題の修正 [DONE]
-
-**完了日:** 2026-01-01
-
-**Critical (3件) - 全て修正済み:**
-
-| ID | 問題 | 修正内容 |
-|----|------|---------|
-| B-01-001 | preserve-input.cjs project-setup未対応 | ✅ project-setup タイプ追加済み |
-| B-05-002 | change.md Cascade Update欠落 | ✅ Step 6.5 追加済み |
-| C-05-005 | 未回答→[NEEDS CLARIFICATION]未連携 | ✅ _qa-analysis.md に処理追加済み |
-
-**Major (14件) - 全て対応済み:**
-- B-04-001, B-05-003, B-07-003, B-08-004: ワークフロー修正済み
-- C-01-003, C-02-002, C-05-001, C-05-002, C-05-007, C-05-008: QA方式文書化済み
-- D-02-003: issue.md Quick routing 追加済み
-- A-08-004, C-04-003, C-05-004: 軽微・構造的問題として許容
-
-**結論:** 本番運用可能な品質レベルに到達
-
 #### [STEP-7.3] 調査結果のテスト化 [PENDING]
 
 - 調査で発見した問題を自動テストに変換
