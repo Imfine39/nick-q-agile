@@ -52,9 +52,9 @@ TodoWrite:
     - content: "Step 0.5: 空欄セクション特定・詳細 QA 生成"
       status: "pending"
       activeForm: "Generating detailed QA"
-    - content: "Step 3: QA 回答分析"
+    - content: "Step 3: QA フォローアップ"
       status: "pending"
-      activeForm: "Analyzing QA responses"
+      activeForm: "Following up on QA"
     - content: "Step 4: Feature Spec 更新（Draft → Clarified）"
       status: "pending"
       activeForm: "Updating Feature Spec"
@@ -74,9 +74,9 @@ TodoWrite:
     - content: "Step 2: QA ドキュメント生成"
       status: "pending"
       activeForm: "Generating QA document"
-    - content: "Step 3: QA 回答分析"
+    - content: "Step 3: QA フォローアップ"
       status: "pending"
-      activeForm: "Analyzing QA responses"
+      activeForm: "Following up on QA"
     - content: "Step 4: Feature Spec 作成"
       status: "pending"
       activeForm: "Creating Feature Spec"
@@ -198,8 +198,7 @@ Input にワイヤーフレームファイルが添付されている場合：
 1. Input の記入状況を分析
 2. 未記入・不明瞭な項目を特定
 3. AI の推測を生成
-4. 提案事項を生成（_professional-proposals.md 参照）
-5. QA ドキュメントを生成:
+4. QA ドキュメントを生成:
 
 ```
 Write tool: .specify/specs/features/{feature-id}/qa.md
@@ -207,17 +206,50 @@ Write tool: .specify/specs/features/{feature-id}/qa.md
   - Input から抽出した情報を埋め込み
 ```
 
-6. ユーザーに QA 回答を依頼
+5. ユーザーに QA 回答を依頼
 
-### Step 3: QA 回答分析
+### Step 3: QA フォローアップ
 
-> **参照:** [shared/_qa-analysis.md](shared/_qa-analysis.md)
+> **参照:** [shared/_qa-followup.md](shared/_qa-followup.md)
 
+QA 回答を分析し、追加質問・提案確認を行う統合ステップ。
+
+**3.1 回答分析:**
 1. QA ドキュメントの回答を読み込み
 2. 未回答項目をチェック
-3. 未回答の [必須] があれば AskUserQuestion で確認
-4. [確認] で「いいえ」の項目を修正
-5. [提案] の採否を記録（理由付き）
+3. 回答内容を構造化
+
+**3.2 追加質問（AskUserQuestion）:**
+1. 未回答の [必須] があれば確認
+2. 回答から派生する疑問点を確認
+3. 矛盾点・曖昧点の解消
+
+**3.3 提案確認（AskUserQuestion）:**
+> **参照:** [shared/_professional-proposals.md](shared/_professional-proposals.md) の観点・チェックリスト
+
+1. 10 観点から追加提案を生成
+2. 重要な提案は AskUserQuestion で確認
+3. 提案の採否を記録（理由付き）
+
+**出力:**
+```
+=== QA フォローアップ完了 ===
+
+【回答状況】
+- [必須]: 5/5 (100%)
+- [確認]: 4/4 (100%)
+- [選択]: 2/2 (100%)
+
+【追加質問】
+- 派生質問: 2 件 → 回答済み
+
+【提案の採否】
+| ID | 提案 | 採否 | 理由 |
+|----|------|------|------|
+| P-FEAT-001 | バリデーション強化 | 採用 | セキュリティ要件 |
+
+Spec 作成に進みます。
+```
 
 ### Step 4: Create/Update Feature Spec
 
@@ -400,7 +432,7 @@ node .claude/skills/nick-q/scripts/preserve-input.cjs add --feature {feature-dir
 - [ ] **モード判定を行ったか（Draft 詳細化 or 新規作成）**
 - [ ] ワイヤーフレームを処理したか（ある場合）
 - [ ] QA ドキュメントを生成したか
-- [ ] QA 回答を分析したか
+- [ ] QA フォローアップを実施したか（回答分析 + 追加質問 + 提案確認）
 - [ ] Screen Spec を先に更新したか（Spec-First）
 - [ ] M-*/API-* の Case 判定を行ったか
 - [ ] **Impact Analysis を実行したか（Case 2/3 の場合）**

@@ -142,7 +142,7 @@ Input 読み込み・検証（必須項目確認）
     ↓
 QA ドキュメント生成（必須）← _qa-generation.md
     ↓
-QA 回答分析 + AskUserQuestion（残り不明点を対話解消）← _qa-analysis.md
+QA フォローアップ（回答分析 + 追加質問 + 提案確認）← _qa-followup.md
     ↓
 Spec 作成（QA 結果を反映）
     ↓

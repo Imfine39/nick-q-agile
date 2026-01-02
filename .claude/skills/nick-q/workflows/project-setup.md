@@ -25,40 +25,37 @@ TodoWrite:
     - content: "Step 3: QA ドキュメント生成"
       status: "pending"
       activeForm: "Generating QA document"
-    - content: "Step 4: QA 回答分析"
+    - content: "Step 4: QA フォローアップ"
       status: "pending"
-      activeForm: "Analyzing QA responses"
-    - content: "Step 5: Q🐱 提案"
-      status: "pending"
-      activeForm: "Making Q🐱 proposals"
-    - content: "Step 6: Vision Spec 作成"
+      activeForm: "Following up on QA"
+    - content: "Step 5: Vision Spec 作成"
       status: "pending"
       activeForm: "Creating Vision Spec"
-    - content: "Step 7: Screen Spec 作成"
+    - content: "Step 6: Screen Spec 作成"
       status: "pending"
       activeForm: "Creating Screen Spec"
-    - content: "Step 8: Domain Spec 作成"
+    - content: "Step 7: Domain Spec 作成"
       status: "pending"
       activeForm: "Creating Domain Spec"
-    - content: "Step 9: Matrix 生成"
+    - content: "Step 8: Matrix 生成"
       status: "pending"
       activeForm: "Generating Matrix"
-    - content: "Step 10: Multi-Review"
+    - content: "Step 9: Multi-Review"
       status: "pending"
       activeForm: "Running Multi-Review"
-    - content: "Step 11: CLARIFY GATE"
+    - content: "Step 10: CLARIFY GATE"
       status: "pending"
       activeForm: "Checking CLARIFY GATE"
-    - content: "Step 12: [HUMAN_CHECKPOINT]"
+    - content: "Step 11: [HUMAN_CHECKPOINT]"
       status: "pending"
       activeForm: "Awaiting approval"
-    - content: "Step 13: Feature Drafts 生成"
+    - content: "Step 12: Feature Drafts 生成"
       status: "pending"
       activeForm: "Generating Feature Drafts"
-    - content: "Step 14: Feature Issues 作成"
+    - content: "Step 13: Feature Issues 作成"
       status: "pending"
       activeForm: "Creating Feature Issues"
-    - content: "Step 15: Input 保存"
+    - content: "Step 14: Input 保存"
       status: "pending"
       activeForm: "Preserving input"
 ```
@@ -106,7 +103,7 @@ Input または wireframes ディレクトリにワイヤーフレームファ�
 
 4. **Screen Spec への統合準備:**
    - WF-SCR-* 形式で構造化データを準備
-   - Step 7 で Screen Spec に統合
+   - Step 6 で Screen Spec に統合
 
 **Note:** ワイヤーフレームがない場合はスキップ。テキスト説明のみでも Screen Spec は作成可能。
 
@@ -117,8 +114,7 @@ Input または wireframes ディレクトリにワイヤーフレームファ�
 1. Input の記入状況を分析
 2. 未記入・不明瞭な項目を特定
 3. AI の推測を生成
-4. 提案事項を生成（_professional-proposals.md 参照）
-5. QA ドキュメントを生成:
+4. QA ドキュメントを生成:
 
 ```
 Write tool: .specify/specs/overview/qa.md
@@ -126,7 +122,7 @@ Write tool: .specify/specs/overview/qa.md
   - Input から抽出した情報を埋め込み
 ```
 
-6. ユーザーに QA 回答を依頼:
+5. ユーザーに QA 回答を依頼:
 
 ```
 === QA ドキュメントを生成しました ===
@@ -137,29 +133,51 @@ Write tool: .specify/specs/overview/qa.md
 完了したら「QA 回答完了」と伝えてください。
 ```
 
-### Step 4: QA 回答分析
+### Step 4: QA フォローアップ
 
-> **参照:** [shared/_qa-analysis.md](shared/_qa-analysis.md)
+> **参照:** [shared/_qa-followup.md](shared/_qa-followup.md)
 
+QA 回答を分析し、追加質問・提案確認を行う統合ステップ。
+
+**4.1 回答分析:**
 1. QA ドキュメントの回答を読み込み
 2. 未回答項目をチェック
-3. 未回答の [必須] があれば AskUserQuestion で確認
-4. [確認] で「いいえ」の項目を修正
-5. [提案] の採否を記録
+3. 回答内容を構造化
 
-### Step 5: Q🐱 提案
+**4.2 追加質問（AskUserQuestion）:**
+1. 未回答の [必須] があれば確認
+2. 回答から派生する疑問点を確認
+3. 矛盾点・曖昧点の解消
 
-> **参照:** [shared/_professional-proposals.md](shared/_professional-proposals.md)
+**4.3 提案確認（AskUserQuestion）:**
+> **参照:** [shared/_professional-proposals.md](shared/_professional-proposals.md) の観点・チェックリスト
 
-QA 回答を踏まえた追加提案：
-- 機能の過不足
-- セキュリティ考慮
-- UX 改善
-- スケーラビリティ
+1. 10 観点から追加提案を生成
+2. 重要な提案は AskUserQuestion で確認
+3. 提案の採否を記録（理由付き）
 
-重要な提案は AskUserQuestion で確認。
+**出力:**
+```
+=== QA フォローアップ完了 ===
 
-### Step 6: Vision Spec 作成
+【回答状況】
+- [必須]: 5/5 (100%)
+- [確認]: 4/4 (100%)
+- [選択]: 2/2 (100%)
+
+【追加質問】
+- 派生質問: 2 件 → 回答済み
+
+【提案の採否】
+| ID | 提案 | 採否 | 理由 |
+|----|------|------|------|
+| P-SETUP-001 | 検索機能追加 | 採用 | MVP に必要 |
+| P-SETUP-002 | 権限管理 | 採用 | セキュリティ要件 |
+
+Spec 作成に進みます。
+```
+
+### Step 5: Vision Spec 作成
 
 ```bash
 node .claude/skills/nick-q/scripts/scaffold-spec.cjs --kind vision --id vision --title "{プロジェクト名}"
@@ -174,7 +192,7 @@ QA 回答を元に各セクションを記入：
 | 3. Feature Hints | QA Q2.1-Q2.2 + 採用された提案 |
 | 4. Non-functional Requirements | QA Section 5 |
 
-### Step 7: Screen Spec 作成
+### Step 6: Screen Spec 作成
 
 ```bash
 node .claude/skills/nick-q/scripts/scaffold-spec.cjs --kind screen --id screen --title "Screen Spec"
@@ -217,7 +235,7 @@ QA Q3.1-Q3.2 を元に画面を定義：
 
 > **参照:** [templates/screen-spec.md](../templates/screen-spec.md) の Wireframe セクション
 
-### Step 8: Domain Spec 作成
+### Step 7: Domain Spec 作成
 
 ```bash
 node .claude/skills/nick-q/scripts/scaffold-spec.cjs --kind domain --id domain --title "Domain Spec"
@@ -235,7 +253,7 @@ QA Q4.1-Q4.2 を元にエンティティを定義：
 | id | string | Yes | 主キー |
 ```
 
-### Step 9: Cross-Reference Matrix 生成
+### Step 8: Cross-Reference Matrix 生成
 
 ```bash
 node .claude/skills/nick-q/scripts/generate-matrix-view.cjs
@@ -246,7 +264,7 @@ Matrix を検証：
 node .claude/skills/nick-q/scripts/matrix-ops.cjs validate
 ```
 
-### Step 10: Multi-Review
+### Step 9: Multi-Review
 
 > **参照:** [review.md](review.md)
 
@@ -257,7 +275,7 @@ node .claude/skills/nick-q/scripts/matrix-ops.cjs validate
 
 AI 修正可能な問題を修正。
 
-### Step 11: CLARIFY GATE
+### Step 10: CLARIFY GATE
 
 > **参照:** [shared/_clarify-gate.md](shared/_clarify-gate.md)
 
@@ -270,10 +288,10 @@ Grep tool:
 
 | 結果 | 判定 | アクション |
 |------|------|----------|
-| > 0 | BLOCKED | clarify ワークフロー → Step 10 へ戻る |
-| = 0 | PASSED | Step 12 へ |
+| > 0 | BLOCKED | clarify ワークフロー → Step 9 へ戻る |
+| = 0 | PASSED | Step 11 へ |
 
-### Step 12: [HUMAN_CHECKPOINT]
+### Step 11: [HUMAN_CHECKPOINT]
 
 ```
 === Project Setup 完了 ===
@@ -294,7 +312,7 @@ Grep tool:
 承認後、Feature Drafts と Issues を作成します。
 ```
 
-### Step 13: Feature Drafts 生成
+### Step 12: Feature Drafts 生成
 
 Vision Spec Section 3 (Feature Hints) から各機能の Draft Spec を生成。
 
@@ -302,13 +320,13 @@ Vision Spec Section 3 (Feature Hints) から各機能の Draft Spec を生成。
 
 | セクション | 状態 | 説明 |
 |-----------|------|------|
-| 基本情報 | ✅ 記入済み | 概要、目的、アクター |
-| Domain 参照 | ✅ 記入済み | M-*, API-* への参照（Domain Spec から抽出） |
-| Screen 参照 | ✅ 記入済み | SCR-* への参照（Screen Spec から抽出） |
-| ユースケース詳細 | ⬜ 空欄 | issue タイプで詳細化 |
-| 機能要件詳細 | ⬜ 空欄 | issue タイプで詳細化 |
-| エラーハンドリング | ⬜ 空欄 | issue タイプで詳細化 |
-| 非機能要件 | ⬜ 空欄 | issue タイプで詳細化 |
+| 基本情報 | 記入済み | 概要、目的、アクター |
+| Domain 参照 | 記入済み | M-*, API-* への参照（Domain Spec から抽出） |
+| Screen 参照 | 記入済み | SCR-* への参照（Screen Spec から抽出） |
+| ユースケース詳細 | 空欄 | issue タイプで詳細化 |
+| 機能要件詳細 | 空欄 | issue タイプで詳細化 |
+| エラーハンドリング | 空欄 | issue タイプで詳細化 |
+| 非機能要件 | 空欄 | issue タイプで詳細化 |
 
 **生成処理:**
 
@@ -346,7 +364,7 @@ Draft 生成後、以下の情報を Input と Overview Specs から補完：
 <!-- issue ワークフローで記入 -->
 ```
 
-### Step 14: Feature Issues 作成
+### Step 13: Feature Issues 作成
 
 Vision Spec Section 3 (Feature Hints) から GitHub Issues を作成。
 **重要:** Issue body に Draft Spec のパスを記載する。
@@ -387,7 +405,7 @@ EOF
 「Issue #N を実装して」と依頼してください。
 ```
 
-### Step 15: Input 保存
+### Step 14: Input 保存
 
 ```bash
 node .claude/skills/nick-q/scripts/preserve-input.cjs project-setup
@@ -404,8 +422,7 @@ node .claude/skills/nick-q/scripts/preserve-input.cjs project-setup
 - [ ] Input ファイルを読み込んだか
 - [ ] ワイヤーフレームを処理したか（ある場合）
 - [ ] QA ドキュメントを生成したか
-- [ ] QA 回答を分析したか
-- [ ] Q🐱 提案を行ったか
+- [ ] QA フォローアップを実施したか（回答分析 + 追加質問 + 提案確認）
 - [ ] Vision Spec を作成したか
 - [ ] Screen Spec を作成したか
 - [ ] Domain Spec を作成したか

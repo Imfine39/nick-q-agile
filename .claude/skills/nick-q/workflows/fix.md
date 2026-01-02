@@ -33,34 +33,31 @@ TodoWrite:
     - content: "Step 1: 入力収集"
       status: "pending"
       activeForm: "Collecting input"
-    - content: "Step 2: QA ドキュメント生成"
+    - content: "Step 2: 不明点確認"
       status: "pending"
-      activeForm: "Generating QA document"
-    - content: "Step 3: QA 回答分析"
-      status: "pending"
-      activeForm: "Analyzing QA responses"
-    - content: "Step 4: 原因調査"
+      activeForm: "Clarifying details"
+    - content: "Step 3: 原因調査"
       status: "pending"
       activeForm: "Investigating root cause"
-    - content: "Step 5: Fix Spec 作成"
+    - content: "Step 4: Fix Spec 作成"
       status: "pending"
       activeForm: "Creating Fix Spec"
-    - content: "Step 6: Multi-Review 実行"
+    - content: "Step 5: Multi-Review 実行"
       status: "pending"
       activeForm: "Executing Multi-Review"
-    - content: "Step 7: CLARIFY GATE チェック"
+    - content: "Step 6: CLARIFY GATE チェック"
       status: "pending"
       activeForm: "Checking CLARIFY GATE"
-    - content: "Step 8: Lint 実行"
+    - content: "Step 7: Lint 実行"
       status: "pending"
       activeForm: "Running Lint"
-    - content: "Step 9: サマリー・[HUMAN_CHECKPOINT]"
+    - content: "Step 8: サマリー・[HUMAN_CHECKPOINT]"
       status: "pending"
       activeForm: "Presenting summary"
-    - content: "Step 10: GitHub Issue & ブランチ作成"
+    - content: "Step 9: GitHub Issue & ブランチ作成"
       status: "pending"
       activeForm: "Creating Issue and branch"
-    - content: "Step 11: 入力保存"
+    - content: "Step 10: 入力保存"
       status: "pending"
       activeForm: "Preserving input"
 ```
@@ -89,34 +86,66 @@ TodoWrite:
    | 影響範囲 | Fix Spec Section 2 |
    | 緊急度 | Issue label |
 
-### Step 2: QA ドキュメント生成
+### Step 2: 不明点確認（簡易 AskUserQuestion）
 
-> **参照:** [shared/_qa-generation.md](shared/_qa-generation.md)
+> **Note:** fix ワークフローは QA ドキュメントを使用せず、必要な情報を直接 AskUserQuestion で確認します。
 
-1. Input の記入状況を分析
-2. 未記入・不明瞭な項目を特定
-3. AI の推測を生成
-4. QA ドキュメントを生成:
+**確認項目チェックリスト:**
+
+| 項目 | 必須 | 確認方法 |
+|------|------|---------|
+| 問題の症状 | 必須 | Input から抽出、不明なら質問 |
+| 再現手順 | 必須 | Input から抽出、不明なら質問 |
+| 期待動作 | 必須 | Input から抽出、不明なら質問 |
+| 発生頻度 | 推奨 | 常に・たまに・特定条件 |
+| 緊急度 | 推奨 | 本番障害・業務支障・軽微 |
+
+**不明点がある場合のみ AskUserQuestion:**
 
 ```
-Write tool: .specify/specs/fixes/{fix-id}/qa.md
-  - 質問バンクから動的に生成（_qa-generation.md 参照）
-  - Input から抽出した情報を埋め込み
+AskUserQuestion:
+  questions:
+    - question: "このバグはどのくらいの頻度で発生しますか？"
+      header: "発生頻度"
+      options:
+        - label: "常に発生（100%）"
+          description: "毎回必ず再現する"
+        - label: "高頻度（50%以上）"
+          description: "かなりの確率で発生"
+        - label: "低頻度（50%未満）"
+          description: "たまに発生"
+        - label: "特定条件でのみ"
+          description: "特定の操作・データで発生"
+      multiSelect: false
+    - question: "このバグの緊急度を教えてください"
+      header: "緊急度"
+      options:
+        - label: "緊急（本番障害）"
+          description: "今すぐ対応が必要"
+        - label: "高（業務に支障）"
+          description: "早急に対応が必要"
+        - label: "中（回避策あり）"
+          description: "ワークアラウンドで対応可能"
+        - label: "低（軽微）"
+          description: "余裕があるときに対応"
+      multiSelect: false
 ```
 
-5. ユーザーに QA 回答を依頼
+**出力:**
+```
+=== 不明点確認完了 ===
 
-### Step 3: QA 回答分析
+【収集した情報】
+- 症状: {抽出した症状}
+- 再現手順: {抽出した手順}
+- 期待動作: {抽出した期待動作}
+- 発生頻度: {確認した頻度}
+- 緊急度: {確認した緊急度}
 
-> **参照:** [shared/_qa-analysis.md](shared/_qa-analysis.md)
+原因調査に進みます。
+```
 
-1. QA ドキュメントの回答を読み込み
-2. 未回答項目をチェック
-3. 未回答の [必須] があれば AskUserQuestion で確認
-4. [確認] で「いいえ」の項目を修正
-5. [提案] の採否を記録（理由付き）
-
-### Step 4: Investigate Root Cause
+### Step 3: Investigate Root Cause
 
 Use codebase exploration to:
 - Identify affected files
@@ -126,7 +155,7 @@ Use codebase exploration to:
 
 Document findings in Fix Spec.
 
-### Step 5: Create Fix Spec
+### Step 4: Create Fix Spec
 
 1. **Run scaffold:**
    ```bash
@@ -142,7 +171,7 @@ Document findings in Fix Spec.
 3. **Check Screen impact** (if UI affected):
    - Add to Screen Modification Log with status `Planned`
 
-### Step 6: Multi-Review (3観点並列レビュー)
+### Step 5: Multi-Review (3観点並列レビュー)
 
 Fix Spec の品質を担保するため Multi-Review を実行：
 
@@ -157,11 +186,11 @@ Fix Spec の品質を担保するため Multi-Review を実行：
    - AI 修正可能な問題を修正
 
 3. **Handle results:**
-   - すべてパス → Step 7 へ
-   - 曖昧点あり → Step 7 でブロック
+   - すべてパス → Step 6 へ
+   - 曖昧点あり → Step 6 でブロック
    - Critical 未解決 → 問題をリストし対応を促す
 
-### Step 7: CLARIFY GATE チェック（必須）
+### Step 6: CLARIFY GATE チェック（必須）
 
 **★ このステップはスキップ禁止 ★**
 
@@ -191,18 +220,18 @@ if clarify_count > 0:
     → clarify 完了後、Multi-Review からやり直し
 
 else:
-    → Step 8 (Lint) へ進む
+    → Step 7 (Lint) へ進む
 ```
 
 **重要:** clarify_count > 0 の場合、実装への遷移は禁止。
 
-### Step 8: Run Lint
+### Step 7: Run Lint
 
 ```bash
 node .claude/skills/nick-q/scripts/spec-lint.cjs
 ```
 
-### Step 9: Summary & [HUMAN_CHECKPOINT]
+### Step 8: Summary & [HUMAN_CHECKPOINT]
 
 1. **Display Summary:**
    ```
@@ -235,7 +264,7 @@ node .claude/skills/nick-q/scripts/spec-lint.cjs
    承認後、GitHub Issue とブランチを作成します。
    ```
 
-### Step 10: Create GitHub Issue & Branch
+### Step 9: Create GitHub Issue & Branch
 
 **[HUMAN_CHECKPOINT] 承認後に実行:**
 
@@ -259,7 +288,7 @@ node .claude/skills/nick-q/scripts/spec-lint.cjs
    次のステップ: Severity に応じて plan または implement へ進んでください。
    ```
 
-### Step 11: Preserve Input
+### Step 10: Preserve Input
 
 If input file was used:
 ```bash
@@ -353,8 +382,7 @@ Root Cause: {概要}
 
 - [ ] **TodoWrite で全ステップを登録したか**
 - [ ] Read tool で入力ファイルを読み込んだか（--quick 以外）
-- [ ] QA ドキュメントを生成したか
-- [ ] QA 回答を分析したか
+- [ ] 不明点を AskUserQuestion で確認したか
 - [ ] 原因調査を実施したか
 - [ ] Fix Spec に Root Cause を記載したか
 - [ ] **Impact Analysis を実行したか（Screen 変更時）** → [shared/impact-analysis.md](shared/impact-analysis.md)

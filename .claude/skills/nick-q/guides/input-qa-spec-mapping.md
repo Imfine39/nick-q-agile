@@ -14,7 +14,7 @@ This guide is the **authoritative reference** for the data flow from Input files
 
 **Related workflows:**
 - `workflows/shared/_qa-generation.md` - QA document generation logic
-- `workflows/shared/_qa-analysis.md` - QA response analysis logic
+- `workflows/shared/_qa-followup.md` - QA follow-up (response analysis + proposals)
 
 ---
 
@@ -69,30 +69,28 @@ Spec（完成した仕様）
 
 ## 2. fix タイプ
 
-### Input → QA マッピング
+> **Note:** fix ワークフローは QA ドキュメントを使用せず、簡易 AskUserQuestion で直接確認します。
 
-| Input セクション | QA 質問 ID | QA カテゴリ | 条件 |
-|-----------------|-----------|------------|------|
-| バグの概要.何が起きているか | FIX-Q01 | [必須] | 未記入時 |
-| バグの概要.期待する動作 | FIX-Q20 | [必須] | 未記入時 |
-| 再現手順 | FIX-Q10 | [確認] | 常に確認 |
-| 発生環境 | - | - | Spec に直接反映 |
-| 影響範囲.影響を受ける機能 | FIX-Q03 | [確認] | 常に |
-| 影響範囲.緊急度 | FIX-Q40 | [選択] | 常に |
-| 関連情報.エラーメッセージ | - | - | Spec に直接反映 |
-| 原因の推測 | FIX-Q30 | [確認] | AI が推測可能な場合 |
+### Input → Spec マッピング（直接）
 
-### QA → Spec マッピング
+| Input セクション | Fix Spec セクション | Notes |
+|-----------------|---------------------|-------|
+| バグの概要.何が起きているか | 1.1 What is happening | 現象記述 |
+| バグの概要.期待する動作 | 1.2 Expected behavior | あるべき姿 |
+| 再現手順 | 1.3 Steps to reproduce | 番号付きステップ |
+| 発生環境 | 1.4 Environment | 環境情報 |
+| 影響範囲.影響を受ける機能 | 2. Impact Analysis | SCR/M/API への影響 |
+| 影響範囲.緊急度 | 1.5 Severity | Critical/High/Medium/Low |
+| 関連情報.エラーメッセージ | 1.6 Error Details | エラー詳細 |
+| 原因の推測 | 3. Investigation | Root Cause 候補 |
 
-| QA セクション | Fix Spec セクション | Notes |
-|--------------|---------------------|-------|
-| 問題の症状（FIX-Q01, Q02） | 1.1 What is happening | 現象記述 |
-| 期待動作（FIX-Q20, Q21） | 1.2 Expected behavior | あるべき姿 |
-| 再現手順（FIX-Q10） | 1.3 Steps to reproduce | 番号付きステップ |
-| 影響範囲（FIX-Q03） | 2. Impact Analysis | SCR/M/API への影響 |
-| 原因推測（FIX-Q30, Q31） | 3. Investigation | Root Cause 候補 |
-| 緊急度（FIX-Q40） | 1.5 Severity | Critical/High/Medium/Low |
-| 修正アプローチ（FIX-Q41） | 4. Fix Strategy | 修正方針 |
+### 簡易 AskUserQuestion で確認する項目
+
+| 項目 | 条件 | 質問例 |
+|------|------|--------|
+| 発生頻度 | 常に | 「常に発生？高頻度？低頻度？」 |
+| 緊急度 | Input で未記入時 | 「緊急（本番障害）？高？中？低？」 |
+| 再現手順 | Input で不明瞭時 | 「再現手順を確認」 |
 
 ---
 
@@ -198,5 +196,5 @@ Spec（完成した仕様）
 | `templates/inputs/change-input.md` | Change Input テンプレート |
 | `templates/inputs/project-setup-input.md` | Project Setup Input テンプレート |
 | `workflows/shared/_qa-generation.md` | QA ドキュメント生成ロジック |
-| `workflows/shared/_qa-analysis.md` | QA 回答分析ロジック |
+| `workflows/shared/_qa-followup.md` | QA フォローアップ（回答分析 + 提案確認） |
 | `workflows/shared/_clarify-gate.md` | CLARIFY GATE 運用手順 |

@@ -62,7 +62,7 @@ Spec 作成完了
 
 **★ 必須ステップ ★**
 
-> **コンポーネント参照:** [_qa-analysis.md](_qa-analysis.md)
+> **コンポーネント参照:** [_qa-followup.md](_qa-followup.md)
 
 ```markdown
 QA ドキュメントの回答状況を確認:

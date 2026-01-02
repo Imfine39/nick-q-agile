@@ -70,7 +70,7 @@ Spec-Mesh ワークフローの全体像と遷移図。
 |---------------|------|-----------|
 | _quality-flow.md | QA分析 → Multi-Review → Lint → CLARIFY GATE | project-setup, feature, fix |
 | _qa-generation.md | QA 動的生成 | feature, fix, project-setup |
-| _qa-analysis.md | QA 回答分析 | feature, fix |
+| _qa-followup.md | QA フォローアップ（回答分析 + 提案確認） | project-setup, feature |
 | _clarify-gate.md | 曖昧点チェック＆ゲートキーピング | 全 Spec 作成ワークフロー |
 | _cascade-update.md | Spec 間の連鎖更新 | feature, fix, change |
 | _finalize.md | HUMAN_CHECKPOINT 実装 | 全ワークフロー |
