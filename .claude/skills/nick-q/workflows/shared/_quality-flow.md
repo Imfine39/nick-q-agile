@@ -1,4 +1,4 @@
-# Quality Flow（品質フロー）共通コンポーネント
+# 😼 Quality Flow（品質フロー）共通コンポーネント
 
 > **概念定義:** [quality-gates.md](../../constitution/quality-gates.md) 参照
 > - Multi-Review 3観点: [#multi-review](../../constitution/quality-gates.md#multi-review)

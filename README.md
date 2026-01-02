@@ -6,70 +6,60 @@
 
 ---
 
-## N – Norm
-- 開発における規範・ルール・守るべき前提を定義する  
+### N – Norm
+- 開発における規範・ルール・守るべき前提を定義する
 - 仕様駆動 / GitHub 駆動 / 明確な役割分離を基盤とする
-
-## I – Integrated
-- 仕様・実装・テスト・運用を分断しない  
+### I – Integrated
+- 仕様・実装・テスト・運用を分断しない
 - すべてを一つの連続した流れとして統合する
-
-## C – Contract
-- 仕様を「約束（Contract）」として扱う  
+### C – Contract
+- 仕様を「約束（Contract）」として扱う
 - 人間・AI・コードが共有する共通言語とする
-
-## K – Kernel
-- 絶対に壊してはいけない中核  
+### K – Kernel
+- 絶対に壊してはいけない中核
 - 仕様憲法・開発ルール・構造原則を厳守する
-
-## Q
-
-**Q** は、NICK-Q の動作原理と構造を表す多重概念です。
-
-### Q – Question
-- 人間の未整理なアイデアを起点とする  
-- AI が問い（QA）を投げ、仕様を段階的に具体化・確定していく
-
-### Q – Quality
-- 仕様の曖昧さ・矛盾・抜け漏れを構造で排除する  
-- 開発品質を継続的に担保する
-
-### Q – Quadrant
-- 各要素を点ではなく **マトリックス構造** として管理する  
-  - 機能 / API / Master / 権限 / 状態  
-- 一部の変更が全体の整合性を壊さない構造を作る
-
-### Q – Queue
-- すべての作業は管理されたキューとして流れる  
-- input→Question→spec→plan→task→implement→test の一方向フローを前提とする
-
-### Q – Quontier
-- NICK-Q の起点となる文脈  
-- NICK-Q があれば、未知の道への挑戦も怖くない
+### Q - **Q** は、NICK-Q の動作原理と構造を表す多重概念です。
+- Question
+  - 人間の未整理なアイデアを起点とする
+  - AI が問い（QA）を投げ、仕様を段階的に具体化・確定していく
+- Quality
+  - 仕様の曖昧さ・矛盾・抜け漏れを構造で排除する
+  - 開発品質を継続的に担保する
+-  Quadrant
+    - 各要素を点ではなく **マトリックス構造** として管理する
+    - 一部の変更が全体の整合性を壊さない構造を作る
+- Queue
+  - すべての作業は管理されたキューとして流れる
+  - input→Question→spec→plan→task→implement→test の一方向フローを前提とする
+- Quontier
+  - NICK-Q の起点となる文脈
+  - NICK-Q があれば、未知の道への挑戦も怖くない
 
 ---
 
 ## Overview
 
-SSD-MESH は、Claude Code のスキルとして動作する開発フレームワークです。
+NICK-Q は、Claude Code のスキルとして動作する Spec-Driven Development (SSD) フレームワークです。
 人間が自然言語で依頼し、Claude が適切なワークフローを実行します。
 
 ```
 人間: 「新しいプロジェクトを始めたい」
   ↓
-Claude: vision ワークフローを実行
+Claude: project-setup ワークフローを実行
   ↓
-Vision Spec 生成 → Design → 実装
+Vision Spec → Domain/Screen Spec → 実装
 ```
 
 ---
 
 ## Features
 
-- **4層 Spec 構造** - Vision → Screen/Domain → Feature の階層的な仕様管理
-- **21 ワークフロー** - 一貫した開発フロー
-- **Multi-Review** - 3観点並列レビューによる品質担保
-- **Clarify ループ** - 曖昧さを排除する対話的な仕様策定
+- **3 層 Spec 構造** - Overview（Vision/Domain/Screen）→ Feature Spec → Test Scenario
+- **20+ ワークフロー** - 一貫した開発フロー
+- **Hybrid Discovery Model** - Pre-Input + QA + AskUserQuestion による要件発見
+- **Multi-Review** - 3 観点並列レビュー（構造/内容/完全性）
+- **CLARIFY GATE** - 曖昧点が残った状態での実装を禁止
+- **Impact Guard** - スコープ判定による適切なルーティング
 - **状態管理** - プロジェクトとブランチの状態追跡
 
 ---
@@ -107,8 +97,7 @@ Claude Code に自然言語で依頼するだけです：
 
 | やりたいこと | Claude への依頼例 |
 |-------------|------------------|
-| 新規プロジェクト開始 | 「新しいプロジェクトを始めたい」「Vision を作成して」 |
-| 画面・ドメイン設計 | 「Design を作成して」「画面設計をして」 |
+| 新規プロジェクト開始 | 「新しいプロジェクトを始めたい」|
 | 機能追加 | 「〇〇機能を追加したい」 |
 | バグ修正 | 「このバグを修正して」 |
 | 実装計画 | 「実装計画を作成して」 |
@@ -122,8 +111,8 @@ Claude Code に自然言語で依頼するだけです：
 # テンプレートを作業用ディレクトリにコピー
 node .claude/skills/nick-q/scripts/reset-input.cjs vision
 
-# .specify/input/vision-input.md を編集
-# その後 Claude に「Vision を作成して」と依頼
+# .specify/input/project-setup-input.md を編集
+# その後 Claude に「プロジェクトを始めたい」と依頼
 ```
 
 ---
@@ -131,37 +120,76 @@ node .claude/skills/nick-q/scripts/reset-input.cjs vision
 ## Spec Structure
 
 ```
-Vision Spec          プロジェクトの目的・ユーザージャーニー
-    ↓
-Screen Spec ←→ Domain Spec    画面設計 ↔ データ・API・ルール
-    ↓
-Feature Spec         個別機能の詳細仕様
-    ↓
-Test Scenario Spec   テストケース定義
+┌─────────────────────────────────────────┐
+│     Overview Specs (WHAT)               │
+├─────────────────────────────────────────┤
+│ S-VISION-001  │ Project vision, goals   │
+│ S-DOMAIN-001  │ Masters, APIs, Rules    │
+│ S-SCREEN-001  │ Screen definitions      │
+└─────────────────────────────────────────┘
+        ↓ Referenced by
+┌─────────────────────────────────────────┐
+│    Feature Specs (HOW)                  │
+├─────────────────────────────────────────┤
+│ S-{AREA}-{NNN}  │ Feature requirements  │
+│ F-{AREA}-{NNN}  │ Bug fix specs         │
+└─────────────────────────────────────────┘
+        ↓
+┌─────────────────────────────────────────┐
+│    Test Scenario Specs                  │
+├─────────────────────────────────────────┤
+│ TS-{AREA}-{NNN} │ Test cases            │
+└─────────────────────────────────────────┘
 ```
 
 ---
 
-## Development Flow
+## Cat Status Legend 🐱
+
+| 絵文字 | 状態 | 意味 |
+|--------|------|------|
+| 🐱 | QA | 質問中・情報収集中 |
+| 😼 | Review | 厳しくチェック中 |
+| 🙀 | GATE/曖昧 | 関門・要確認 |
+| 😿 | DEFERRED | 後回し（リスクあり） |
+| 😸 | PASSED | 成功・通過 |
+| 😻 | CHECKPOINT | 人間の愛が必要 |
+| 🐈 | Implement | 忙しく実装中 |
+| 😽 | PR | レビューお願い |
+| 😾 | BLOCKED | 通過できない |
+
+---
+
+## Core Flow
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│ 1. Entry Point (vision/add/fix/issue)                       │
-│    ↓                                                        │
-│ 2. 入力検証 → 不足があれば追加入力を要求                    │
-│    ↓                                                        │
-│ 3. Spec 作成                                                │
-│    ↓                                                        │
-│ 4. Multi-Review (3観点並列) → AI修正可能な問題を自動修正   │
-│    ↓                                                        │
-│ 5. Lint 実行                                                │
-│    ↓                                                        │
-│ 6. [HUMAN_CHECKPOINT] ← Spec 内容を人間が確認               │
-│    ↓                                                        │
-│    [NEEDS CLARIFICATION] あり?                              │
-│    ├─ YES → Clarify → Step 4 へ戻る                        │
-│    └─ NO → Plan → Tasks → Implement → PR                   │
-└─────────────────────────────────────────────────────────────┘
+Entry (add/fix/change/issue/quick/setup)
+    ↓
+入力検証（必須項目確認）
+    ↓
+ワイヤーフレーム処理（画像/ファイルあれば）
+    ↓
+🐱 QA ドキュメント生成（必須）
+    ↓
+🐱 QA 回答分析 + AskUserQuestion（残り不明点を対話解消）
+    ↓
+Spec 作成（QA 結果を反映）
+    ↓
+😼 Multi-Review（3観点並列） → AI修正
+    ↓
+Lint
+    ↓
+🙀 [NEEDS CLARIFICATION] あり? → YES: Clarify → Multi-Review へ戻る
+    ↓ NO
+🙀 ★ CLARIFY GATE ★
+    │
+    ├─ 😿 [DEFERRED] = 0 → 😸 PASSED → 😻 [HUMAN_CHECKPOINT]
+    │
+    └─ 😿 [DEFERRED] ≥ 1 → 😼 PASSED_WITH_DEFERRED → 😻 [HUMAN_CHECKPOINT]（リスク確認）
+    ↓
+Plan → 😻 [HUMAN_CHECKPOINT]
+    ↓
+🐈 Tasks → Implement → E2E → 😽 PR
 ```
 
 ---
@@ -171,7 +199,7 @@ Test Scenario Spec   テストケース定義
 ### 新規プロジェクト
 
 ```
-Vision 作成 → Design（Screen + Domain）→ Foundation Issue → 実装
+project-setup → Vision Spec → Domain/Screen Spec → Foundation Issue → 実装
 ```
 
 ### 機能追加
@@ -183,7 +211,7 @@ Vision 作成 → Design（Screen + Domain）→ Foundation Issue → 実装
 ### バグ修正
 
 ```
-「このバグを修正」→ Fix Spec → Implement → PR
+「このバグを修正」→ [Impact Guard] → Fix Spec or 直接実装 → PR
 ```
 
 ---
@@ -194,13 +222,23 @@ Vision 作成 → Design（Screen + Domain）→ Foundation Issue → 実装
 .claude/
 ├── skills/
 │   └── nick-q/
-│       ├── SKILL.md              # スキル定義（Claude が読む）
-│       ├── constitution/         # Engineering Constitution（最上位ルール）
+│       ├── SKILL.md              # スキル定義・エントリーポイント
+│       ├── constitution/         # Engineering Constitution
 │       │   ├── core.md           # コアルール
-│       │   └── quality-gates.md  # 品質ゲート定義
-│       ├── workflows/            # 各ワークフロー定義
+│       │   ├── quality-gates.md  # 品質ゲート定義
+│       │   ├── spec-creation.md  # Spec 作成プロセス
+│       │   ├── git-workflow.md   # Git ルール
+│       │   └── terminology.md    # 用語定義
+│       ├── workflows/            # ワークフロー定義
+│       │   ├── feature.md        # 機能追加
+│       │   ├── fix.md            # バグ修正
+│       │   ├── project-setup.md  # プロジェクト初期化
+│       │   ├── plan.md           # 実装計画
+│       │   ├── implement.md      # 実装
+│       │   └── shared/           # 共通コンポーネント
 │       ├── templates/            # Spec テンプレート
-│       │   └── inputs/           # Quick Input テンプレート
+│       │   ├── inputs/           # Quick Input テンプレート
+│       │   └── qa/               # QA テンプレート
 │       ├── guides/               # ガイドドキュメント
 │       └── scripts/              # Node.js ユーティリティ
 ├── agents/                       # Agent 定義
@@ -225,16 +263,14 @@ Claude が内部で使用するワークフロー一覧です。
 
 | Workflow | Description |
 |----------|-------------|
-| vision | Vision Spec 作成（プロジェクトの目的・ジャーニー） |
-| design | Screen + Domain + Matrix 同時作成 |
+| project-setup | Vision + Domain + Screen Spec 作成 |
 
 ### 開発エントリーポイント
 
 | Workflow | Description |
 |----------|-------------|
-| add | 新機能追加（Issue → Spec → 開発） |
-| fix | バグ修正（調査 → Fix Spec → 修正） |
-| issue | 既存 Issue から開発開始 |
+| feature | 新機能追加（Feature Spec 作成） |
+| fix | バグ修正（Fix Spec 作成） |
 | change | Spec 変更（Vision/Domain/Screen） |
 
 ### 開発フロー
@@ -264,21 +300,15 @@ Claude が内部で使用するワークフロー一覧です。
 | test-scenario | Test Scenario Spec 作成 |
 | e2e | E2E テスト実行（Chrome 拡張連携） |
 
-### その他
-
-| Workflow | Description |
-|----------|-------------|
-| featureproposal | AI による Feature 提案 |
-| spec | Spec 直接操作（上級者向け） |
-
 ---
 
 ## Core Principles
 
 1. **Spec-First** - すべての変更は仕様から始まる
-2. **Multi-Review 必須** - Spec 作成後は必ず3観点レビュー
-3. **HUMAN_CHECKPOINT** - 重要な判断は人間が確認
-4. **推測禁止** - 不明点は Clarify で解消
+2. **Multi-Review 必須** - Spec 作成後は必ず 3 観点レビュー
+3. **CLARIFY GATE** - 曖昧点がある状態で実装に進むことは禁止
+4. **HUMAN_CHECKPOINT** - 重要な判断は人間が確認
+5. **推測禁止** - 不明点は Clarify で解消
 
 詳細は [Engineering Constitution](.claude/skills/nick-q/constitution/core.md) を参照。
 
@@ -348,24 +378,13 @@ node .claude/skills/nick-q/scripts/update.cjs
 | `CLAUDE.md` | Project-Specific セクション |
 | プロジェクト独自のスキル/Agent | `.claude/skills/` 内の他フォルダ |
 
-### CLAUDE.md のセクション構造
-
-```markdown
-<!-- SSD-MESH-TEMPLATE-START -->
-... テンプレート内容（自動更新）...
-<!-- SSD-MESH-TEMPLATE-END -->
-
-## Project-Specific Rules
-... プロジェクト固有設定（保護）...
-```
-
 ---
 
 ## Reference
 
 | Document | Description |
 |----------|-------------|
-| [SKILL.md](.claude/skills/nick-q/SKILL.md) | スキル定義（Claude 向け） |
+| [SKILL.md](.claude/skills/nick-q/SKILL.md) | スキル定義・ルーティング |
 | [constitution/](.claude/skills/nick-q/constitution/) | Engineering Constitution（core.md, quality-gates.md 等） |
 | [id-naming.md](.claude/skills/nick-q/guides/id-naming.md) | ID 命名規則 |
 | [error-recovery.md](.claude/skills/nick-q/guides/error-recovery.md) | エラー回復ガイド |

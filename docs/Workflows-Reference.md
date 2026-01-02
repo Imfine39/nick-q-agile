@@ -1,6 +1,6 @@
-# Workflows Reference
+# Workflows Reference 🐱
 
-SSD-MESH の全ワークフロー詳細リファレンスです。
+NICK-Q の全ワークフロー詳細リファレンスです。
 
 ---
 
@@ -8,36 +8,45 @@ SSD-MESH の全ワークフロー詳細リファレンスです。
 
 | カテゴリ | ワークフロー | 概要 |
 |---------|-------------|------|
-| **初期化** | vision, design | プロジェクト立ち上げ |
-| **開発** | add, fix, issue, change | 開発エントリーポイント |
+| **初期化** | project-setup | プロジェクト立ち上げ（Vision/Domain/Screen） |
+| **開発** | feature, fix, change | 開発エントリーポイント |
 | **実装** | plan, tasks, implement, pr | 実装フロー |
 | **品質** | review, clarify, lint, analyze, checklist, feedback | 品質管理 |
 | **テスト** | test-scenario, e2e | テスト |
-| **その他** | featureproposal, spec | ユーティリティ |
 
 ---
 
 ## Project Initialization
 
-### vision
+### project-setup
 
-**目的:** Vision Spec を作成（プロジェクトの目的・ゴール・ジャーニー定義）
+**目的:** Vision Spec + Domain Spec + Screen Spec を作成
 
 **入力:**
-- Quick Input: `.specify/input/vision-input.md`（任意）
+- Quick Input: `.specify/input/project-setup-input.md`（任意）
 - または Claude との対話
+- ワイヤーフレーム画像/ファイル（任意）
 
 **出力:**
 - `.specify/specs/{project}/overview/vision/spec.md`
+- `.specify/specs/{project}/overview/domain/spec.md`
+- `.specify/specs/{project}/overview/screen/spec.md`
+- `.specify/matrix/cross-reference.json`
 
 **フロー:**
 1. Quick Input または対話で情報収集
-2. Vision Spec 作成
-3. Multi-Review（3観点並列）
-4. Lint 実行
-5. [HUMAN_CHECKPOINT]
-6. Clarify（曖昧点があれば）
-7. 状態更新
+2. ワイヤーフレーム処理（あれば）
+3. QA 生成（動的に質問を作成）
+4. QA 分析 + AskUserQuestion（残りの曖昧点を対話で解消）
+5. Vision Spec 作成
+6. Multi-Review（3観点並列）
+7. Lint 実行
+8. CLARIFY GATE チェック
+9. [HUMAN_CHECKPOINT]
+10. Domain Spec + Screen Spec 作成
+11. Cross-Reference Matrix 生成
+12. Foundation Issue 作成
+13. 状態更新
 
 **依頼例:**
 ```
@@ -48,52 +57,16 @@ SSD-MESH の全ワークフロー詳細リファレンスです。
 
 ---
 
-### design
-
-**目的:** Screen Spec + Domain Spec + Matrix を同時作成
-
-**前提条件:**
-- Vision Spec が存在すること（推奨）
-
-**入力:**
-- Vision Spec
-- ユーザーからの画面情報
-
-**出力:**
-- `.specify/specs/{project}/overview/screen/spec.md`
-- `.specify/specs/{project}/overview/domain/spec.md`
-- `.specify/specs/{project}/overview/matrix/cross-reference.json`
-- GitHub Issues（Feature ごと）
-
-**フロー:**
-1. Vision Spec 読み込み
-2. 画面情報収集（Vision Part B または対話）
-3. Screen Spec 作成（SCR-* ID）
-4. Domain Spec 作成（M-*, API-*, BR-*, VR-*）
-5. Cross-Reference Matrix 作成
-6. Multi-Review
-7. Lint 実行
-8. [HUMAN_CHECKPOINT]
-9. Feature Issues 作成
-10. Foundation Issue 作成
-
-**依頼例:**
-```
-「Design を作成して」
-「画面設計と Domain 設計を進めて」
-```
-
----
-
 ## Development Entry Points
 
-### add
+### feature
 
-**目的:** 新機能を追加（Issue 作成 → Feature Spec → 開発フロー）
+**目的:** 新機能を追加（Feature Spec 作成 → 開発フロー）
 
 **入力:**
 - Quick Input: `.specify/input/add-input.md`（任意）
 - または対話での機能説明
+- ワイヤーフレーム画像/ファイル（任意）
 
 **出力:**
 - GitHub Issue
@@ -102,13 +75,17 @@ SSD-MESH の全ワークフロー詳細リファレンスです。
 **フロー:**
 1. Quick Input または対話で情報収集
 2. 入力検証（必須項目確認）
-3. GitHub Issue 作成
-4. Feature ブランチ作成
-5. Feature Spec 作成
-6. Multi-Review
-7. Lint 実行
-8. [HUMAN_CHECKPOINT]
-9. Clarify（曖昧点があれば）
+3. ワイヤーフレーム処理（あれば）
+4. QA 生成
+5. QA 分析 + AskUserQuestion
+6. Feature Spec 作成
+7. Multi-Review
+8. Lint 実行
+9. CLARIFY GATE チェック
+10. [HUMAN_CHECKPOINT]
+11. GitHub Issue 作成
+12. Feature ブランチ作成
+13. 状態更新
 
 **依頼例:**
 ```
@@ -120,7 +97,7 @@ SSD-MESH の全ワークフロー詳細リファレンスです。
 
 ### fix
 
-**目的:** バグを修正（Issue 作成 → Fix Spec → 修正）
+**目的:** バグを修正（Impact Guard による判定 → Fix Spec or 直接実装）
 
 **入力:**
 - Quick Input: `.specify/input/fix-input.md`（任意）
@@ -128,53 +105,35 @@ SSD-MESH の全ワークフロー詳細リファレンスです。
 
 **出力:**
 - GitHub Issue
-- `.specify/specs/{project}/fixes/{fix}/spec.md`
+- `.specify/specs/{project}/fixes/{fix}/spec.md`（大規模の場合）
 
 **フロー:**
 1. Quick Input または対話で情報収集
 2. 入力検証
-3. GitHub Issue 作成
-4. Fix ブランチ作成
+3. **Impact Guard による判定**
+   - 小規模 → implement ワークフローへ
+   - 大規模 → Fix Spec 作成
+4. （大規模の場合）QA 生成 → QA 分析
 5. Fix Spec 作成（原因調査・修正方針）
 6. Multi-Review
-7. [HUMAN_CHECKPOINT]
+7. CLARIFY GATE チェック
+8. [HUMAN_CHECKPOINT]
+9. Issue & ブランチ作成
+
+**Impact Guard 判定基準:**
+
+| 基準 | 小規模（直接実装） | 大規模（Spec 作成） |
+|------|-------------------|-------------------|
+| 影響ファイル数 | 1-3 | 4+ |
+| Spec 変更 | なし | 必要 |
+| テスト影響 | 既存で十分 | 新規テスト必要 |
+| API 変更 | なし | あり |
+| DB スキーマ変更 | なし | あり |
 
 **依頼例:**
 ```
 「ログインボタンが効かないバグを直して」
 「このエラーを修正して: [エラー内容]」
-```
-
-**緊急モード:**
-```
-「このバグを直して: ログインできない」
-→ Quick Input なしで即座に対応
-```
-
----
-
-### issue
-
-**目的:** 既存の GitHub Issue から開発を開始
-
-**入力:**
-- GitHub Issue 番号 または URL
-
-**出力:**
-- Feature Spec または Fix Spec
-- ブランチ作成
-
-**フロー:**
-1. Issue 読み込み
-2. Issue タイプ判定（Feature/Fix）
-3. 対応する Spec 作成
-4. Multi-Review
-5. [HUMAN_CHECKPOINT]
-
-**依頼例:**
-```
-「Issue #123 から開発を始めて」
-「この Issue を実装して: [URL]」
 ```
 
 ---
@@ -184,6 +143,7 @@ SSD-MESH の全ワークフロー詳細リファレンスです。
 **目的:** 既存の Spec を変更（Vision/Domain/Screen）
 
 **入力:**
+- Quick Input: `.specify/input/change-input.md`（任意）
 - 変更対象の Spec
 - 変更内容
 
@@ -195,7 +155,7 @@ SSD-MESH の全ワークフロー詳細リファレンスです。
 **フロー:**
 1. 変更対象選択
 2. 現在の Spec 読み込み
-3. 影響分析（Case 3 Decision）
+3. 影響分析（cascade-update）
 4. [HUMAN_CHECKPOINT] 影響確認
 5. 変更適用
 6. Matrix 更新
@@ -280,7 +240,8 @@ SSD-MESH の全ワークフロー詳細リファレンスです。
 **目的:** 実装を行う
 
 **前提条件:**
-- Tasks が作成されていること
+- Tasks が作成されていること（大規模の場合）
+- または Impact Guard で小規模と判定された場合
 
 **入力:**
 - Tasks
@@ -389,7 +350,7 @@ SSD-MESH の全ワークフロー詳細リファレンスです。
 
 **フロー:**
 1. `[NEEDS CLARIFICATION]` マーカーを抽出
-2. 4 問バッチで質問
+2. AskUserQuestion で質問（最大 4 問バッチ）
 3. 回答を Spec に反映
 4. 再度 Multi-Review
 5. 曖昧点 = 0 になるまでループ
@@ -588,42 +549,20 @@ Recommendations:
 
 ---
 
-## Utilities
+## Shared Components
 
-### featureproposal
+ワークフロー間で共有される共通コンポーネント（`workflows/shared/`）：
 
-**目的:** AI に Feature を提案させる
-
-**入力:**
-- Vision Spec
-- Domain Spec
-- 現在の Feature 一覧
-
-**出力:**
-- 提案された Feature リスト
-
-**依頼例:**
-```
-「追加すべき機能を提案して」
-```
-
----
-
-### spec
-
-**目的:** Spec を直接操作（上級者向け）
-
-**入力:**
-- 操作対象の Spec
-- 操作内容
-
-**出力:**
-- 更新された Spec
-
-**依頼例:**
-```
-「この Spec を直接編集して」
-```
+| コンポーネント | 目的 | 使用ワークフロー |
+|---------------|------|-----------------|
+| `_quality-flow.md` | 🐱 QA → 😼 Review → Lint → 🙀 CLARIFY GATE オーケストレーション | project-setup, feature, fix, change |
+| `_qa-generation.md` | 🐱 入力ギャップに基づく動的 QA 生成 | feature, fix, project-setup |
+| `_qa-analysis.md` | 🐱 QA 回答分析、残りの曖昧点特定 | 全 Spec 作成ワークフロー |
+| `_clarify-gate.md` | 🙀 ゲートキーピングロジック | Quality flow |
+| `_cascade-update.md` | Feature Spec が M-*/API-* を追加した場合の Domain/Screen 更新 | feature, change |
+| `_impact-guard.md` | 小規模/大規模スコープ判定 | Entry routing |
+| `_wireframe-processing.md` | ワイヤーフレーム画像/ファイル処理 | Spec 作成 |
+| `impact-analysis.md` | Feature/Fix/Change の影響範囲分析 | feature, fix, change |
 
 ---
 
@@ -633,23 +572,32 @@ Recommendations:
 
 | やりたいこと | ワークフロー |
 |-------------|-------------|
-| 新規プロジェクト開始 | vision → design |
-| 新機能追加 | add → plan → tasks → implement → pr |
-| バグ修正 | fix → implement → pr |
-| 既存 Issue から | issue → plan → tasks → implement → pr |
+| 新規プロジェクト開始 | project-setup |
+| 新機能追加 | feature → plan → 🐈 tasks → 🐈 implement → 😽 pr |
+| バグ修正 | fix → (Impact Guard) → 🐈 implement → 😽 pr |
 | Spec 変更 | change |
 | テスト作成 | test-scenario |
 | E2E テスト実行 | e2e |
-| 品質チェック | review, lint, analyze, checklist |
-| 曖昧点解消 | clarify |
+| 品質チェック | 😼 review, lint, analyze, checklist |
+| 曖昧点解消 | 🐱 clarify |
 
-### [HUMAN_CHECKPOINT] 一覧
+### 😻 [HUMAN_CHECKPOINT] 一覧
 
 以下のタイミングで人間の確認が必要：
 
-- Vision Spec 作成後
-- Design 完了後
-- Feature Spec 作成後（CLARIFY GATE 前）
-- Plan 作成後
-- E2E テスト結果確認
-- change の影響分析後
+| タイミング | 確認内容 |
+|-----------|---------|
+| project-setup 完了後 | Overview Specs（Vision/Domain/Screen）の妥当性 |
+| Feature Spec 作成後 | 要件の妥当性、🙀 CLARIFY GATE |
+| Fix Spec 作成後 | 修正方針の妥当性、🙀 CLARIFY GATE |
+| Plan 作成後 | 実装計画の承認 |
+| E2E テスト後 | テスト結果の確認 |
+| change の影響分析後 | 影響範囲の確認 |
+
+### 🙀 CLARIFY GATE
+
+| Status | Condition | Action |
+|--------|-----------|--------|
+| 😸 PASSED | 🙀 `[NEEDS CLARIFICATION]` = 0 & 😿 `[DEFERRED]` = 0 | Plan へ進行 |
+| 😼 PASSED_WITH_DEFERRED | 🙀 `[NEEDS CLARIFICATION]` = 0 & 😿 `[DEFERRED]` ≥ 1 | 😻 Human がリスク確認後進行 |
+| 😾 BLOCKED | 🙀 `[NEEDS CLARIFICATION]` ≥ 1 | clarify → 😼 Multi-Review ループ |

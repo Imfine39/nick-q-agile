@@ -1,6 +1,6 @@
 # Getting Started
 
-SSD-MESH を使い始めるためのセットアップガイドです。
+NICK-Q を使い始めるためのセットアップガイドです。
 
 ---
 
@@ -17,7 +17,7 @@ SSD-MESH を使い始めるためのセットアップガイドです。
 
 ### 必須 MCP サーバー
 
-SSD-MESH は以下の MCP（Model Context Protocol）サーバーを使用します。
+NICK-Q は以下の MCP（Model Context Protocol）サーバーを使用します。
 
 | MCP Server | 用途 | 必要な場面 |
 |------------|------|-----------|
@@ -36,7 +36,7 @@ E2E テストを実行するには、Chrome 拡張「Claude in Chrome」が必�
 
 ```bash
 git clone <repository-url>
-cd ssd-template
+cd nick-q
 ```
 
 ### 2. 依存関係のインストール
@@ -117,7 +117,7 @@ Serena は LSP（Language Server Protocol）を通じてコード解析を行う
 node .claude/skills/nick-q/scripts/reset-input.cjs vision
 
 # エディタで編集
-# .specify/input/vision-input.md
+# .specify/input/project-setup-input.md
 ```
 
 ### 2. Claude Code に依頼
@@ -129,29 +129,29 @@ Claude への依頼例:
 
 Claude が以下を実行します：
 
-1. **Vision Spec 作成** - プロジェクトの目的・ゴールを定義
-2. **Multi-Review** - 3 観点から自動レビュー
-3. **Clarify** - 曖昧点があれば対話で解消
+1. **project-setup ワークフロー開始**
+2. **QA 生成** - 不足情報を確認するための質問を生成
+3. **QA 分析 + 対話** - 回答を分析し、残りの曖昧点を AskUserQuestion で解消
+4. **Vision Spec 作成** - プロジェクトの目的・ゴールを定義
+5. **Multi-Review** - 3 観点から自動レビュー
+6. **CLARIFY GATE** - 曖昧点が解消されていることを確認
+7. **Domain/Screen Spec 作成** - データモデル・API・画面定義
 
-### 3. Design フェーズ
+### 3. 機能追加
 
 Vision Spec 承認後：
 
 ```
-「画面設計と Domain 設計を進めて」
+「ユーザー登録機能を追加して」
 ```
 
 Claude が以下を実行：
 
-1. **Screen Spec 作成** - 画面一覧・遷移・ワイヤーフレーム
-2. **Domain Spec 作成** - データモデル・API・ビジネスルール
-3. **Cross-Reference Matrix** - 画面と Domain の関連付け
-
-### 4. 実装開始
-
-```
-「Foundation の実装を始めて」
-```
+1. **feature ワークフロー開始**
+2. **Impact Guard** - スコープ判定（小規模→直接実装 / 大規模→Spec 作成）
+3. **Feature Spec 作成** - 詳細な機能要件を定義
+4. **Multi-Review → Lint → CLARIFY GATE**
+5. **Plan → Tasks → Implement → PR**
 
 ---
 
@@ -163,22 +163,34 @@ Claude が以下を実行：
 your-project/
 ├── .claude/
 │   ├── skills/
-│   │   └── nick-q/         # SSD フレームワーク
-│   │       ├── SKILL.md       # スキル定義
-│   │       ├── constitution.md # 最上位ルール
-│   │       ├── workflows/     # ワークフロー定義
-│   │       ├── templates/     # Spec テンプレート
-│   │       ├── guides/        # ガイド
-│   │       └── scripts/       # ユーティリティ
-│   └── agents/                # Agent 定義
+│   │   └── nick-q/               # NICK-Q フレームワーク
+│   │       ├── SKILL.md          # スキル定義・エントリーポイント
+│   │       ├── constitution/     # Engineering Constitution
+│   │       │   ├── core.md       # コアルール
+│   │       │   ├── quality-gates.md  # 品質ゲート
+│   │       │   ├── spec-creation.md  # Spec 作成プロセス
+│   │       │   ├── git-workflow.md   # Git ルール
+│   │       │   └── terminology.md    # 用語定義
+│   │       ├── workflows/        # ワークフロー定義
+│   │       │   ├── feature.md
+│   │       │   ├── fix.md
+│   │       │   ├── project-setup.md
+│   │       │   └── shared/       # 共通コンポーネント
+│   │       ├── templates/        # Spec テンプレート
+│   │       │   ├── inputs/       # Quick Input テンプレート
+│   │       │   └── qa/           # QA テンプレート
+│   │       ├── guides/           # ガイド
+│   │       └── scripts/          # ユーティリティ
+│   └── agents/                   # Agent 定義
 ├── .specify/
-│   ├── input/                 # Quick Input 作業用
-│   ├── specs/                 # 生成された Spec
-│   ├── state/                 # プロジェクト状態
-│   └── matrix/                # Cross-Reference Matrix
-├── .mcp.json                  # MCP 設定
-├── CLAUDE.md                  # Claude 向けガイド
-└── README.md                  # プロジェクト説明
+│   ├── input/                    # Quick Input 作業用
+│   ├── specs/                    # 生成された Spec
+│   ├── state/                    # プロジェクト状態
+│   ├── matrix/                   # Cross-Reference Matrix
+│   └── memory/                   # 永続化情報
+├── .mcp.json                     # MCP 設定
+├── CLAUDE.md                     # Claude 向けガイド
+└── README.md                     # プロジェクト説明
 ```
 
 ---
