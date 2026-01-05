@@ -10,12 +10,22 @@ Pre-Input を分析し、ユーザー向け QA ドキュメントを生成する
 
 ## 使用タイミング
 
-| ワークフロー | トリガー | 出力先 |
-|--------------|----------|--------|
-| project-setup | Input 読み込み後 | `.specify/specs/overview/qa.md` |
-| feature | Input 読み込み後 | `.specify/specs/features/{feature-id}/qa.md` |
+| ワークフロー | モード | トリガー | 出力先 |
+|--------------|--------|----------|--------|
+| project-setup | - | Input 読み込み後 | `.specify/specs/overview/qa.md` |
+| feature | 新規作成 | Input 読み込み後 | `.specify/specs/features/{feature-id}/qa.md` |
+| feature | Draft 詳細化 | Draft 読み込み後（**必須**） | `.specify/specs/features/{feature-id}/qa.md` |
 
 > **Note:** fix ワークフローは QA ドキュメントを使用せず、簡易 AskUserQuestion で対応します。
+
+### Draft 詳細化モードでの注意
+
+Draft 詳細化モードでは、以下を「未記入」として扱う：
+- プレースホルダー（`[placeholder]`, `{value}`, `TODO` 等）
+- テンプレートのデフォルト文言
+- 概要レベルの記述のみのセクション
+
+これにより、project-setup で作成された Draft でも必ず QA が生成される。
 
 ---
 
