@@ -24,6 +24,7 @@
  *     - Circular dependency between Features
  *     - Unresolved [PENDING OVERVIEW CHANGE] markers in Feature/Fix specs
  *     - [NEEDS CLARIFICATION] markers in APPROVED/IMPLEMENTED specs
+ *     - Unresolved [USER FEEDBACK] markers in any spec
  *
  * Warnings (exit code still 0):
  *   - Unexpected status value
@@ -638,6 +639,7 @@ if (domainSpecs.length > 0) {
 // Check for unresolved [PENDING OVERVIEW CHANGE] markers in Feature/Fix specs
 const pendingOverviewChangeRegex = /\[PENDING OVERVIEW CHANGE: [^\]]+\]/g;
 const needsClarificationRegex = /\[NEEDS CLARIFICATION\]/g;
+const userFeedbackRegex = /\[USER FEEDBACK: [^\]]+\]/g;
 
 for (const spec of specs) {
   // Only check Feature and Fix specs (not Overview specs)
@@ -674,6 +676,37 @@ for (const spec of specs) {
         `${spec.relFile} has ${clarifyMatches.length} [NEEDS CLARIFICATION] marker(s). ` +
         `Resolve before proceeding to Plan.`
       );
+    }
+  }
+
+  // Check for [USER FEEDBACK] markers - always an error, must be processed
+  const feedbackMatches = content.match(userFeedbackRegex);
+  if (feedbackMatches && feedbackMatches.length > 0) {
+    errors.push(
+      `${spec.relFile} has ${feedbackMatches.length} [USER FEEDBACK] marker(s). ` +
+      `Process user feedback and remove markers before proceeding.`
+    );
+    for (const marker of feedbackMatches) {
+      errors.push(`  → ${marker}`);
+    }
+  }
+}
+
+// Check [USER FEEDBACK] in Overview Specs (Vision, Domain, Screen)
+for (const spec of specs) {
+  if (!['VISION', 'DOMAIN', 'SCREEN'].includes(spec.specType)) continue;
+
+  const content = fileContentCache.get(spec.file);
+  if (!content) continue;
+
+  const feedbackMatches = content.match(userFeedbackRegex);
+  if (feedbackMatches && feedbackMatches.length > 0) {
+    errors.push(
+      `${spec.relFile} has ${feedbackMatches.length} [USER FEEDBACK] marker(s). ` +
+      `Process user feedback and remove markers before proceeding.`
+    );
+    for (const marker of feedbackMatches) {
+      errors.push(`  → ${marker}`);
     }
   }
 }

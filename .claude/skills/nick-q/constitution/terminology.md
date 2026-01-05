@@ -231,6 +231,25 @@ Markers used to indicate ambiguity status in specifications.
 | `[NEEDS CLARIFICATION]` | 曖昧で解消が必要 | 曖昧点を発見した時 | BLOCKED_CLARIFY（解消必須） |
 | `[PENDING OVERVIEW CHANGE: ID]` | Overview Spec への変更が必要 | Feature/Fix Spec で Overview 変更が必要と判明した時 | BLOCKED_OVERVIEW（Overview Change 必須） |
 | `[DEFERRED: 理由]` | 現時点では決められない | 下記条件に該当 | PASSED_WITH_DEFERRED（リスク記録） |
+| `[USER FEEDBACK: コメント]` | ユーザーからの修正依頼 | ユーザーが Spec に直接コメントを記入した時 | 処理前に解消必須 |
+
+### [USER FEEDBACK] の使用
+
+ユーザーが Spec ファイルに直接コメントを入れて修正依頼する場合に使用：
+
+```markdown
+<!-- 使用例 -->
+### 3. Actors
+- Primary: System Admin
+  [USER FEEDBACK: Admin だけでなく一般ユーザーも含めてください]
+- Secondary: External API
+```
+
+**AI の処理:**
+1. Spec を読み込む際に `[USER FEEDBACK: ...]` を検出
+2. コメント内容に基づいて該当箇所を修正
+3. 修正完了後、マーカーを削除
+4. 修正内容をユーザーに報告
 
 ### [PENDING OVERVIEW CHANGE] の使用
 
