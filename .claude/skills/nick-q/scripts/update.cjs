@@ -3,7 +3,11 @@
  * NICK-Q Template Update Script
  *
  * Updates the nick-q framework from the template repository while preserving
- * project-specific files.
+ * project-specific files. Supports private repositories via GitHub CLI.
+ *
+ * Prerequisites:
+ *   - GitHub CLI (gh) installed and authenticated: gh auth login
+ *   - Access to the template repository
  *
  * Usage:
  *   node .claude/skills/nick-q/scripts/update.cjs [options]
@@ -30,7 +34,6 @@
 
 const fs = require('fs');
 const path = require('path');
-const https = require('https');
 const { execSync } = require('child_process');
 
 // Configuration
@@ -99,51 +102,40 @@ function findRepoRoot() {
   throw new Error('Not inside a git repository');
 }
 
-function httpsGet(url) {
-  return new Promise((resolve, reject) => {
-    const req = https.get(url, { headers: { 'User-Agent': 'nick-q-updater' } }, (res) => {
-      if (res.statusCode === 301 || res.statusCode === 302) {
-        return httpsGet(res.headers.location).then(resolve).catch(reject);
-      }
-      if (res.statusCode !== 200) {
-        reject(new Error(`HTTP ${res.statusCode}: ${url}`));
-        return;
-      }
-      let data = '';
-      res.on('data', (chunk) => (data += chunk));
-      res.on('end', () => resolve(data));
-    });
-    req.on('error', reject);
-  });
+/**
+ * Check if gh CLI is available and authenticated
+ */
+function checkGhCli() {
+  try {
+    execSync('gh auth status', { stdio: 'pipe' });
+    return true;
+  } catch {
+    return false;
+  }
 }
 
-function httpsGetBuffer(url) {
-  return new Promise((resolve, reject) => {
-    const req = https.get(url, { headers: { 'User-Agent': 'nick-q-updater' } }, (res) => {
-      if (res.statusCode === 301 || res.statusCode === 302) {
-        return httpsGetBuffer(res.headers.location).then(resolve).catch(reject);
-      }
-      if (res.statusCode !== 200) {
-        reject(new Error(`HTTP ${res.statusCode}: ${url}`));
-        return;
-      }
-      const chunks = [];
-      res.on('data', (chunk) => chunks.push(chunk));
-      res.on('end', () => resolve(Buffer.concat(chunks)));
-    });
-    req.on('error', reject);
-  });
-}
-
+/**
+ * Get latest commit using gh CLI (works with private repos)
+ */
 async function getLatestCommit() {
-  const url = `https://api.github.com/repos/${CONFIG.templateRepo}/commits/${CONFIG.branch}`;
-  const data = await httpsGet(url);
-  const commit = JSON.parse(data);
-  return {
-    sha: commit.sha,
-    date: commit.commit.committer.date,
-    message: commit.commit.message.split('\n')[0],
-  };
+  if (!checkGhCli()) {
+    throw new Error('GitHub CLI (gh) is not authenticated. Run: gh auth login');
+  }
+
+  try {
+    const result = execSync(
+      `gh api repos/${CONFIG.templateRepo}/commits/${CONFIG.branch} --jq '{sha: .sha, date: .commit.committer.date, message: .commit.message}'`,
+      { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'] }
+    );
+    const commit = JSON.parse(result);
+    return {
+      sha: commit.sha,
+      date: commit.date,
+      message: commit.message.split('\n')[0],
+    };
+  } catch (err) {
+    throw new Error(`Failed to get latest commit: ${err.message}`);
+  }
 }
 
 function getCurrentVersion(repoRoot) {
@@ -168,10 +160,8 @@ function saveVersion(repoRoot, version) {
 }
 
 async function downloadAndExtract(repoRoot, dryRun = false) {
-  const zipUrl = `https://github.com/${CONFIG.templateRepo}/archive/refs/heads/${CONFIG.branch}.zip`;
-  log(`Downloading from ${zipUrl}...`);
+  log(`Downloading from ${CONFIG.templateRepo}...`);
 
-  const zipBuffer = await httpsGetBuffer(zipUrl);
   const tempDir = path.join(repoRoot, '.update-temp');
   const zipPath = path.join(tempDir, 'template.zip');
 
@@ -186,10 +176,17 @@ async function downloadAndExtract(repoRoot, dryRun = false) {
   }
   fs.mkdirSync(tempDir, { recursive: true });
 
-  // Write zip file
-  fs.writeFileSync(zipPath, zipBuffer);
+  // Download using gh CLI (works with private repos)
+  try {
+    execSync(
+      `gh api repos/${CONFIG.templateRepo}/zipball/${CONFIG.branch} > "${zipPath}"`,
+      { stdio: ['pipe', 'pipe', 'pipe'], shell: true }
+    );
+  } catch (err) {
+    throw new Error(`Failed to download repository: ${err.message}`);
+  }
 
-  // Extract using tar (works on Windows with Git Bash) or PowerShell
+  // Extract using unzip or PowerShell
   try {
     if (process.platform === 'win32') {
       execSync(`powershell -Command "Expand-Archive -Path '${zipPath}' -DestinationPath '${tempDir}' -Force"`, {
@@ -202,8 +199,13 @@ async function downloadAndExtract(repoRoot, dryRun = false) {
     throw new Error(`Failed to extract zip: ${err.message}`);
   }
 
-  // Find extracted directory (usually repo-branch)
-  const extracted = fs.readdirSync(tempDir).find((f) => f.startsWith('nick-q') || f.startsWith('ssd-template'));
+  // Find extracted directory (GitHub creates owner-repo-sha format)
+  const entries = fs.readdirSync(tempDir);
+  const extracted = entries.find((f) => {
+    const fullPath = path.join(tempDir, f);
+    return fs.statSync(fullPath).isDirectory() && f !== '__MACOSX';
+  });
+
   if (!extracted) {
     throw new Error('Could not find extracted template directory');
   }
