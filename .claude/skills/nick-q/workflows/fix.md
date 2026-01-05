@@ -356,7 +356,7 @@ node .claude/skills/nick-q/scripts/spec-lint.cjs
 
 1. **Create GitHub Issue:**
    ```bash
-   gh issue create --title "[Bug] {概要}" --body "..." --label "bug"
+   gh issue create --title "[Fix] {概要}" --body "..." --label "fix"
    ```
 
 2. **Create Branch:**

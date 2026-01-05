@@ -243,7 +243,7 @@ Issue 情報取得 (gh issue view #N)
       ラベルをチェック
         │
         ├─ [Feature] [enhancement] → 「add-input.md に記入後に再度依頼」
-        ├─ [Bug] [fix] → 「fix-input.md に記入後に再度依頼」
+        ├─ [Fix] [fix] → 「fix-input.md に記入後に再度依頼」
         │
         └─ ラベルなし
             │
