@@ -114,7 +114,7 @@ Spec: {spec_path}
 gh issue create --title "[Feature] {機能名}" --body "..."
 
 # Fix
-gh issue create --title "[Bug] {概要}" --body "..." --label "bug"
+gh issue create --title "[Fix] {概要}" --body "..." --label "fix"
 ```
 
 ### Step 5: ブランチ作成
