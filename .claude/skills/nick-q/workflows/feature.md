@@ -46,12 +46,9 @@ grep -l "Status: Draft" .specify/specs/features/*/spec.md
 ```
 TodoWrite:
   todos:
-    - content: "Step 0: Draft Spec 読み込み"
+    - content: "Step 0: Draft 読み込み・QA 生成"
       status: "pending"
-      activeForm: "Loading Draft Spec"
-    - content: "Step 0.5: 空欄セクション特定・詳細 QA 生成"
-      status: "pending"
-      activeForm: "Generating detailed QA"
+      activeForm: "Loading Draft and generating QA"
     - content: "Step 3: QA フォローアップ"
       status: "pending"
       activeForm: "Following up on QA"
@@ -104,9 +101,13 @@ TodoWrite:
 
 ## Steps
 
-### Step 0: Draft Spec 読み込み（Draft 詳細化モードのみ）
+### Step 0: Draft 読み込み・QA 生成（Draft 詳細化モードのみ）
 
-**Draft 詳細化モードでのみ実行。新規作成モードはスキップ。**
+> **参照:** [shared/_qa-generation.md](shared/_qa-generation.md)
+
+**Draft 詳細化モードでのみ実行。新規作成モードは Step 1 へ。**
+
+#### 0-1. Draft Spec 読み込み
 
 1. **Draft Spec を読み込み:**
    ```
@@ -123,17 +124,7 @@ TodoWrite:
    - Domain 参照（M-*, API-*）
    - Screen 参照（SCR-*）
 
-4. **空欄セクションを特定:**
-   - ユースケース詳細
-   - 機能要件詳細
-   - エラーハンドリング
-   - 非機能要件
-
-### Step 0.5: 詳細 QA 生成（Draft 詳細化モード・必須）
-
-> **参照:** [shared/_qa-generation.md](shared/_qa-generation.md)
-
-**★ このステップはスキップ禁止 ★**
+#### 0-2. 詳細 QA 生成
 
 Draft Spec を分析し、詳細化に必要な QA を生成する。
 プレースホルダーや未確定内容は「未記入」として扱う。
@@ -168,9 +159,11 @@ Draft Spec を分析し、詳細化に必要な QA を生成する。
    完了したら「QA 回答完了」と伝えてください。
    ```
 
+**→ Step 3 (QA フォローアップ) へ進む**
+
 ---
 
-**以下は新規作成モードで使用（Draft 詳細化モードは Step 3 へ進む）**
+**以下は新規作成モードで使用**
 
 ---
 
