@@ -109,20 +109,32 @@ Lint
     ↓
 SPEC GATE チェック
     ↓
-[HUMAN_CHECKPOINT] 確認
-    ↓
 Domain Spec + Screen Spec 作成
     ↓
 Cross-Reference Matrix 生成
     ↓
+[HUMAN_CHECKPOINT] - Overview Specs 承認
+    ↓
+Foundation Draft 作成
+    ↓
+Feature Drafts 生成
+    ↓
+GitHub Labels 初期化（foundation, feature 等）
+    ↓
 Foundation Issue 作成
+    ↓
+Feature Issues 作成
+    ↓
+Input 保存
 ```
 
 **成果物:**
-- `.specify/specs/{project}/overview/vision/spec.md`
-- `.specify/specs/{project}/overview/domain/spec.md`
-- `.specify/specs/{project}/overview/screen/spec.md`
+- `.specify/specs/overview/vision/spec.md`
+- `.specify/specs/overview/domain/spec.md`
+- `.specify/specs/overview/screen/spec.md`
+- `.specify/specs/overview/foundation/spec.md` (Draft)
 - `.specify/matrix/cross-reference.json`
+- GitHub Issues（Foundation + Features）
 
 ---
 
@@ -169,6 +181,8 @@ Lint 実行
 ★ SPEC GATE ★
     ↓
 [HUMAN_CHECKPOINT] 確認
+    ↓
+[USER FEEDBACK] 処理（承認/MINOR→続行 / MAJOR→Multi-Review へ戻る）
     ↓
 Issue & Branch 作成
 ```
@@ -231,6 +245,8 @@ Plan 作成
     - リスク評価
     ↓
 [HUMAN_CHECKPOINT] 承認
+    ↓
+[USER FEEDBACK] 処理（承認/MINOR→続行 / MAJOR→Plan 再作成）
 ```
 
 ### 2.5 Tasks 分割
@@ -384,7 +400,7 @@ Recommendations:
 │                                                                          │
 │  project-setup → 🐱 QA 生成 → 🐱 QA 分析 → Spec 作成                    │
 │              → 😼 Multi-Review → Lint → 🙀 SPEC GATE                    │
-│              → 😻 [HUMAN] → 😸 Specs 承認                               │
+│              → 😻 [HUMAN] → 🐾 [USER FEEDBACK] 処理 → 😸 Specs 承認     │
 │                                                                          │
 └─────────────────────────────────────────────────────────────────────────┘
                                     │
@@ -399,11 +415,11 @@ Recommendations:
 │            │                                                            │
 │            ├─ 😾 BLOCKED → clarify → 😼 Multi-Review ループ             │
 │            │                                                            │
-│            └─ 😸 PASSED → 😻 [HUMAN] → Spec 承認                        │
+│            └─ 😸 PASSED → 😻 [HUMAN] → 🐾 [USER FEEDBACK] → Spec 承認   │
 │                                                                          │
 │  test-scenario → Test Scenario Spec → 😼 Multi-Review → 😻 [HUMAN]      │
 │                                                                          │
-│  plan → Plan 作成 → 😻 [HUMAN] 承認                                      │
+│  plan → Plan 作成 → 😻 [HUMAN] → 🐾 [USER FEEDBACK] → 承認              │
 │                                                                          │
 │  🐈 tasks → Tasks 分割                                                   │
 │                                                                          │

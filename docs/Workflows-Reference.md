@@ -28,10 +28,12 @@ NICK-Q の全ワークフロー詳細リファレンスです。
 - ワイヤーフレーム画像/ファイル（任意）
 
 **出力:**
-- `.specify/specs/{project}/overview/vision/spec.md`
-- `.specify/specs/{project}/overview/domain/spec.md`
-- `.specify/specs/{project}/overview/screen/spec.md`
+- `.specify/specs/overview/vision/spec.md`
+- `.specify/specs/overview/domain/spec.md`
+- `.specify/specs/overview/screen/spec.md`
+- `.specify/specs/overview/foundation/spec.md` (Draft)
 - `.specify/matrix/cross-reference.json`
+- GitHub Issues（Foundation + Features）
 
 **フロー:**
 1. Quick Input または対話で情報収集
@@ -42,11 +44,16 @@ NICK-Q の全ワークフロー詳細リファレンスです。
 6. Multi-Review（3観点並列）
 7. Lint 実行
 8. SPEC GATE チェック
-9. [HUMAN_CHECKPOINT]
-10. Domain Spec + Screen Spec 作成
-11. Cross-Reference Matrix 生成
-12. Foundation Issue 作成
-13. 状態更新
+9. Domain Spec + Screen Spec 作成
+10. Cross-Reference Matrix 生成
+11. [HUMAN_CHECKPOINT] - Overview Specs 承認
+12. Foundation Draft 作成
+13. Feature Drafts 生成
+14. GitHub Labels 初期化（foundation, feature 等）
+15. Foundation Issue 作成
+16. Feature Issues 作成
+17. Input 保存
+18. 状態更新
 
 **依頼例:**
 ```
@@ -83,9 +90,10 @@ NICK-Q の全ワークフロー詳細リファレンスです。
 8. Lint 実行
 9. SPEC GATE チェック
 10. [HUMAN_CHECKPOINT]
-11. GitHub Issue 作成
-12. Feature ブランチ作成
-13. 状態更新
+11. [USER FEEDBACK] 処理（承認/MINOR→続行 / MAJOR→Multi-Review へ戻る）
+12. GitHub Issue 作成
+13. Feature ブランチ作成
+14. 状態更新
 
 **依頼例:**
 ```
@@ -118,7 +126,8 @@ NICK-Q の全ワークフロー詳細リファレンスです。
 6. Multi-Review
 7. SPEC GATE チェック
 8. [HUMAN_CHECKPOINT]
-9. Issue & ブランチ作成
+9. [USER FEEDBACK] 処理（承認/MINOR→続行 / MAJOR→Multi-Review へ戻る）
+10. Issue & ブランチ作成
 
 **Impact Guard 判定基準:**
 
@@ -162,6 +171,8 @@ NICK-Q の全ワークフロー詳細リファレンスです。
 7. 影響を受ける Feature Spec 更新
 8. Multi-Review
 9. Lint 実行
+10. [HUMAN_CHECKPOINT]
+11. [USER FEEDBACK] 処理（承認/MINOR→続行 / MAJOR→Multi-Review へ戻る）
 
 **依頼例:**
 ```
@@ -197,6 +208,7 @@ NICK-Q の全ワークフロー詳細リファレンスです。
    - 実装ステップ
    - リスク評価
 5. [HUMAN_CHECKPOINT] 承認
+6. [USER FEEDBACK] 処理（承認/MINOR→続行 / MAJOR→Plan 再作成）
 
 **依頼例:**
 ```
@@ -560,6 +572,7 @@ Recommendations:
 | `_qa-analysis.md` | 🐱 QA 回答分析、残りの曖昧点特定 | 全 Spec 作成ワークフロー |
 | `_spec-gate.md` | 🙀 ゲートキーピングロジック | Quality flow |
 | `_cascade-update.md` | Feature Spec が M-*/API-* を追加した場合の Domain/Screen 更新 | feature, change |
+| `_human-checkpoint-followup.md` | 🐾 HUMAN_CHECKPOINT 後のフィードバック処理 | project-setup, feature, fix, change, plan |
 | `_impact-guard.md` | 小規模/大規模スコープ判定 | Entry routing |
 | `_wireframe-processing.md` | ワイヤーフレーム画像/ファイル処理 | Spec 作成 |
 | `impact-analysis.md` | Feature/Fix/Change の影響範囲分析 | feature, fix, change |
@@ -593,6 +606,23 @@ Recommendations:
 | Plan 作成後 | 実装計画の承認 |
 | E2E テスト後 | テスト結果の確認 |
 | change の影響分析後 | 影響範囲の確認 |
+
+### 🐾 [USER FEEDBACK] 処理
+
+[HUMAN_CHECKPOINT] 後にユーザーがフィードバックを提供した場合の処理：
+
+| ユーザー応答 | 処理 |
+|------------|------|
+| 承認（マーカーなし） | 次のステップへ進行 |
+| `[USER FEEDBACK: ...]` マーカー | フィードバック内容を適用、マーカー削除 |
+| 会話内での修正指示 | 指示に従って修正 |
+
+**修正規模によるルーティング:**
+
+| 規模 | 条件 | ルーティング |
+|------|------|-------------|
+| MINOR | 軽微な文言修正、構造変更なし | Lint → 次のステップへ |
+| MAJOR | 要件追加/削除、UC/FR/API 変更 | Multi-Review へ戻る |
 
 ### 🙀 SPEC GATE
 

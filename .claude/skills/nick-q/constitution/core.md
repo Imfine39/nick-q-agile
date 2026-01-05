@@ -172,7 +172,17 @@ Lint
     ↓
 [HUMAN_CHECKPOINT] Spec 承認
     ↓
-Plan → Tasks → Implement（[DEFERRED] 遭遇時は Clarify へ戻る） → PR
+★ [USER FEEDBACK] 処理 ★ ← _human-checkpoint-followup.md
+    │
+    ├─ 承認（マーカーなし）→ Plan へ
+    │
+    ├─ MINOR 修正 → Lint → Plan へ
+    │
+    └─ MAJOR 修正 → Multi-Review へ戻る
+    ↓
+Plan → [HUMAN_CHECKPOINT] → [USER FEEDBACK] 処理 → Tasks
+    ↓
+Implement（[DEFERRED] 遭遇時は Clarify へ戻る） → PR
 ```
 
 **Flow の重要ポイント:**

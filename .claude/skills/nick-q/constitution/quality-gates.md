@@ -216,6 +216,43 @@ Workflow Completion 用:
 - [ ] 変更内容が意図したものか
 - [ ] テストが全て pass しているか
 
+### Post-HUMAN_CHECKPOINT Processing
+<!-- SSOT: [USER FEEDBACK] 処理定義 -->
+<!-- アンカー: #post-human-checkpoint-processing -->
+
+> **運用手順:** [shared/_human-checkpoint-followup.md](../workflows/shared/_human-checkpoint-followup.md)
+
+HUMAN_CHECKPOINT 承認後、ユーザーが Spec/Plan に `[USER FEEDBACK: ...]` マーカーを追加した場合の処理。
+
+#### トリガー
+
+- ユーザーが Spec/Plan ファイルに `[USER FEEDBACK: コメント]` を追加
+- 「続けて」「フィードバック反映して」等の指示
+
+#### 処理フロー
+
+1. **マーカー検出**: Spec/Plan 内の `[USER FEEDBACK: ...]` を検索
+2. **フィードバック処理**: コメント内容に基づいて修正を適用
+3. **マーカー削除**: 処理完了後にマーカーを削除
+4. **修正規模判定**: MINOR/MAJOR を判定
+5. **ルーティング**:
+   - MINOR → Lint → 次のステップ
+   - MAJOR → Multi-Review へ戻る（品質再確認）
+
+#### 修正規模の判定基準
+
+| 規模 | 条件 | ルーティング |
+|------|------|-------------|
+| **MINOR** | 軽微な文言修正、構造変更なし | Lint → 次のステップ |
+| **MAJOR** | 要件追加/削除、UC/FR/API 変更 | Multi-Review へ戻る |
+
+**判定が難しい場合:** MAJOR として扱う（安全側に倒す）
+
+#### Human Verifies（MAJOR の場合）
+
+- [ ] 修正内容が [USER FEEDBACK] コメントの意図を正しく反映しているか
+- [ ] 修正が他の Spec 要件と矛盾していないか
+
 ### Skip Conditions
 Checkpoints may ONLY be skipped when:
 - Human explicitly requests skip with justification

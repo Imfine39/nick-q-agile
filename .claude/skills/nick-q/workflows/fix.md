@@ -159,8 +159,9 @@ Document findings in Fix Spec.
 
 1. **Run scaffold:**
    ```bash
-   node .claude/skills/nick-q/scripts/scaffold-spec.cjs --kind fix --id F-XXX-001 --title "{バグ概要}"
+   node .claude/skills/nick-q/scripts/scaffold-spec.cjs --kind fix --id F-XXX-001 --title "{Bug Summary}"
    ```
+   > **Note:** `--title` は英語で指定すること（スラッグ生成のため）
 
 2. **Fill sections:**
    - Section 1: Problem Description (症状、再現手順、期待動作)
@@ -320,9 +321,38 @@ node .claude/skills/nick-q/scripts/spec-lint.cjs
    承認後、GitHub Issue とブランチを作成します。
    ```
 
+### Step 8.5: [USER FEEDBACK] 処理
+
+> **共通コンポーネント参照:** [shared/_human-checkpoint-followup.md](shared/_human-checkpoint-followup.md)
+
+**[HUMAN_CHECKPOINT] 後の応答を処理:**
+
+1. **[USER FEEDBACK] マーカー検出:**
+   ```
+   Grep tool:
+     pattern: "\[USER FEEDBACK: [^\]]+\]"
+     path: .specify/specs/fixes/{id}/spec.md
+     output_mode: content
+   ```
+
+2. **処理判定:**
+   - マーカーなし + 承認ワード → Step 9 へ
+   - マーカーあり → フィードバック処理
+
+3. **フィードバック処理（マーカーがある場合）:**
+   - フィードバック内容に基づいて修正
+   - マーカーを削除
+   - 修正サマリーを表示
+
+4. **ルーティング:**
+   | 修正規模 | 条件 | 次のステップ |
+   |---------|------|-------------|
+   | **MINOR** | 軽微な文言修正、構造変更なし | Lint → Step 9 へ |
+   | **MAJOR** | 要件追加/削除、Root Cause 変更 | Step 5 (Multi-Review) へ戻る |
+
 ### Step 9: Create GitHub Issue & Branch
 
-**[HUMAN_CHECKPOINT] 承認後に実行:**
+**[HUMAN_CHECKPOINT] 承認後（または Step 8.5 完了後）に実行:**
 
 1. **Create GitHub Issue:**
    ```bash
@@ -448,6 +478,7 @@ Root Cause: {概要}
 - [ ] **BLOCKED_OVERVIEW の場合、Overview Change を実行したか**
 - [ ] spec-lint.cjs を実行したか
 - [ ] **[HUMAN_CHECKPOINT] で承認を得たか**
+- [ ] **[USER FEEDBACK] 処理を行ったか（マーカーがあれば）**
 - [ ] gh issue create を実行したか（承認後）
 - [ ] branch.cjs でブランチを作成したか（承認後）
 - [ ] Input を保存したか（リセットは PR マージ後）

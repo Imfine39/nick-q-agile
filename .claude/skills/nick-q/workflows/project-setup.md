@@ -1,6 +1,6 @@
 # Project Setup Workflow
 
-新規プロジェクト開始のエントリーポイント。Vision + Screen + Domain Spec を一括作成。
+新規プロジェクト開始のエントリーポイント。Vision + Screen + Domain + Foundation Spec を一括作成。
 
 ## Prerequisites
 
@@ -49,13 +49,22 @@ TodoWrite:
     - content: "Step 11: [HUMAN_CHECKPOINT]"
       status: "pending"
       activeForm: "Awaiting approval"
-    - content: "Step 12: Feature Drafts 生成"
+    - content: "Step 12: Foundation Draft 作成"
+      status: "pending"
+      activeForm: "Creating Foundation Draft"
+    - content: "Step 13: Feature Drafts 生成"
       status: "pending"
       activeForm: "Generating Feature Drafts"
-    - content: "Step 13: Feature Issues 作成"
+    - content: "Step 13.5: GitHub Labels 初期化"
+      status: "pending"
+      activeForm: "Initializing GitHub Labels"
+    - content: "Step 14: Foundation Issue 作成"
+      status: "pending"
+      activeForm: "Creating Foundation Issue"
+    - content: "Step 15: Feature Issues 作成"
       status: "pending"
       activeForm: "Creating Feature Issues"
-    - content: "Step 14: Input 保存"
+    - content: "Step 16: Input 保存"
       status: "pending"
       activeForm: "Preserving input"
 ```
@@ -319,12 +328,69 @@ Grep tool (並列実行):
 - [ ] Vision Spec の目的・スコープが適切か
 - [ ] Screen Spec の画面構成が要件を満たすか
 - [ ] Domain Spec のエンティティ定義が適切か
+- [ ] Domain Spec Section 7 の技術スタックが適切か
 - [ ] Feature Hints の優先順位が正しいか
 
-承認後、Feature Drafts と Issues を作成します。
+承認後、Foundation Draft, Feature Drafts, Issues を作成します。
 ```
 
-### Step 12: Feature Drafts 生成
+### Step 11.5: [USER FEEDBACK] 処理
+
+> **共通コンポーネント参照:** [shared/_human-checkpoint-followup.md](shared/_human-checkpoint-followup.md)
+
+**[HUMAN_CHECKPOINT] 後の応答を処理:**
+
+1. **[USER FEEDBACK] マーカー検出:**
+   ```
+   Grep tool:
+     pattern: "\[USER FEEDBACK: [^\]]+\]"
+     path: .specify/specs/overview/
+     output_mode: content
+   ```
+
+2. **処理判定:**
+   - マーカーなし + 承認ワード → Step 12 へ
+   - マーカーあり → フィードバック処理
+
+3. **フィードバック処理（マーカーがある場合）:**
+   - フィードバック内容に基づいて修正
+   - マーカーを削除
+   - 修正サマリーを表示
+
+4. **ルーティング:**
+   | 修正規模 | 条件 | 次のステップ |
+   |---------|------|-------------|
+   | **MINOR** | 軽微な文言修正、構造変更なし | Lint → Step 12 へ |
+   | **MAJOR** | エンティティ追加/削除、画面構成変更 | Step 9 (Multi-Review) へ戻る |
+
+### Step 12: Foundation Draft 作成
+
+Domain Spec Section 7 (Technology Decisions) を参照して Foundation Draft を生成。
+
+```bash
+# Note: --title は英語で指定（スラッグ生成のため）
+node .claude/skills/nick-q/scripts/scaffold-spec.cjs --kind foundation --id S-FOUNDATION-001 --title "Project Foundation" --domain S-DOMAIN-001
+```
+
+**Foundation Draft の内容:**
+
+| セクション | 状態 | 説明 |
+|-----------|------|------|
+| Overview | 記入済み | 目的、スコープ |
+| Technology Stack Reference | 記入済み | Domain Spec Section 7 を参照 |
+| Setup Tasks | 空欄 | Foundation Issue で詳細化 |
+| Directory Structure | 空欄 | Foundation Issue で詳細化 |
+| Environment Setup | 空欄 | Foundation Issue で詳細化 |
+| CI/CD Pipeline | 空欄 | Foundation Issue で詳細化 |
+
+**Draft 生成後の構造:**
+
+```
+.specify/specs/overview/foundation/
+└── spec.md  (Status: Draft)
+```
+
+### Step 13: Feature Drafts 生成
 
 Vision Spec Section 3 (Feature Hints) から各機能の Draft Spec を生成。
 
@@ -344,7 +410,8 @@ Vision Spec Section 3 (Feature Hints) から各機能の Draft Spec を生成。
 
 ```bash
 # 各機能について Draft を生成
-node .claude/skills/nick-q/scripts/scaffold-spec.cjs --kind feature --id "{S-PREFIX-NNN}" --title "{機能名}" --status Draft
+# Note: --title は英語で指定（スラッグ生成のため）
+node .claude/skills/nick-q/scripts/scaffold-spec.cjs --kind feature --id "{S-PREFIX-NNN}" --title "{Feature Name}" --status Draft
 ```
 
 **Draft 生成後の構造:**
@@ -376,7 +443,52 @@ Draft 生成後、以下の情報を Input と Overview Specs から補完：
 <!-- issue ワークフローで記入 -->
 ```
 
-### Step 13: Feature Issues 作成
+### Step 13.5: GitHub Labels 初期化
+
+**GitHub テンプレートからリポジトリを作成した場合、ラベルは引き継がれない。**
+Issue 作成前に必要なラベルを初期化する。
+
+```bash
+# 必要なラベルを作成（存在すればスキップ）
+gh label create foundation --description "Foundation setup" --color 0E8A16 --force
+gh label create feature --description "Feature implementation" --color 1D76DB --force
+gh label create bug --description "Bug fix" --color d73a4a --force
+gh label create backlog --description "In backlog" --color FBCA04 --force
+gh label create in-progress --description "Work in progress" --color 7057FF --force
+gh label create spec --description "Spec change" --color 5319E7 --force
+```
+
+### Step 14: Foundation Issue 作成
+
+Foundation Draft の Issue を作成。**Feature Issues より先に作成する。**
+
+```bash
+gh issue create \
+  --title "[Foundation] Project Foundation" \
+  --body "$(cat <<'EOF'
+## 概要
+プロジェクトの技術基盤を構築する。
+
+## Draft Spec
+Draft Spec: .specify/specs/overview/foundation/spec.md
+
+## 参照
+- Domain Spec Section 7: .specify/specs/overview/domain/spec.md#7
+
+## Status
+- [ ] Draft Spec 詳細化
+- [ ] Plan 作成
+- [ ] 実装
+- [ ] テスト
+- [ ] PR マージ
+EOF
+)" \
+  --label "foundation"
+```
+
+**Note:** Foundation Issue は Feature Issues より先に作成され、Feature 実装の前提条件となる。
+
+### Step 15: Feature Issues 作成
 
 Vision Spec Section 3 (Feature Hints) から GitHub Issues を作成。
 **重要:** Issue body に Draft Spec のパスを記載する。
@@ -415,9 +527,11 @@ EOF
 
 各 Issue から開発を開始できます。
 「Issue #N を実装して」と依頼してください。
+
+**Note:** Foundation Issue を最初に実装してから Feature Issues に進むことを推奨。
 ```
 
-### Step 14: Input 保存
+### Step 16: Input 保存
 
 ```bash
 node .claude/skills/nick-q/scripts/preserve-input.cjs project-setup
@@ -442,7 +556,11 @@ node .claude/skills/nick-q/scripts/preserve-input.cjs project-setup
 - [ ] Multi-Review を実行したか
 - [ ] SPEC GATE をチェックしたか
 - [ ] [HUMAN_CHECKPOINT] で承認を得たか
+- [ ] **[USER FEEDBACK] 処理を行ったか（マーカーがあれば）**
+- [ ] **Foundation Draft を生成したか（Status: Draft）**
 - [ ] **Feature Drafts を生成したか（Status: Draft）**
+- [ ] **GitHub Labels を初期化したか（foundation ラベル含む）**
+- [ ] **Foundation Issue を作成したか（Feature Issues より先）**
 - [ ] **Feature Issues を作成したか（Draft パスを記載）**
 - [ ] Input を保存したか（リセットは PR マージ後）
 - [ ] **TodoWrite で全ステップを completed にしたか**
@@ -453,8 +571,11 @@ node .claude/skills/nick-q/scripts/preserve-input.cjs project-setup
 
 | Condition | Workflow | Description |
 |-----------|----------|-------------|
-| Feature 実装開始 | issue タイプ（SKILL.md Entry） | Draft Spec の詳細化 → Plan → 実装 |
-| Spec 変更が必要 | change タイプ（SKILL.md Entry） | Vision/Screen/Domain 変更 |
+| Foundation 実装開始 | issue タイプ（SKILL.md Entry） | Foundation Draft 詳細化 → Plan → 実装 |
+| Feature 実装開始 | issue タイプ（SKILL.md Entry） | Feature Draft 詳細化 → Plan → 実装 |
+| Spec 変更が必要 | change タイプ（SKILL.md Entry） | Vision/Screen/Domain/Foundation 変更 |
 
 > **Note:** 「Issue #N を実装して」と依頼すると、SKILL.md の issue タイプ処理が開始されます。
 > Draft Spec がある場合は詳細化、Clarified Spec がある場合は Plan に進みます。
+>
+> **推奨:** Foundation Issue を最初に実装してから Feature Issues に進んでください。

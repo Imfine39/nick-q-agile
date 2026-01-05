@@ -87,6 +87,7 @@ Categories used in dynamically generated QA questions.
 | `S-VISION-{NNN}` | S-VISION-001 | Vision Spec |
 | `S-DOMAIN-{NNN}` | S-DOMAIN-001 | Domain Spec |
 | `S-SCREEN-{NNN}` | S-SCREEN-001 | Screen Spec |
+| `S-FOUNDATION-{NNN}` | S-FOUNDATION-001 | Foundation Spec |
 | `S-{AREA}-{NNN}` | S-AUTH-001 | Feature Spec |
 | `F-{AREA}-{NNN}` | F-AUTH-001 | Fix Spec |
 | `TS-{AREA}-{NNN}` | TS-AUTH-001 | Test Scenario Spec |

@@ -75,6 +75,7 @@ Spec-Mesh ワークフローの全体像と遷移図。
 | _overview-change.md | Overview Spec 変更サブワークフロー | SPEC GATE BLOCKED_OVERVIEW 時 |
 | _cascade-update.md | Spec 間の連鎖更新 | feature, fix, change |
 | _finalize.md | HUMAN_CHECKPOINT 実装 | 全ワークフロー |
+| _human-checkpoint-followup.md | HUMAN_CHECKPOINT 後のフィードバック処理 | project-setup, feature, fix, change, plan |
 | _impact-guard.md | Quick 判定 / Impact Guard | SKILL.md Entry (quick, fix) |
 | impact-analysis.md | 影響範囲分析 | feature, fix, change |
 
@@ -222,6 +223,7 @@ idle → spec → spec_review → plan → plan_review → tasks → implement �
 | Feedback Recording | 実装中の発見 | Spec への反映判断 |
 | Test Result Review | E2E 完了後 | テスト結果の確認 |
 | Design Decision | 重要な設計判断 | 複数選択肢からの決定 |
+| Post-Checkpoint Feedback | CHECKPOINT 後 | [USER FEEDBACK] マーカー処理 |
 
 ---
 

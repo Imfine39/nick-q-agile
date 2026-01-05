@@ -19,7 +19,7 @@ HUMAN_CHECKPOINT は人間の明示的な承認を必要とするゲートです
 
 ---
 
-## 5 Patterns
+## 6 Patterns
 
 | Pattern | 用途 | Trigger |
 |---------|------|---------|
@@ -28,6 +28,7 @@ HUMAN_CHECKPOINT は人間の明示的な承認を必要とするゲートです
 | **Workflow Completion** | ワークフロー結果確認 | 各ワークフロー完了時 |
 | **Decision Point** | 重大な決定の確認 | Case 3 等の判断時 |
 | **Irreversible Action** | 取り消せない操作の確認 | Push/Merge/Delete 前 |
+| **Post-Checkpoint Feedback** | CHECKPOINT 後のフィードバック処理 | [USER FEEDBACK] マーカー検出時 |
 
 ---
 
@@ -186,6 +187,80 @@ HUMAN_CHECKPOINT は人間の明示的な承認を必要とするゲートです
 
 ---
 
+## Pattern 6: Post-Checkpoint Feedback
+
+**Trigger:** [HUMAN_CHECKPOINT] 後のユーザー応答に `[USER FEEDBACK]` マーカーが含まれる場合
+
+> **共通コンポーネント:** [_human-checkpoint-followup.md](../workflows/shared/_human-checkpoint-followup.md) 参照
+
+### Template
+
+```markdown
+=== [USER FEEDBACK] 処理完了 ===
+
+処理したフィードバック: {N} 件
+
+| # | 場所 | フィードバック | 修正内容 |
+|---|------|---------------|---------|
+| 1 | {section/location} | {feedback_summary} | {change_made} |
+| 2 | ... | ... | ... |
+
+修正規模: {MINOR | MAJOR}
+
+{if MINOR}
+Lint を実行し、次のステップへ進みます。
+{/if}
+
+{if MAJOR}
+Multi-Review を再実行します。
+{/if}
+```
+
+### ユーザー応答パターン
+
+| Pattern | 条件 | 処理 |
+|---------|------|------|
+| **A: 承認** | マーカーなし + 承認ワード | 次のステップへ |
+| **B: Spec 内フィードバック** | `[USER FEEDBACK: ...]` マーカーあり | マーカー処理 → ルーティング |
+| **C: 会話内フィードバック** | マーカーなし + 修正指示 | 修正適用 → ルーティング |
+
+### 修正規模判定
+
+| 規模 | 条件 | ルーティング |
+|------|------|-------------|
+| **MINOR** | 軽微な文言修正、構造変更なし | Lint → 次のステップ |
+| **MAJOR** | 要件追加/削除、UC/FR/API 変更 | Multi-Review へ戻る |
+
+### 処理フロー
+
+```
+[HUMAN_CHECKPOINT] 提示
+    ↓
+ユーザー応答
+    │
+    ├─ Pattern A（承認）→ 次のステップへ
+    │
+    ├─ Pattern B（マーカーあり）
+    │   ↓
+    │   [USER FEEDBACK] 検出
+    │   ↓
+    │   フィードバック適用・マーカー削除
+    │   ↓
+    │   修正規模判定
+    │   ├─ MINOR → Lint → 次のステップ
+    │   └─ MAJOR → Multi-Review へ戻る
+    │
+    └─ Pattern C（会話内指示）
+        ↓
+        修正適用
+        ↓
+        修正規模判定
+        ├─ MINOR → Lint → 次のステップ
+        └─ MAJOR → Multi-Review へ戻る
+```
+
+---
+
 ## Format Rules
 
 ### 1. ブロック形式（Spec/Plan/Decision/Irreversible）
@@ -295,3 +370,4 @@ HUMAN_CHECKPOINT は人間の明示的な承認を必要とするゲートです
 | [_finalize.md](../workflows/shared/_finalize.md) | Spec Approval の実装例 |
 | [plan.md](../workflows/plan.md) | Plan Approval の実装例 |
 | [pr.md](../workflows/pr.md) | Irreversible Action の実装例 |
+| [_human-checkpoint-followup.md](../workflows/shared/_human-checkpoint-followup.md) | Post-Checkpoint Feedback の共通コンポーネント |

@@ -2,9 +2,9 @@
 name: nick-q
 description: |
   Spec-Driven Development (SSD) orchestrator for managing specifications, features, and implementation workflows.
-  Use when the user wants to create Vision/Domain/Screen/Feature specs, add features, fix bugs,
+  Use when the user wants to create Vision/Domain/Screen/Foundation/Feature specs, add features, fix bugs,
   create implementation plans, or manage PR workflows. Triggers on keywords like "spec", "feature",
-  "vision", "domain", "implement", "plan", "PR", or Japanese equivalents like "仕様", "機能追加", "バグ修正".
+  "vision", "domain", "foundation", "implement", "plan", "PR", or Japanese equivalents like "仕様", "機能追加", "バグ修正", "基盤構築".
 ---
 
 # NICK-Q - SSD Orchestrator
@@ -77,9 +77,15 @@ Spec-Driven Development の全工程を管理するオーケストレーター�
 
 Issue には複数の状態があり、それぞれ処理が異なる。
 
+**Issue タイプの判定:**
+- `[Foundation]` prefix → Foundation Issue
+- `[Feature]` prefix → Feature Issue
+- `[Fix]` prefix → Fix Issue
+
 | 状態 | 処理 |
 |------|------|
-| **Draft Spec あり** | Draft 読み込み → 詳細 QA → Spec 更新 → Multi-Review → SPEC GATE |
+| **Foundation Draft あり** | Draft 読み込み → 詳細 QA → Spec 更新 → Multi-Review → SPEC GATE → Plan → Implement |
+| **Feature/Fix Draft あり** | Draft 読み込み → 詳細 QA → Spec 更新 → Multi-Review → SPEC GATE |
 | **Clarified Spec あり** | → `plan.md` へ（Spec 作成は完了済み） |
 | **In Review Spec あり** | Multi-Review から再開 → SPEC GATE |
 | **Spec なし + Input あり** | Input 読み込み → `feature.md` or `fix.md` へ |
@@ -88,8 +94,14 @@ Issue には複数の状態があり、それぞれ処理が異なる。
 **Draft Spec の検出:**
 ```bash
 # Issue body から Draft パスを抽出、または
-ls .specify/specs/features/*/spec.md  # Status: Draft のものを探す
+ls .specify/specs/overview/foundation/spec.md  # Foundation Draft
+ls .specify/specs/features/*/spec.md           # Feature Draft (Status: Draft のものを探す)
 ```
+
+**Foundation Issue の特徴:**
+- Feature 実装前に完了すべき基盤タスク
+- Domain Spec Section 7 の技術決定を実装
+- 1 プロジェクト 1 Foundation Spec
 
 ### 1.6 Impact Guard（Quick 判定）
 
@@ -302,10 +314,12 @@ setup  →「プロジェクト開始」    → project-setup.md
 
 === Spec 作成ワークフロー ===
 
-project-setup.md    - Overview Specs + Feature Drafts 作成
-feature.md          - Feature Spec 作成
+project-setup.md    - Overview Specs + Foundation/Feature Drafts 作成
+feature.md          - Feature Spec 作成（Draft → 詳細化）
 fix.md              - Fix Spec 作成
 change.md           - Spec 変更
+
+※ Foundation Spec は project-setup.md で Draft 作成後、Issue から詳細化
 
 
 === 実装ワークフロー ===

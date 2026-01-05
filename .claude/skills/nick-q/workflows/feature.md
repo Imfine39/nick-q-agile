@@ -257,8 +257,9 @@ Spec 作成に進みます。
 
 1. **Run scaffold:**
    ```bash
-   node .claude/skills/nick-q/scripts/scaffold-spec.cjs --kind feature --id S-XXX-001 --title "{機能名}"
+   node .claude/skills/nick-q/scripts/scaffold-spec.cjs --kind feature --id S-XXX-001 --title "{Feature Name}"
    ```
+   > **Note:** `--title` は英語で指定すること（スラッグ生成のため）
 
 **Draft 詳細化モード:**
 
@@ -440,9 +441,38 @@ node .claude/skills/nick-q/scripts/spec-lint.cjs
    承認後、GitHub Issue とブランチを作成します。
    ```
 
+### Step 8.5: [USER FEEDBACK] 処理
+
+> **共通コンポーネント参照:** [shared/_human-checkpoint-followup.md](shared/_human-checkpoint-followup.md)
+
+**[HUMAN_CHECKPOINT] 後の応答を処理:**
+
+1. **[USER FEEDBACK] マーカー検出:**
+   ```
+   Grep tool:
+     pattern: "\[USER FEEDBACK: [^\]]+\]"
+     path: .specify/specs/features/{id}/spec.md
+     output_mode: content
+   ```
+
+2. **処理判定:**
+   - マーカーなし + 承認ワード → Step 9 へ
+   - マーカーあり → フィードバック処理
+
+3. **フィードバック処理（マーカーがある場合）:**
+   - フィードバック内容に基づいて修正
+   - マーカーを削除
+   - 修正サマリーを表示
+
+4. **ルーティング:**
+   | 修正規模 | 条件 | 次のステップ |
+   |---------|------|-------------|
+   | **MINOR** | 軽微な文言修正、構造変更なし | Lint → Step 9 へ |
+   | **MAJOR** | 要件追加/削除、UC/FR/API 変更 | Step 5 (Multi-Review) へ戻る |
+
 ### Step 9: Create GitHub Issue & Branch
 
-**[HUMAN_CHECKPOINT] 承認後に実行:**
+**[HUMAN_CHECKPOINT] 承認後（または Step 8.5 完了後）に実行:**
 
 1. **Create GitHub Issue:**
    ```bash
@@ -492,6 +522,7 @@ node .claude/skills/nick-q/scripts/preserve-input.cjs add --feature {feature-dir
 - [ ] **BLOCKED_OVERVIEW の場合、Overview Change を実行したか**
 - [ ] spec-lint.cjs を実行したか
 - [ ] **[HUMAN_CHECKPOINT] で承認を得たか**
+- [ ] **[USER FEEDBACK] 処理を行ったか（マーカーがあれば）**
 - [ ] **TodoWrite で全ステップを completed にしたか**
 
 ### 新規作成モード

@@ -211,6 +211,35 @@ Risks:
 承認後、tasks ワークフロー でタスク分割に進んでください。
 ```
 
+### Step 6.5: [USER FEEDBACK] 処理
+
+> **共通コンポーネント参照:** [shared/_human-checkpoint-followup.md](shared/_human-checkpoint-followup.md)
+
+**[HUMAN_CHECKPOINT] 後の応答を処理:**
+
+1. **[USER FEEDBACK] マーカー検出:**
+   ```
+   Grep tool:
+     pattern: "\[USER FEEDBACK: [^\]]+\]"
+     path: {plan.md のパス}
+     output_mode: content
+   ```
+
+2. **処理判定:**
+   - マーカーなし + 承認ワード → Step 7 へ
+   - マーカーあり → フィードバック処理
+
+3. **フィードバック処理（マーカーがある場合）:**
+   - フィードバック内容に基づいて修正
+   - マーカーを削除
+   - 修正サマリーを表示
+
+4. **ルーティング:**
+   | 修正規模 | 条件 | 次のステップ |
+   |---------|------|-------------|
+   | **MINOR** | 軽微な文言修正、タスク名変更 | Lint → Step 7 へ |
+   | **MAJOR** | アプローチ変更、タスク構成変更 | Step 3 (Plan 再作成) へ戻る |
+
 ### Step 7: Update State (on approval)
 
 ```bash
@@ -230,6 +259,7 @@ node .claude/skills/nick-q/scripts/state.cjs branch --set-step plan
 - [ ] plan.md を保存したか
 - [ ] spec-lint を実行したか
 - [ ] 人間レビューを依頼したか
+- [ ] **[USER FEEDBACK] 処理を行ったか（マーカーがあれば）**
 - [ ] **TodoWrite で全ステップを completed にしたか**
 
 ---

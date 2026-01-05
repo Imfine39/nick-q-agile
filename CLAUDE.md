@@ -69,7 +69,12 @@ Lint
     │
     └─ [DEFERRED] ≥ 1 → PASSED_WITH_DEFERRED → [HUMAN_CHECKPOINT]（リスク確認）
     ↓
-Plan → [HUMAN_CHECKPOINT]
+[USER FEEDBACK] 処理
+    ├─ 承認 → Plan へ
+    ├─ MINOR 修正 → Lint → Plan へ
+    └─ MAJOR 修正 → Multi-Review へ戻る
+    ↓
+Plan → [HUMAN_CHECKPOINT] → [USER FEEDBACK] 処理
     ↓
 Tasks → Implement → E2E → PR
 ```
@@ -182,6 +187,7 @@ node .claude/skills/nick-q/scripts/validate-matrix.cjs
 node .claude/skills/nick-q/scripts/spec-metrics.cjs
 
 # Spec・Matrix 生成
+# kind: vision, domain, screen, foundation, feature, fix, test-scenario
 node .claude/skills/nick-q/scripts/scaffold-spec.cjs --kind <type> --id <id> --title <title>
 node .claude/skills/nick-q/scripts/generate-matrix-view.cjs
 

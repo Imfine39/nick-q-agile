@@ -289,6 +289,35 @@ node .claude/skills/nick-q/scripts/validate-matrix.cjs
    承認後、次のステップへ進んでください。
    ```
 
+### Step 10.5: [USER FEEDBACK] 処理
+
+> **共通コンポーネント参照:** [shared/_human-checkpoint-followup.md](shared/_human-checkpoint-followup.md)
+
+**[HUMAN_CHECKPOINT] 後の応答を処理:**
+
+1. **[USER FEEDBACK] マーカー検出:**
+   ```
+   Grep tool:
+     pattern: "\[USER FEEDBACK: [^\]]+\]"
+     path: {変更対象の Spec パス}
+     output_mode: content
+   ```
+
+2. **処理判定:**
+   - マーカーなし + 承認ワード → 次のステップへ
+   - マーカーあり → フィードバック処理
+
+3. **フィードバック処理（マーカーがある場合）:**
+   - フィードバック内容に基づいて修正
+   - マーカーを削除
+   - 修正サマリーを表示
+
+4. **ルーティング:**
+   | 修正規模 | 条件 | 次のステップ |
+   |---------|------|-------------|
+   | **MINOR** | 軽微な文言修正、構造変更なし | Lint → 完了/呼び出し元へ |
+   | **MAJOR** | エンティティ定義変更、影響範囲拡大 | Step 7 (Multi-Review) へ戻る |
+
 ---
 
 ## Self-Check
@@ -303,6 +332,8 @@ node .claude/skills/nick-q/scripts/validate-matrix.cjs
 - [ ] **Multi-Review を実行したか（3観点並列）**
 - [ ] **SPEC GATE をチェックしたか**
 - [ ] lint を実行したか
+- [ ] **[HUMAN_CHECKPOINT] で承認を得たか**
+- [ ] **[USER FEEDBACK] 処理を行ったか（マーカーがあれば）**
 - [ ] **TodoWrite で全ステップを completed にしたか**
 
 ---

@@ -45,7 +45,19 @@ S-SCREEN-001
 - プロジェクトに1つのみ
 - 番号は常に 001
 
-### 1.4 Feature Spec
+### 1.4 Foundation Spec
+
+```
+S-FOUNDATION-001
+```
+
+- プロジェクトに1つのみ
+- 番号は常に 001
+- 技術基盤・インフラストラクチャのセットアップタスクを定義
+- Domain Spec Section 7 の技術決定を実装
+- Feature 実装前に完了すべき
+
+### 1.5 Feature Spec
 
 ```
 S-{AREA}-{NNN}
@@ -62,14 +74,13 @@ S-{AREA}-{NNN}
 | `S-ORDERS-001` | 注文管理 |
 | `S-INVENTORY-001` | 在庫管理 |
 | `S-DASHBOARD-001` | ダッシュボード |
-| `S-FOUNDATION-001` | 基盤機能（特殊） |
 
 **命名規則:**
 - 英大文字とハイフンのみ
 - 具体的で意味のある名前
 - 略語は一般的なもののみ（AUTH, API, UI など）
 
-### 1.5 Fix Spec
+### 1.6 Fix Spec
 
 ```
 F-{AREA}-{NNN}
@@ -90,7 +101,7 @@ F-{AREA}-{NNN}
 - Feature Spec の AREA 命名規則に準拠
 - 同じ機能領域のバグは連番で管理
 
-### 1.6 Test Scenario Spec
+### 1.7 Test Scenario Spec
 
 ```
 TS-{FEATURE_ID}
@@ -503,6 +514,7 @@ QA ドキュメント内の質問識別子。
 | Vision Spec | `S-VISION-001` | S-VISION-001 |
 | Domain Spec | `S-DOMAIN-001` | S-DOMAIN-001 |
 | Screen Spec | `S-SCREEN-001` | S-SCREEN-001 |
+| Foundation Spec | `S-FOUNDATION-001` | S-FOUNDATION-001 |
 | Feature Spec | `S-{AREA}-{NNN}` | S-AUTH-001 |
 | Fix Spec | `F-{AREA}-{NNN}` | F-AUTH-001 |
 | Test Scenario | `TS-{FEATURE_ID}` | TS-AUTH-001 |

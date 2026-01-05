@@ -11,6 +11,7 @@ Rules for creating and maintaining specifications in SSD workflow.
 | **Vision Spec** | S-VISION-001 | Project purpose, target users, user journeys |
 | **Domain Spec** | S-DOMAIN-001 | Shared masters (M-*), APIs (API-*), business rules |
 | **Screen Spec** | S-SCREEN-001 | Screen definitions (SCR-*), transitions, wireframes |
+| **Foundation Spec** | S-FOUNDATION-001 | Technical infrastructure, setup tasks, environment config |
 | **Feature Spec** | S-{AREA}-{NNN} | User stories, functional requirements per feature |
 | **Fix Spec** | F-{AREA}-{NNN} | Bug analysis, root cause, fix proposal |
 | **Test Scenario Spec** | TS-{AREA}-{NNN} | Test cases (TC-*), test data, expected results |
@@ -108,6 +109,7 @@ All specs MUST be created from templates in `templates/`:
 - `vision-spec.md`
 - `domain-spec.md`
 - `screen-spec.md`
+- `foundation-spec.md`
 - `feature-spec.md`
 - `fix-spec.md`
 - `test-scenario-spec.md`

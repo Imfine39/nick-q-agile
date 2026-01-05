@@ -36,6 +36,9 @@
  *   node .claude/skills/nick-q/scripts/scaffold-spec.cjs --kind feature --id S-SALES-001 --title "Basic Sales Recording"
  *     --domain S-DOMAIN-001 --uc UC-001:Record sale,UC-002:Adjust sale --masters M-CLIENT --apis API-ORDER-LIST
  *
+ *   node .claude/skills/nick-q/scripts/scaffold-spec.cjs --kind foundation --id S-FOUNDATION-001 --title "Project Foundation"
+ *     --domain S-DOMAIN-001
+ *
  *   node .claude/skills/nick-q/scripts/scaffold-spec.cjs --kind fix --id F-AUTH-001 --title "Login Error Fix"
  *     --issue 50
  *
@@ -44,10 +47,11 @@
  *
  * Directory structure:
  *   .specify/specs/
- *   ├── overview/           # vision, domain, screen, matrix
+ *   ├── overview/           # vision, domain, screen, foundation, matrix
  *   │   ├── vision/
  *   │   ├── domain/
- *   │   └── screen/
+ *   │   ├── screen/
+ *   │   └── foundation/
  *   ├── features/           # feature specs
  *   └── fixes/              # fix specs
  *
@@ -60,7 +64,7 @@ const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
 
-const VALID_KINDS = ['vision', 'domain', 'screen', 'feature', 'fix', 'overview', 'test-scenario'];
+const VALID_KINDS = ['vision', 'domain', 'screen', 'foundation', 'feature', 'fix', 'overview', 'test-scenario'];
 
 /**
  * Input validation to prevent shell injection.
@@ -130,11 +134,11 @@ function parseArgs() {
 
   if (!out.kind || !out.id || !out.title) {
     console.error('ERROR: --kind, --id, --title are required');
-    console.error('  --kind: vision | domain | screen | feature | fix | test-scenario');
+    console.error('  --kind: vision | domain | screen | foundation | feature | fix | test-scenario');
     process.exit(1);
   }
   if (!VALID_KINDS.includes(out.kind)) {
-    console.error(`ERROR: Invalid kind "${out.kind}". Must be: vision, domain, screen, feature, fix, or test-scenario`);
+    console.error(`ERROR: Invalid kind "${out.kind}". Must be: vision, domain, screen, foundation, feature, fix, or test-scenario`);
     process.exit(1);
   }
   if (out.kind === 'domain' && !out.vision) {
@@ -142,6 +146,9 @@ function parseArgs() {
   }
   if (out.kind === 'screen' && !out.domain) {
     console.log('WARNING: Screen spec should reference a Domain spec (--domain)');
+  }
+  if (out.kind === 'foundation' && !out.domain) {
+    console.log('WARNING: Foundation spec should reference a Domain spec (--domain)');
   }
   if (out.kind === 'feature' && !out.domain) {
     console.error('ERROR: Feature requires --domain (Domain Spec ID)');
@@ -172,6 +179,7 @@ function getTemplatePath(kind) {
     vision: 'vision-spec.md',
     domain: 'domain-spec.md',
     screen: 'screen-spec.md',
+    foundation: 'foundation-spec.md',
     feature: 'feature-spec.md',
     fix: 'fix-spec.md',
     'test-scenario': 'test-scenario-spec.md'
@@ -223,6 +231,14 @@ function buildSpecContent(template, args, relDir) {
     }
   } else if (args.kind === 'screen') {
     content = content.replace('Spec ID: S-SCREEN-001', `Spec ID: ${args.id}`);
+    if (args.vision) {
+      content = content.replace('Related Vision: S-VISION-001', `Related Vision: ${args.vision}`);
+    }
+    if (args.domain) {
+      content = content.replace('Related Domain: S-DOMAIN-001', `Related Domain: ${args.domain}`);
+    }
+  } else if (args.kind === 'foundation') {
+    content = content.replace('Spec ID: S-FOUNDATION-001', `Spec ID: ${args.id}`);
     if (args.vision) {
       content = content.replace('Related Vision: S-VISION-001', `Related Vision: ${args.vision}`);
     }
@@ -324,8 +340,8 @@ function main() {
   const template = readTemplate(args.kind);
   const specsBase = path.join(process.cwd(), '.specify', 'specs');
 
-  // Overview specs: vision, domain, screen
-  if (['vision', 'domain', 'screen'].includes(args.kind)) {
+  // Overview specs: vision, domain, screen, foundation
+  if (['vision', 'domain', 'screen', 'foundation'].includes(args.kind)) {
     const dir = path.join(specsBase, 'overview', args.kind);
     ensureDir(dir);
     const outPath = path.join(dir, 'spec.md');
