@@ -35,6 +35,15 @@
             "command": "npm run lint --silent -- --max-warnings 0 2>/dev/null || echo '[Lint] Warnings detected'"
           }
         ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .claude/hooks/post-commit-task.cjs 2>/dev/null || true"
+          }
+        ]
       }
     ],
     "SessionStart": [
