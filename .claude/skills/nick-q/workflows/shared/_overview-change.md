@@ -188,28 +188,19 @@ Matrix 参照:
 ### Step 4: [HUMAN_CHECKPOINT]
 
 ```
-=== [HUMAN_CHECKPOINT] Overview 変更確認 ===
+=== [HUMAN_CHECKPOINT] Overview 変更 ===
 
-以下の Overview 変更を実行します:
+| # | 対象 | 変更 | 影響度 | 影響 Spec |
+|---|------|------|--------|-----------|
+| 1 | API-USER-CREATE | email フィールド追加 | HIGH | S-AUTH-001 |
+| 2 | M-USER | nickname 属性追加 | LOW | (なし) |
 
-【変更内容】
-1. API-USER-CREATE
-   - 変更: request/response に email フィールド追加
-   - 影響度: HIGH
-   - 影響を受ける Feature: S-AUTH-001
+破壊的変更: なし
 
-【影響分析サマリー】
-- 影響を受ける Feature: 1 件
-- 破壊的変更: なし（フィールド追加のみ）
-
-確認事項:
-- [ ] 変更内容が正しいか
-- [ ] 影響範囲を理解しているか
-- [ ] この Feature で実行することが適切か
-
-承認後、Overview Spec を更新します。
-拒否する場合、Feature Spec を再検討してください。
+承認 [Y] / 拒否 [N]?
 ```
+
+> **Note:** 確認項目を減らしシンプルに。影響度は Impact Analysis で自動判定済み。
 
 **拒否された場合:**
 
