@@ -87,9 +87,24 @@ Task 開始
 ### Step 3: For Each Task
 
 **3.1 Update progress:**
-```bash
-node .claude/skills/nick-q/scripts/state.cjs branch --set-task-progress {completed}/{total}
-```
+
+タスク完了時に **2箇所** を更新すること:
+
+1. **tasks.md のチェックボックス:**
+   ```markdown
+   # Before
+   - [ ] [T-001] [P1] [UC-001] Implement feature X
+
+   # After
+   - [x] [T-001] [P1] [UC-001] Implement feature X
+   ```
+
+2. **State スクリプト:**
+   ```bash
+   node .claude/skills/nick-q/scripts/state.cjs branch --set-task-progress {completed}/{total}
+   ```
+
+**重要:** タスク完了後、即座に tasks.md を編集してチェックを入れること。バッチ更新は禁止。
 
 **3.2 Read task requirements:**
 - Identify related UC/FR/SC IDs
@@ -383,6 +398,7 @@ node .claude/skills/nick-q/scripts/state.cjs branch --set-step implement --set-t
 - [ ] **[DEFERRED] チェックを実施したか（Step 3.2.5）**
 - [ ] テストを先に書いたか（fail-first）
 - [ ] 全タスクを実装したか
+- [ ] **各タスク完了時に tasks.md のチェックボックスを `[x]` にしたか**
 - [ ] **各タスク完了時に TodoWrite で completed にしたか**
 - [ ] テストが全て pass したか
 - [ ] lint を実行したか
