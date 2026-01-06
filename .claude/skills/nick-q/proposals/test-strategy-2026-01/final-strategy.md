@@ -152,13 +152,13 @@ After:
 
 【実装】
 
-1. Git post-commit hook
+1. Claude Code PostToolUse hook
+   • Bash(git commit) 実行後に発火
    • コミットメッセージからタスク ID 抽出
-   • state.json 自動更新
    • tasks.md 自動更新
 
 2. コミットメッセージ規約
-   feat: add user auth [T-F001-01]
+   feat: add user auth [T-001]
 
 3. AI の責任
    • コードを書く
@@ -226,8 +226,7 @@ spec-lsp.cjs
 |----------|----------|--------|
 | `scripts/spec-lsp.cjs` | 新規作成（refs/impact/validate） | P0 |
 | `scripts/task-complete.cjs` | 新規作成（list/pending/complete/stats） | P1 |
-| `scripts/hooks/post-commit` | 自動追跡 hook | P1 |
-| `scripts/setup-hooks.cjs` | hook セットアップスクリプト | P1 |
+| `.claude/hooks/post-commit-task.cjs` | Claude Code hooks（自動追跡） | P1 |
 | `workflows/feature.md` | spec-lsp 呼び出し追加 | P2 |
 | `workflows/implement.md` | spec-lsp refs 呼び出し追加 | P2 |
 | `SKILL.md` | Feature 粒度チェック追加 | P2 |
