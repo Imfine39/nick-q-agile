@@ -186,6 +186,22 @@ node .claude/skills/nick-q/scripts/spec-lint.cjs
 node .claude/skills/nick-q/scripts/validate-matrix.cjs
 node .claude/skills/nick-q/scripts/spec-metrics.cjs
 
+# 整合性チェック（spec-lsp）
+node .claude/skills/nick-q/scripts/spec-lsp.cjs refs M-USER       # 参照一覧
+node .claude/skills/nick-q/scripts/spec-lsp.cjs impact M-USER     # 影響分析
+node .claude/skills/nick-q/scripts/spec-lsp.cjs unused            # 未使用要素
+node .claude/skills/nick-q/scripts/spec-lsp.cjs validate          # 整合性チェック
+
+# Task 追跡
+node .claude/skills/nick-q/scripts/task-complete.cjs list         # タスク一覧
+node .claude/skills/nick-q/scripts/task-complete.cjs pending      # 未完了のみ
+node .claude/skills/nick-q/scripts/task-complete.cjs complete T-001  # タスク完了
+node .claude/skills/nick-q/scripts/task-complete.cjs stats        # 統計
+
+# Hooks セットアップ
+node .claude/skills/nick-q/scripts/setup-hooks.cjs                # Git hooks インストール
+node .claude/skills/nick-q/scripts/setup-hooks.cjs --status       # 状態確認
+
 # Spec・Matrix 生成
 # kind: vision, domain, screen, foundation, feature, fix, test-scenario
 node .claude/skills/nick-q/scripts/scaffold-spec.cjs --kind <type> --id <id> --title <title>
