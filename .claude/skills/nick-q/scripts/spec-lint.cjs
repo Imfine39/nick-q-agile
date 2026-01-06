@@ -5,10 +5,12 @@
  * Specification linter for Vision/Domain/Screen/Feature consistency.
  *
  * Usage:
- *   node spec-lint.cjs              # Full lint (all specs)
- *   node spec-lint.cjs --incremental # Incremental lint (changed specs only)
- *   node spec-lint.cjs -i            # Short form of --incremental
- *   node spec-lint.cjs --force       # Force full lint, update cache
+ *   node spec-lint.cjs                        # Full lint (all specs)
+ *   node spec-lint.cjs --file <path>          # Single-file lint (errors for specified file only)
+ *   node spec-lint.cjs -f <path>              # Short form of --file
+ *   node spec-lint.cjs --incremental          # Incremental lint (changed specs only)
+ *   node spec-lint.cjs -i                     # Short form of --incremental
+ *   node spec-lint.cjs --force                # Force full lint, update cache
  *
  * Error Handling:
  *   Exit Code 0: Validation passed (may have warnings)
@@ -74,6 +76,12 @@ const crypto = require('crypto');
 const args = process.argv.slice(2);
 const isIncremental = args.includes('--incremental') || args.includes('-i');
 const isForce = args.includes('--force');
+
+// --file option: lint only the specified file
+const fileArgIndex = args.findIndex(a => a === '--file' || a === '-f');
+const targetFile = fileArgIndex !== -1 && args[fileArgIndex + 1]
+  ? path.resolve(args[fileArgIndex + 1])
+  : null;
 
 const root = process.cwd();
 const LINT_CACHE_PATH = path.join(root, '.specify', 'state', 'lint-cache.json');
@@ -236,10 +244,24 @@ if (!fs.existsSync(specsRoot)) {
   process.exit(0);
 }
 
-const allSpecFiles = walkForSpecs(specsRoot);
+// If --file is specified, only lint that file (but still load all specs for reference checks)
+let allSpecFiles = walkForSpecs(specsRoot);
 if (allSpecFiles.length === 0) {
   console.log('No spec.md files found under .specify/specs; nothing to lint.');
   process.exit(0);
+}
+
+// Validate --file option if provided
+if (targetFile) {
+  if (!fs.existsSync(targetFile)) {
+    console.error(`Error: File not found: ${targetFile}`);
+    process.exit(1);
+  }
+  if (!targetFile.endsWith('spec.md') && !targetFile.endsWith('.md')) {
+    console.error(`Error: --file should point to a spec.md file`);
+    process.exit(1);
+  }
+  console.log(`Single-file lint: ${path.relative(root, targetFile)}`);
 }
 
 // Load cache for incremental mode
@@ -247,8 +269,17 @@ const lintCache = readLintCache();
 let specFilesToLint = allSpecFiles;
 let skippedCount = 0;
 
-// Incremental mode: only lint changed files
-if (isIncremental && !isForce) {
+// --file mode: only lint the specified file
+if (targetFile) {
+  // Ensure target file is in allSpecFiles, or add it
+  if (!allSpecFiles.includes(targetFile)) {
+    allSpecFiles.push(targetFile);
+  }
+  specFilesToLint = [targetFile];
+  skippedCount = allSpecFiles.length - 1;
+}
+// Incremental mode: only lint changed files (ignored if --file is specified)
+else if (isIncremental && !isForce) {
   specFilesToLint = allSpecFiles.filter(f => hasFileChanged(f, lintCache));
   skippedCount = allSpecFiles.length - specFilesToLint.length;
 
