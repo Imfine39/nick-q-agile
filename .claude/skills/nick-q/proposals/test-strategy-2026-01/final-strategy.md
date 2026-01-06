@@ -225,9 +225,9 @@ spec-lsp.cjs
 | ファイル | 変更内容 | 優先度 |
 |----------|----------|--------|
 | `scripts/spec-lsp.cjs` | 新規作成（refs/impact/validate） | P0 |
-| `scripts/state.cjs` | task complete コマンド追加 | P1 |
-| `scripts/task-complete.cjs` | 新規作成 | P1 |
-| `.git/hooks/post-commit` | 自動追跡 hook | P1 |
+| `scripts/task-complete.cjs` | 新規作成（list/pending/complete/stats） | P1 |
+| `scripts/hooks/post-commit` | 自動追跡 hook | P1 |
+| `scripts/setup-hooks.cjs` | hook セットアップスクリプト | P1 |
 | `workflows/feature.md` | spec-lsp 呼び出し追加 | P2 |
 | `workflows/implement.md` | spec-lsp refs 呼び出し追加 | P2 |
 | `SKILL.md` | Feature 粒度チェック追加 | P2 |
