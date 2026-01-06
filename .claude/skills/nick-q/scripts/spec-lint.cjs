@@ -693,7 +693,28 @@ for (const spec of specs) {
   }
 
   // Check for [NEEDS CLARIFICATION] markers (warning in approved+ specs, error otherwise depends on status)
-  const clarifyMatches = content.match(needsClarificationRegex);
+  // Exclude template comments (e.g., "All [NEEDS CLARIFICATION] markers resolved") and backtick-quoted text
+  const clarifyMatches = content.match(needsClarificationRegex)?.filter((_, idx, arr) => {
+    // Find the line containing this match
+    const lines = content.split('\n');
+    let matchCount = 0;
+    for (const line of lines) {
+      const lineMatches = line.match(needsClarificationRegex);
+      if (lineMatches) {
+        for (let i = 0; i < lineMatches.length; i++) {
+          if (matchCount === idx) {
+            // Exclude if line contains "markers resolved" (template comment)
+            if (line.includes('markers resolved')) return false;
+            // Exclude if marker is inside backticks
+            if (/`[^`]*\[NEEDS CLARIFICATION\][^`]*`/.test(line)) return false;
+            return true;
+          }
+          matchCount++;
+        }
+      }
+    }
+    return true;
+  });
   if (clarifyMatches && clarifyMatches.length > 0) {
     if (['APPROVED', 'IMPLEMENTED'].includes(spec.status)) {
       // Should not have clarification markers in approved/implemented specs
