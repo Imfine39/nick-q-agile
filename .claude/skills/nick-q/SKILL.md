@@ -121,6 +121,42 @@ ls .specify/specs/features/*/spec.md           # Feature Draft (Status: Draft �
 
 ---
 
+## 1.7 並列開発（Git Worktree）
+
+複数の Claude Code セッションを並列で動かす場合、同一ディレクトリでのブランチ切り替えが競合する。
+Git Worktree を使用して各セッションを独立したディレクトリで実行する。
+
+```bash
+# Worktree 作成（メインセッションで実行）
+node .claude/skills/nick-q/scripts/worktree.cjs create --slug auth --issue 5
+
+# 出力例:
+# Path: ../nick-q-worktrees/feature-5-auth/
+# Branch: feature/5-auth
+#
+# Next steps:
+#   1. Open a new terminal tab
+#   2. cd ../nick-q-worktrees/feature-5-auth
+#   3. claude
+```
+
+**ワークフロー:**
+1. メインセッション: Spec 作成、レビュー
+2. `/worktree create auth --issue 5` で worktree 作成
+3. 新しいターミナルタブで `cd ../nick-q-worktrees/feature-5-auth && claude`
+4. 新セッション: implement → PR
+5. マージ後: `/worktree remove feature-5-auth --delete-branch`
+
+**コマンド一覧:**
+| コマンド | 説明 |
+|---------|------|
+| `create --slug <name> [--issue <num>] [--type <type>]` | worktree 作成 |
+| `list` | 一覧表示 |
+| `remove <name> [--delete-branch]` | 削除 |
+| `clean [--delete-branches]` | 全削除 |
+
+---
+
 ## 2. Workflow Routing（Entry 以外）
 
 Entry で処理されない依頼は以下のワークフローへ直接ルーティング：

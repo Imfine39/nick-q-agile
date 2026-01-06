@@ -207,6 +207,12 @@ node .claude/skills/nick-q/scripts/generate-matrix-view.cjs
 node .claude/skills/nick-q/scripts/branch.cjs --type <type> --slug <slug> --issue <num>
 node .claude/skills/nick-q/scripts/pr.cjs
 
+# Worktree（並列開発）
+node .claude/skills/nick-q/scripts/worktree.cjs create --slug auth --issue 5  # 作成
+node .claude/skills/nick-q/scripts/worktree.cjs list                          # 一覧
+node .claude/skills/nick-q/scripts/worktree.cjs remove feature-5-auth         # 削除
+node .claude/skills/nick-q/scripts/worktree.cjs clean                         # 全削除
+
 # テンプレート更新
 node .claude/skills/nick-q/scripts/update.cjs --check  # 更新確認
 node .claude/skills/nick-q/scripts/update.cjs          # 更新実行
