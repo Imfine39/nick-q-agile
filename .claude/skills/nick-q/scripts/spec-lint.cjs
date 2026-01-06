@@ -16,8 +16,7 @@
  *   Exit Code 0: Validation passed (may have warnings)
  *   Exit Code 1: Validation failed with errors
  *     - Missing Spec Type or Spec ID
- *     - Duplicate Spec IDs or UC IDs
- *     - Duplicate FR/BR/VR/PLAN/COMP IDs (global scope)
+ *     - Duplicate Spec IDs or UC IDs (global scope)
  *     - Unknown master/API/screen references
  *     - Feature ID not in Domain Feature index
  *     - Feature index path points to missing file
@@ -37,6 +36,7 @@
  *   - Plan/Tasks don't reference spec IDs
  *   - Deprecated spec without documented reason
  *   - No cross-reference.json found
+ *   - Duplicate FR/BR/VR/PLAN/COMP IDs within same spec (local scope)
  *   - Duplicate T-NNN/TC-NNN IDs within same spec (local scope)
  *   - [NEEDS CLARIFICATION] markers in DRAFT/IN REVIEW specs (reminder to resolve)
  *
@@ -53,8 +53,8 @@
  *   - "Feature ID X is not listed in Domain Feature index" - Update Domain spec's Feature Index table
  * Checks:
  *  - Spec Type and Spec ID presence
- *  - Unique Spec IDs and UC IDs
- *  - Unique FR/BR/VR/PLAN/COMP IDs (global scope)
+ *  - Unique Spec IDs and UC IDs (global scope)
+ *  - FR/BR/VR/PLAN/COMP IDs uniqueness within same spec (local scope)
  *  - T-NNN/TC-NNN IDs uniqueness within same spec (local scope)
  *  - Feature specs only reference masters/APIs defined in Domain specs
  *  - Feature specs only reference screens (SCR-*) defined in Screen specs
@@ -333,35 +333,54 @@ for (const [uc, count] of ucIdCounts.entries()) {
   if (count > 1) errors.push(`Use Case ID "${uc}" is duplicated ${count} times`);
 }
 
-// Extended ID uniqueness checks (global scope)
-const frIdCounts = new Map();
-const brIdCounts = new Map();
-const vrIdCounts = new Map();
-const planIdCounts = new Map();
-const compIdCounts = new Map();
-
+// Extended ID uniqueness checks (local scope - within same spec)
+// Note: FR/BR/VR/PLAN/COMP IDs are scoped to each Feature Spec, not globally.
+// Each Feature can have its own FR-001, BR-001, etc. without conflict.
 for (const spec of specs) {
-  for (const id of spec.frIds) frIdCounts.set(id, (frIdCounts.get(id) || 0) + 1);
-  for (const id of spec.brIds) brIdCounts.set(id, (brIdCounts.get(id) || 0) + 1);
-  for (const id of spec.vrIds) vrIdCounts.set(id, (vrIdCounts.get(id) || 0) + 1);
-  for (const id of spec.planIds) planIdCounts.set(id, (planIdCounts.get(id) || 0) + 1);
-  for (const id of spec.compIds) compIdCounts.set(id, (compIdCounts.get(id) || 0) + 1);
-}
+  // Check FR IDs within same spec
+  const frIdSet = new Set();
+  for (const id of spec.frIds) {
+    if (frIdSet.has(id)) {
+      warnings.push(`Functional Requirement ID "${id}" appears multiple times in ${spec.relFile}`);
+    }
+    frIdSet.add(id);
+  }
 
-for (const [id, count] of frIdCounts.entries()) {
-  if (count > 1) errors.push(`Functional Requirement ID "${id}" is duplicated ${count} times`);
-}
-for (const [id, count] of brIdCounts.entries()) {
-  if (count > 1) errors.push(`Business Rule ID "${id}" is duplicated ${count} times`);
-}
-for (const [id, count] of vrIdCounts.entries()) {
-  if (count > 1) errors.push(`Validation Rule ID "${id}" is duplicated ${count} times`);
-}
-for (const [id, count] of planIdCounts.entries()) {
-  if (count > 1) errors.push(`Plan ID "${id}" is duplicated ${count} times`);
-}
-for (const [id, count] of compIdCounts.entries()) {
-  if (count > 1) errors.push(`Component ID "${id}" is duplicated ${count} times`);
+  // Check BR IDs within same spec
+  const brIdSet = new Set();
+  for (const id of spec.brIds) {
+    if (brIdSet.has(id)) {
+      warnings.push(`Business Rule ID "${id}" appears multiple times in ${spec.relFile}`);
+    }
+    brIdSet.add(id);
+  }
+
+  // Check VR IDs within same spec
+  const vrIdSet = new Set();
+  for (const id of spec.vrIds) {
+    if (vrIdSet.has(id)) {
+      warnings.push(`Validation Rule ID "${id}" appears multiple times in ${spec.relFile}`);
+    }
+    vrIdSet.add(id);
+  }
+
+  // Check PLAN IDs within same spec
+  const planIdSet = new Set();
+  for (const id of spec.planIds) {
+    if (planIdSet.has(id)) {
+      warnings.push(`Plan ID "${id}" appears multiple times in ${spec.relFile}`);
+    }
+    planIdSet.add(id);
+  }
+
+  // Check COMP IDs within same spec
+  const compIdSet = new Set();
+  for (const id of spec.compIds) {
+    if (compIdSet.has(id)) {
+      warnings.push(`Component ID "${id}" appears multiple times in ${spec.relFile}`);
+    }
+    compIdSet.add(id);
+  }
 }
 
 // Check for duplicate T-* and TC-* within same spec (local scope)
